@@ -1,642 +1,858 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Galaxy Craft - Nền tảng chia sẻ Mod, Addon, Texture Pack Minecraft cao cấp." />
-    <title>Galaxy Craft | Premium Minecraft Hub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusSync | Modern Data Platform</title>
+    <meta name="description" content="Nền tảng đồng bộ và phân tích dữ liệu chuyên nghiệp dành cho doanh nghiệp hiện đại.">
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M12 2L2 7L12 12L22 7L12 2Z' fill='%2322C55E'/><path d='M2 17L12 22L22 17' stroke='%2322C55E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
-    
-    <!-- Google Fonts -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS & Lucide Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Custom Configuration -->
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        bg: '#050505', surface: '#121214', card: '#18181B', border: 'rgba(255,255,255,0.08)',
-                        accent: '#10B981', 'accent-hover': '#059669',
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
                     },
-                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
-                    boxShadow: { 
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-                        'glow': '0 0 20px rgba(16, 185, 129, 0.15)',
+                    colors: {
+                        bg: '#0A0A0B',
+                        surface: '#171719',
+                        card: '#1C1C1F',
+                        border: 'rgba(255,255,255,0.08)',
+                        textMain: '#FFFFFF',
+                        textMuted: '#A1A1AA',
+                        primary: '#22C55E',
+                        primaryHover: '#16A34A',
+                        error: '#EF4444',
+                        success: '#22C55E',
+                        warning: '#F59E0B',
+                        info: '#3B82F6'
+                    },
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
                     }
                 }
             }
         }
     </script>
 
+    <!-- Custom CSS for specific modern effects -->
     <style>
-        body { 
-            background-color: #050505; 
+        /* Base Variables & Reset */
+        :root {
+            --glass-bg: rgba(23, 23, 25, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+        
+        body {
+            background-color: #0A0A0B;
+            color: #FFFFFF;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.04), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.04), transparent 25%);
-            background-attachment: fixed;
-            margin: 0; padding: 0;
-            color: #E4E4E7;
+            -webkit-font-smoothing: antialiased;
         }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3F3F46; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #10B981; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1C1C1F;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #333336;
+        }
+
+        /* UI Utilities */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #FFFFFF 0%, #A1A1AA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
         
-        /* Modern Glassmorphism */
-        .glass-panel { 
-            background: rgba(24, 24, 27, 0.6); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px); 
-            border: 1px solid rgba(255,255,255,0.05);
+        /* Staggered Children Reveal */
+        .reveal-group > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        
-        .gradient-text { 
-            background: linear-gradient(to right, #ffffff, #a1a1aa);
-            -webkit-background-clip: text; color: transparent; 
+        .reveal-group.active > *:nth-child(1) { transition-delay: 0.1s; opacity: 1; transform: translateY(0); }
+        .reveal-group.active > *:nth-child(2) { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+        .reveal-group.active > *:nth-child(3) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+        .reveal-group.active > *:nth-child(4) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+
+        /* Loader Spinner Custom */
+        .loader-ring {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        /* Animations */
-        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-        .animate-fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes scaleIn { 0% { opacity: 0; transform: scale(0.97); } 100% { opacity: 1; transform: scale(1); } }
-        .animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-        /* Modern Inputs */
-        .modern-input {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: all 0.2s ease;
+        /* Hide elements dynamically */
+        .hidden-accessible {
+            display: none !important;
         }
-        .modern-input:focus {
-            background: rgba(255,255,255,0.05);
-            border-color: #10B981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-            outline: none;
-        }
-
-        /* Premium Card */
-        .premium-card {
-            background: linear-gradient(180deg, rgba(30,30,34,0.4) 0%, rgba(20,20,23,0.8) 100%);
-            border: 1px solid rgba(255,255,255,0.06);
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .premium-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 12px 30px -10px rgba(0,0,0,0.5), 0 0 15px rgba(16, 185, 129, 0.08);
-        }
-
-        /* Loading Spinner */
-        .spinner { border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; width: 16px; height: 16px; animation: spin 0.6s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
-</head>
-<body class="font-sans antialiased">
     
-    <div id="app"></div>
-    <div id="modal-root"></div>
-    <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
-    <div id="secret-container" class="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3"></div>
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="selection:bg-primary/30 selection:text-white flex flex-col min-h-screen">
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getDatabase, ref, onValue, push, update, remove, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    <!-- Global Toast Container -->
+    <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none w-full max-w-sm px-4 md:px-0"></div>
 
-        // Cấu hình Firebase của bạn
-        const firebaseConfig = {
-            apiKey: "AIzaSyDBlMGmdcdxzJQ-dYBzw2zzfRTu2vh6GG0",
-            authDomain: "goggle-login-39224.firebaseapp.com",
-            databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com",
-            projectId: "goggle-login-39224",
-            storageBucket: "goggle-login-39224.firebasestorage.app",
-            messagingSenderId: "479026449758",
-            appId: "1:479026449758:web:661543f85ebeb7621393cf"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-        const db = getDatabase(app);
-
-        let currentUser = null;
-        let isDev = false;
-        let isDevMenuOpen = false;
-        let allPacks = [];
-        let currentSearchTerm = "";
-        let currentCategory = "All";
-
-        let redDotClicks = 0;
-        let devCodeInput = "";
-        const targetDevCode = "YYGGG";
-
-        // ==========================================
-        // TOAST NOTIFICATIONS (Mới)
-        // ==========================================
-        window.showToast = (type, title, message) => {
-            const container = document.getElementById('toast-container');
-            const icons = { success: 'check-circle-2', error: 'alert-triangle', info: 'info' };
-            const colors = { success: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10', error: 'text-rose-400 border-rose-500/20 bg-rose-500/10', info: 'text-blue-400 border-blue-500/20 bg-blue-500/10' };
-
-            const toast = document.createElement('div');
-            toast.className = `pointer-events-auto p-4 rounded-xl border backdrop-blur-md shadow-lg flex items-start gap-3 animate-fade-up min-w-[300px] ${colors[type]}`;
-            toast.innerHTML = `
-                <i data-lucide="${icons[type]}" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
-                <div class="flex-1">
-                    <h4 class="font-semibold text-white text-sm">${title}</h4>
-                    ${message ? `<p class="text-white/70 text-xs mt-1 leading-relaxed">${message}</p>` : ''}
+    <!-- Navigation -->
+    <header class="fixed top-0 w-full z-50 glass-panel border-t-0 border-l-0 border-r-0 border-b transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md">
+                <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary/20 transition-colors">
+                    <i data-lucide="hexagon" class="text-primary w-5 h-5"></i>
                 </div>
-            `;
-            container.appendChild(toast);
-            lucide.createIcons();
-            setTimeout(() => {
-                toast.style.opacity = '0'; toast.style.transform = 'translateY(-10px)'; toast.style.transition = 'all 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        };
+                <span class="font-bold text-lg tracking-tight">NexusSync</span>
+            </a>
 
-        // ==========================================
-        // AUTH LOGIC
-        // ==========================================
-        window.handleLogin = () => signInWithPopup(auth, provider).catch(err => showToast('error', 'Lỗi đăng nhập', err.message));
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-sm font-medium text-textMuted hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">Tính năng</a>
+                <a href="#demo" class="text-sm font-medium text-textMuted hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">Khám phá</a>
+                <a href="#integration" class="text-sm font-medium text-textMuted hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">Tích hợp</a>
+            </nav>
 
-        window.handleLogout = () => {
-            if (currentUser && !currentUser.googleUid) { // Thoát tài khoản bí mật
-                currentUser = null; isDev = false; isDevMenuOpen = false;
-                renderApp(); showToast('info', 'Đã đăng xuất', 'Đã thoát chế độ DEV.');
-            } else {
-                signOut(auth).then(() => {
-                    currentUser = null; isDev = false; isDevMenuOpen = false;
-                    renderApp(); showToast('info', 'Đã đăng xuất', 'Hẹn gặp lại!');
-                });
-            }
-        };
+            <!-- Actions -->
+            <div class="hidden md:flex items-center gap-4">
+                <button onclick="App.Modal.open('login-modal')" class="text-sm font-medium text-white hover:text-primary transition-colors px-4 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md">
+                    Đăng nhập
+                </button>
+                <button onclick="App.UI.scrollTo('contact')" class="text-sm font-medium bg-primary hover:bg-primaryHover text-white px-5 py-2 rounded-lg transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]">
+                    Bắt đầu miễn phí
+                </button>
+            </div>
 
-        onAuthStateChanged(auth, (user) => {
-            if (user && !isDev) {
-                currentUser = user; currentUser.googleUid = user.uid;
-                if (user.email === "hminhgalaxy@gmail.com") {
-                    isDev = true; showToast('success', 'Xác thực thành công', 'Chào mừng Developer!');
-                } else { isDev = false; }
-                renderApp();
-            }
-        });
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 text-textMuted hover:text-white focus:outline-none rounded-md" aria-label="Toggle Menu">
+                <i data-lucide="menu" class="w-6 h-6" id="menu-icon"></i>
+            </button>
+        </div>
+    </header>
 
-        // Tải Data
-        onValue(ref(db, 'galaxy_craft_packs'), (snapshot) => {
-            const data = snapshot.val();
-            allPacks = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
-            renderPackGrid();
-        });
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="fixed inset-0 z-40 bg-bg/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 md:hidden flex flex-col pt-20 px-6 pb-6 border-l border-border">
+        <nav class="flex flex-col gap-6 text-lg mt-8">
+            <a href="#features" class="font-medium text-textMuted hover:text-white mobile-link">Tính năng</a>
+            <a href="#demo" class="font-medium text-textMuted hover:text-white mobile-link">Khám phá</a>
+            <a href="#integration" class="font-medium text-textMuted hover:text-white mobile-link">Tích hợp</a>
+        </nav>
+        <div class="mt-auto flex flex-col gap-4">
+            <button onclick="App.Modal.open('login-modal'); App.UI.closeMobileMenu();" class="w-full py-3 rounded-lg border border-border text-white font-medium active:bg-surface">Đăng nhập</button>
+            <button onclick="App.UI.scrollTo('contact'); App.UI.closeMobileMenu();" class="w-full py-3 rounded-lg bg-primary text-white font-medium active:bg-primaryHover">Bắt đầu miễn phí</button>
+        </div>
+    </div>
 
-        // ==========================================
-        // SECRET DEV LOGIN (Giao diện chuẩn Cyber/Admin)
-        // ==========================================
-        const renderSecretContainer = () => {
-            document.getElementById('secret-container').innerHTML = `<div onclick="clickRedDot()" class="w-2 h-2 bg-rose-500/20 hover:bg-rose-500 rounded-full cursor-pointer transition-all duration-300"></div>`;
-        };
+    <!-- Main Content -->
+    <main class="flex-1 w-full relative">
+        <!-- Background decorative effects -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-screen-xl h-[500px] opacity-20 pointer-events-none mix-blend-screen" style="background: radial-gradient(circle at 50% 0%, #22C55E 0%, transparent 70%);"></div>
 
-        window.clickRedDot = () => { redDotClicks++; if (redDotClicks >= 5) renderSecretPad(); };
-        window.resetSecret = () => { redDotClicks = 0; devCodeInput = ""; renderSecretContainer(); };
+        <!-- HERO SECTION -->
+        <section class="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden flex flex-col items-center text-center">
+            <div class="reveal max-w-4xl mx-auto flex flex-col items-center">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold mb-8">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    </span>
+                    Phiên bản 2.0 đã ra mắt
+                </div>
+                
+                <!-- Heading -->
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gradient leading-[1.1] mb-6">
+                    Đồng bộ dữ liệu.<br />
+                    <span class="text-white">Tối ưu hiệu suất.</span>
+                </h1>
+                
+                <!-- Description -->
+                <p class="text-lg md:text-xl text-textMuted max-w-2xl mb-10 leading-relaxed">
+                    Nền tảng kết nối toàn diện giúp doanh nghiệp xử lý hàng triệu data point theo thời gian thực mà không cần viết code phức tạp.
+                </p>
+                
+                <!-- CTAs -->
+                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                    <button onclick="App.UI.scrollTo('contact')" class="h-12 px-8 rounded-lg bg-primary hover:bg-primaryHover text-white font-medium transition-all active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+                        Bắt đầu miễn phí <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="App.UI.scrollTo('demo')" class="h-12 px-8 rounded-lg glass-panel hover:bg-surface text-white font-medium transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <i data-lucide="play-circle" class="w-4 h-4"></i> Xem demo
+                    </button>
+                </div>
+            </div>
 
-        const renderSecretPad = () => {
-            document.getElementById('secret-container').innerHTML = `
-                <div class="glass-panel p-4 rounded-xl shadow-lg flex flex-col items-center gap-3 animate-scale-in border-white/10">
-                    <p class="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Security Pin</p>
-                    <div class="flex gap-3">
-                        <button onclick="clickDevColor('Y')" class="w-10 h-10 rounded bg-amber-500/80 hover:bg-amber-400 transition-colors"></button>
-                        <button onclick="clickDevColor('G')" class="w-10 h-10 rounded bg-emerald-500/80 hover:bg-emerald-400 transition-colors"></button>
-                    </div>
-                    <div class="flex gap-1.5 mt-2">
-                        <div id="dot-0" class="w-1.5 h-1.5 bg-white/20 rounded-full"></div><div id="dot-1" class="w-1.5 h-1.5 bg-white/20 rounded-full"></div><div id="dot-2" class="w-1.5 h-1.5 bg-white/20 rounded-full"></div><div id="dot-3" class="w-1.5 h-1.5 bg-white/20 rounded-full"></div><div id="dot-4" class="w-1.5 h-1.5 bg-white/20 rounded-full"></div>
-                    </div>
-                    <button onclick="resetSecret()" class="text-[10px] text-white/40 hover:text-white mt-1">Cancel</button>
-                </div>`;
-        };
-
-        window.clickDevColor = (color) => {
-            devCodeInput += color;
-            const dot = document.getElementById(`dot-${devCodeInput.length - 1}`);
-            if (dot) dot.className = `w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor] ${color === 'Y' ? 'bg-amber-400 text-amber-400' : 'bg-emerald-400 text-emerald-400'}`;
-            
-            if (devCodeInput.length === 5) {
-                if (devCodeInput === targetDevCode) openSecretDevLogin();
-                else { showToast('error', 'Access Denied', 'Sai trình tự bảo mật.'); resetSecret(); }
-            }
-        };
-
-        const openSecretDevLogin = () => {
-            document.getElementById('secret-container').innerHTML = '';
-            document.getElementById('modal-root').innerHTML = `
-                <div class="fixed inset-0 z-[110] flex items-center justify-center p-4">
-                    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeDevModal()"></div>
-                    <div class="relative bg-[#0A0A0C] border border-white/10 rounded-2xl shadow-2xl w-full max-w-md p-8 animate-scale-in overflow-hidden">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50"></div>
-                        
-                        <div class="text-center mb-8">
-                            <div class="w-12 h-12 mx-auto rounded-full bg-emerald-500/10 flex items-center justify-center mb-4">
-                                <i data-lucide="shield-alert" class="w-6 h-6 text-emerald-400"></i>
+            <!-- Dashboard Preview Graphic (Mockup) -->
+            <div class="reveal mt-16 w-full max-w-5xl mx-auto perspective-1000">
+                <div class="relative rounded-2xl glass-panel border border-border p-2 shadow-2xl transform rotate-x-12 hover:rotate-x-0 transition-transform duration-700 ease-out">
+                    <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-2xl"></div>
+                    <div class="bg-card rounded-xl overflow-hidden border border-border/50">
+                        <!-- Mac OS style header -->
+                        <div class="h-10 border-b border-border bg-surface/50 flex items-center px-4 gap-2">
+                            <div class="w-3 h-3 rounded-full bg-error/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-warning/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-success/80"></div>
+                        </div>
+                        <!-- Mockup body -->
+                        <div class="p-6 md:p-8 flex gap-6 h-[300px] md:h-[450px]">
+                            <!-- Sidebar -->
+                            <div class="hidden md:flex w-48 flex-col gap-4">
+                                <div class="h-8 bg-surface rounded animate-pulse"></div>
+                                <div class="h-8 bg-surface rounded animate-pulse"></div>
+                                <div class="h-8 bg-surface rounded animate-pulse w-3/4"></div>
                             </div>
-                            <h3 class="text-xl font-bold text-white tracking-tight">SYSTEM ADMIN</h3>
-                            <p class="text-xs text-white/40 mt-1 uppercase tracking-widest">Restricted Area</p>
+                            <!-- Main Chart Area -->
+                            <div class="flex-1 flex flex-col gap-6">
+                                <div class="flex gap-4">
+                                    <div class="flex-1 h-24 bg-surface rounded-lg border border-border p-4 flex flex-col justify-end">
+                                        <div class="w-1/2 h-3 bg-white/10 rounded mb-2"></div>
+                                        <div class="w-3/4 h-6 bg-primary/20 rounded"></div>
+                                    </div>
+                                    <div class="flex-1 h-24 bg-surface rounded-lg border border-border p-4 flex flex-col justify-end">
+                                        <div class="w-1/2 h-3 bg-white/10 rounded mb-2"></div>
+                                        <div class="w-2/3 h-6 bg-info/20 rounded"></div>
+                                    </div>
+                                </div>
+                                <div class="flex-1 bg-surface rounded-lg border border-border relative overflow-hidden">
+                                    <div class="absolute bottom-0 w-full h-3/4 bg-gradient-to-t from-primary/10 to-transparent"></div>
+                                    <svg class="absolute bottom-0 w-full h-1/2 opacity-30" preserveAspectRatio="none" viewBox="0 0 100 100">
+                                        <path d="M0,100 C20,80 40,120 60,60 C80,0 100,40 100,40 L100,100 Z" fill="#22C55E"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES SECTION (CARD SYSTEM) -->
+        <section id="features" class="py-24 px-6 border-t border-border/50">
+            <div class="max-w-7xl mx-auto">
+                <div class="reveal mb-16 max-w-2xl">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Mọi thứ bạn cần để scale</h2>
+                    <p class="text-textMuted text-lg">Kiến trúc mạnh mẽ kết hợp với thiết kế UI tối giản, mang lại trải nghiệm phát triển không giới hạn.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-group">
+                    <!-- Card 1 -->
+                    <div class="group bg-card rounded-2xl p-6 border border-border hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
+                        <div class="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center mb-6 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Tốc độ siêu tốc</h3>
+                        <p class="text-textMuted leading-relaxed">Phản hồi dưới 50ms nhờ hạ tầng Edge Network toàn cầu. Trải nghiệm mượt mà không độ trễ.</p>
+                    </div>
+                    
+                    <!-- Card 2 -->
+                    <div class="group bg-card rounded-2xl p-6 border border-border hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
+                        <div class="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center mb-6 group-hover:bg-info/10 group-hover:text-info transition-colors">
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Bảo mật cấp doanh nghiệp</h3>
+                        <p class="text-textMuted leading-relaxed">Mã hóa end-to-end, tuân thủ SOC2 và GDPR. Dữ liệu của bạn luôn được bảo vệ tuyệt đối.</p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="group bg-card rounded-2xl p-6 border border-border hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
+                        <div class="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center mb-6 group-hover:bg-warning/10 group-hover:text-warning transition-colors">
+                            <i data-lucide="blocks" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Tích hợp dễ dàng</h3>
+                        <p class="text-textMuted leading-relaxed">API RESTful và GraphQL linh hoạt. Kết nối với stack hiện tại của bạn chỉ trong 5 phút.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE APP DEMO SECTION (Search/Data Logic) -->
+        <section id="demo" class="py-24 px-6 border-t border-border/50 bg-surface/30">
+            <div class="max-w-4xl mx-auto reveal">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Trải nghiệm tính năng tìm kiếm</h2>
+                    <p class="text-textMuted">Thử nhập "user", "error" hoặc "empty" để xem các state khác nhau của hệ thống.</p>
+                </div>
+
+                <!-- App Container -->
+                <div class="bg-card border border-border rounded-2xl overflow-hidden shadow-2xl">
+                    <!-- Search Header -->
+                    <div class="p-4 border-b border-border bg-surface/50">
+                        <div class="relative group">
+                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-textMuted group-focus-within:text-primary transition-colors"></i>
+                            <input type="text" id="demo-search-input" placeholder="Tìm kiếm dữ liệu, dự án hoặc thành viên..." 
+                                class="w-full h-12 pl-12 pr-4 bg-bg border border-border rounded-lg text-white placeholder:text-textMuted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1">
+                                <kbd class="px-2 py-1 bg-surface border border-border rounded text-xs text-textMuted font-mono">⌘</kbd>
+                                <kbd class="px-2 py-1 bg-surface border border-border rounded text-xs text-textMuted font-mono">K</kbd>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main App Area -->
+                    <div class="p-4 md:p-6 min-h-[350px] flex flex-col relative" id="demo-content-area">
+                        <!-- Default State -->
+                        <div id="state-default" class="flex-1 flex flex-col items-center justify-center text-center fade-in">
+                            <div class="w-16 h-16 rounded-full bg-surface border border-border flex items-center justify-center mb-4 text-textMuted">
+                                <i data-lucide="database" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-lg font-medium mb-1">Cơ sở dữ liệu sẵn sàng</h3>
+                            <p class="text-sm text-textMuted">Bắt đầu gõ để tìm kiếm qua 10,000+ bản ghi giả lập.</p>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="state-loading" class="hidden-accessible flex-1 flex flex-col gap-4 fade-in">
+                            <div class="h-6 w-1/3 bg-surface rounded animate-pulse mb-2"></div>
+                            <div class="flex items-center gap-4 p-4 border border-border rounded-lg">
+                                <div class="w-10 h-10 bg-surface rounded-full animate-pulse"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 bg-surface rounded w-3/4 animate-pulse"></div>
+                                    <div class="h-3 bg-surface rounded w-1/2 animate-pulse"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 border border-border rounded-lg">
+                                <div class="w-10 h-10 bg-surface rounded-full animate-pulse"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 bg-surface rounded w-2/3 animate-pulse"></div>
+                                    <div class="h-3 bg-surface rounded w-1/3 animate-pulse"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="state-empty" class="hidden-accessible flex-1 flex flex-col items-center justify-center text-center fade-in">
+                            <div class="w-16 h-16 rounded-full bg-surface border border-border flex items-center justify-center mb-4 text-textMuted">
+                                <i data-lucide="search-x" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-lg font-medium mb-1">Không tìm thấy kết quả</h3>
+                            <p class="text-sm text-textMuted">Hãy thử sử dụng từ khóa khác xem sao.</p>
+                        </div>
+
+                        <!-- Result State -->
+                        <div id="state-results" class="hidden-accessible flex-1 flex flex-col gap-3 fade-in">
+                            <h4 class="text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">Kết quả trả về</h4>
+                            <ul id="results-list" class="flex flex-col gap-2">
+                                <!-- JS injected items -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FORM SECTION -->
+        <section id="contact" class="py-24 px-6 border-t border-border/50 relative overflow-hidden">
+            <!-- Decorative gradient -->
+            <div class="absolute right-0 bottom-0 w-1/2 h-1/2 opacity-20 pointer-events-none blur-3xl rounded-full bg-primary mix-blend-screen"></div>
+
+            <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10 reveal">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Sẵn sàng nâng cấp?</h2>
+                    <p class="text-textMuted mb-6">Tham gia cùng hàng nghìn doanh nghiệp đang sử dụng NexusSync để tối ưu hóa quy trình làm việc mỗi ngày.</p>
+                    <ul class="flex flex-col gap-3 text-sm text-textMuted">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Miễn phí 14 ngày dùng thử</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Không yêu cầu thẻ tín dụng</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Hỗ trợ 24/7 chuyên nghiệp</li>
+                    </ul>
+                </div>
+
+                <div class="bg-card border border-border rounded-2xl p-6 shadow-xl">
+                    <form id="signup-form" class="flex flex-col gap-5">
+                        <div class="flex flex-col gap-1.5">
+                            <label for="name" class="text-sm font-medium text-white">Họ và tên</label>
+                            <input type="text" id="name" name="name" placeholder="Nguyễn Văn A" 
+                                class="w-full h-11 px-4 bg-surface border border-border rounded-lg text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                            <span class="text-error text-xs hidden-accessible mt-1" id="error-name">Vui lòng nhập tên hợp lệ.</span>
                         </div>
                         
-                        <div class="space-y-4">
-                            <div>
-                                <input id="dev-email" type="email" class="w-full h-11 modern-input rounded-lg px-4 text-sm text-white" placeholder="Admin ID / Email">
-                            </div>
-                            <div>
-                                <input id="dev-pass" type="password" class="w-full h-11 modern-input rounded-lg px-4 text-sm text-white" placeholder="Passcode">
-                            </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label for="email" class="text-sm font-medium text-white">Email công việc</label>
+                            <input type="email" id="email" name="email" placeholder="name@company.com" 
+                                class="w-full h-11 px-4 bg-surface border border-border rounded-lg text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+                            <span class="text-error text-xs hidden-accessible mt-1" id="error-email">Email không đúng định dạng.</span>
                         </div>
-                        
-                        <button onclick="handleSecretDevLogin()" class="w-full mt-6 bg-emerald-500 hover:bg-emerald-600 text-white font-bold h-11 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-                            <i data-lucide="unlock" class="w-4 h-4"></i> AUTHENTICATE
+
+                        <button type="submit" id="submit-btn" class="mt-2 h-11 w-full bg-primary hover:bg-primaryHover text-white font-medium rounded-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 relative">
+                            <span id="btn-text">Yêu cầu truy cập</span>
+                            <div id="btn-loader" class="hidden-accessible loader-ring absolute"></div>
                         </button>
-                        <button onclick="closeDevModal()" class="w-full mt-3 text-white/40 hover:text-white text-xs py-2 transition-colors">Abort</button>
+                        <p class="text-xs text-center text-textMuted">Bằng việc đăng ký, bạn đồng ý với <a href="#" class="text-primary hover:underline">Điều khoản</a> của chúng tôi.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-card border-t border-border pt-16 pb-8 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div class="col-span-1 md:col-span-1">
+                <a href="#" class="flex items-center gap-2 mb-4">
+                    <div class="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center border border-primary/20">
+                        <i data-lucide="hexagon" class="text-primary w-4 h-4"></i>
                     </div>
-                </div>`;
-            lucide.createIcons();
-        };
+                    <span class="font-bold tracking-tight">NexusSync</span>
+                </a>
+                <p class="text-sm text-textMuted leading-relaxed">Xây dựng giải pháp dữ liệu tốt nhất cho các nhóm hiện đại. Được tin dùng bởi các nhà phát triển trên toàn cầu.</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Sản phẩm</h4>
+                <ul class="flex flex-col gap-3 text-sm text-textMuted">
+                    <li><a href="#" class="hover:text-white transition-colors">Tính năng</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Tích hợp</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Bảng giá</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Changelog</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Tài nguyên</h4>
+                <ul class="flex flex-col gap-3 text-sm text-textMuted">
+                    <li><a href="#" class="hover:text-white transition-colors">Tài liệu API</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Hướng dẫn</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Cộng đồng</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4">Pháp lý</h4>
+                <ul class="flex flex-col gap-3 text-sm text-textMuted">
+                    <li><a href="#" class="hover:text-white transition-colors">Điều khoản dịch vụ</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Chính sách bảo mật</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Cookie</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border/50 text-xs text-textMuted">
+            <p>&copy; 2024 NexusSync Inc. All rights reserved.</p>
+            <div class="flex items-center gap-4 mt-4 md:mt-0">
+                <a href="#" class="hover:text-white transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                <a href="#" class="hover:text-white transition-colors"><i data-lucide="github" class="w-4 h-4"></i></a>
+                <a href="#" class="hover:text-white transition-colors"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+            </div>
+        </div>
+    </footer>
 
-        window.handleSecretDevLogin = () => {
-            const email = document.getElementById('dev-email').value;
-            const pass = document.getElementById('dev-pass').value;
-            const devAccounts = [
-                { email: "hminhgalaxycraft@gmail.com", pass: "hoangminhbf2011", name: "Hoàng Minh" },
-                { email: "tquangalaxycraft@gmail.com", pass: "tquangalaxy2011", name: "TQuan" }
-            ];
-            const validDev = devAccounts.find(acc => acc.email === email && acc.pass === pass);
+    <!-- MODAL COMPONENT -->
+    <div id="login-modal" class="fixed inset-0 z-[60] flex items-center justify-center hidden-accessible" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-bg/80 backdrop-blur-sm transition-opacity" onclick="App.Modal.close('login-modal')"></div>
+        
+        <!-- Modal Content -->
+        <div class="bg-card border border-border rounded-2xl p-6 shadow-2xl w-full max-w-sm relative z-10 transform scale-95 opacity-0 transition-all duration-300" id="login-modal-content">
+            <button onclick="App.Modal.close('login-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-center mb-6 mt-2">
+                <h3 id="modal-title" class="text-xl font-bold mb-2">Đăng nhập</h3>
+                <p class="text-sm text-textMuted">Chào mừng bạn quay lại NexusSync</p>
+            </div>
+            
+            <form id="login-form" class="flex flex-col gap-4">
+                <div>
+                    <input type="email" placeholder="Email của bạn" class="w-full h-11 px-4 bg-surface border border-border rounded-lg text-white focus:outline-none focus:border-primary transition-all text-sm">
+                </div>
+                <div>
+                    <input type="password" placeholder="Mật khẩu" class="w-full h-11 px-4 bg-surface border border-border rounded-lg text-white focus:outline-none focus:border-primary transition-all text-sm">
+                </div>
+                <button type="button" onclick="App.UI.showToast('Tính năng đang phát triển', 'info'); App.Modal.close('login-modal');" class="h-11 w-full bg-white text-bg font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+                    Đăng nhập
+                </button>
+            </form>
+            
+            <div class="mt-6 flex items-center justify-center gap-2">
+                <div class="h-px bg-border flex-1"></div>
+                <span class="text-xs text-textMuted">Hoặc</span>
+                <div class="h-px bg-border flex-1"></div>
+            </div>
+            
+            <button type="button" onclick="App.UI.showToast('Oauth chưa được cấu hình', 'error')" class="mt-6 h-11 w-full bg-surface border border-border text-white font-medium rounded-lg hover:bg-surface/80 transition-colors flex items-center justify-center gap-2 text-sm">
+                <i data-lucide="github" class="w-4 h-4"></i> Tiếp tục với Github
+            </button>
+        </div>
+    </div>
 
-            if (validDev) {
-                currentUser = { displayName: validDev.name, email: validDev.email, photoURL: `https://ui-avatars.com/api/?name=${validDev.name}&background=10B981&color=fff&bold=true` };
-                isDev = true;
-                showToast('success', 'AUTHORIZED', `Welcome back, Admin ${validDev.name}.`);
-                closeDevModal(); renderApp();
-            } else { 
-                showToast('error', 'AUTH FAILED', 'Thông tin không chính xác.'); 
-            }
-        };
-
-        // ==========================================
-        // CRUD TỐI ƯU GIAO DIỆN & FIX LỖI
-        // ==========================================
-        window.closeDevModal = () => { document.getElementById('modal-root').innerHTML = ''; resetSecret(); };
-        window.openAddModal = () => { isDevMenuOpen = false; renderDevModal(null); };
-        window.openEditModal = (id) => { const pack = allPacks.find(p => p.id === id); if (pack) renderDevModal(pack); };
-        window.toggleDevMenu = () => { isDevMenuOpen = !isDevMenuOpen; renderApp(); };
-
-        window.updateImagePreview = (url) => {
-            const img = document.getElementById('image-preview');
-            const placeholder = document.getElementById('image-placeholder');
-            if (url) { img.src = url; img.classList.remove('hidden'); placeholder.classList.add('hidden'); } 
-            else { img.classList.add('hidden'); placeholder.classList.remove('hidden'); }
-        };
-
-        window.handleFileSelect = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const MAX_WIDTH = 600; let width = img.width; let height = img.height;
-                    if (width > MAX_WIDTH) { height = height * (MAX_WIDTH / width); width = MAX_WIDTH; }
-                    canvas.width = width; canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    const dataUrl = canvas.toDataURL('image/webp', 0.8); // Dùng webp cho nhẹ
-                    document.getElementById('pack-img-input').value = dataUrl;
-                    window.updateImagePreview(dataUrl);
-                };
-                img.src = e.target.result;
+    <!-- MAIN JAVASCRIPT APPLICATION -->
+    <script>
+        /**
+         * NexusSync Core JS Application
+         * Architecture: Module Pattern / Namespace
+         */
+        const App = (() => {
+            
+            // --- CONSTANTS & STATE ---
+            const state = {
+                isMobileMenuOpen: false,
+                searchDebounceTimer: null,
             };
-            reader.readAsDataURL(file);
-        };
 
-        // FIX LỖI LƯU PACK
-        window.savePack = async (id) => {
-            const btn = document.getElementById('save-pack-btn');
-            try {
-                const title = document.getElementById('pack-title').value.trim();
-                const description = document.getElementById('pack-desc').value.trim();
-                const category = document.getElementById('pack-cat').value;
-                const imageUrl = document.getElementById('pack-img-input').value.trim();
-                const downloadUrl = document.getElementById('pack-link').value.trim();
-
-                if (!title || !downloadUrl) { 
-                    showToast('error', 'Lỗi nhập liệu', 'Vui lòng điền Tên Pack và Link tải!'); 
-                    return; 
+            // --- UTILITIES ---
+            const Utils = {
+                validateEmail: (email) => {
+                    return String(email).toLowerCase().match(
+                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    );
+                },
+                delay: (ms) => new Promise(res => setTimeout(res, ms)),
+                // Dummy Data Generator
+                getMockData: (query) => {
+                    const db = [
+                        { id: 1, title: 'User Management System', type: 'Project', icon: 'users' },
+                        { id: 2, title: 'Database Migration v2', type: 'Task', icon: 'database' },
+                        { id: 3, title: 'Analytics Dashboard UI', type: 'Design', icon: 'layout-dashboard' },
+                        { id: 4, title: 'Fix Auth Error', type: 'Bug', icon: 'bug' }
+                    ];
+                    return db.filter(item => item.title.toLowerCase().includes(query.toLowerCase()) || item.type.toLowerCase().includes(query.toLowerCase()));
                 }
+            };
 
-                btn.disabled = true;
-                btn.innerHTML = '<div class="spinner"></div> <span class="ml-2">Đang lưu...</span>';
-                btn.classList.add('opacity-70', 'cursor-not-allowed');
+            // --- UI CONTROLLER ---
+            const UI = {
+                init: () => {
+                    // Init Icons
+                    lucide.createIcons();
+                    
+                    // Init Scroll Observer for animations
+                    UI.initScrollObserver();
+                    
+                    // Setup Navbar scroll effect
+                    window.addEventListener('scroll', UI.handleNavbarScroll, { passive: true });
+                    
+                    // Setup Mobile menu events
+                    document.getElementById('mobile-menu-btn').addEventListener('click', UI.toggleMobileMenu);
+                },
 
-                const authorName = currentUser?.displayName || 'Admin';
-                const packData = { title, description, category, imageUrl, downloadUrl, updatedAt: Date.now() };
+                scrollTo: (id) => {
+                    const el = document.getElementById(id);
+                    if(el) {
+                        const navHeight = document.getElementById('navbar').offsetHeight;
+                        const top = el.getBoundingClientRect().top + window.scrollY - navHeight;
+                        window.scrollTo({ top, behavior: 'smooth' });
+                    }
+                },
 
-                // Gửi lên Firebase
-                if (id) {
-                    await update(ref(db, `galaxy_craft_packs/${id}`), packData);
-                    showToast('success', 'Thành công', 'Đã cập nhật Pack!');
-                } else {
-                    const newPackRef = push(ref(db, 'galaxy_craft_packs'));
-                    await set(newPackRef, { ...packData, createdAt: Date.now(), author: authorName });
-                    showToast('success', 'Thành công', 'Đã đăng Pack mới!');
+                handleNavbarScroll: () => {
+                    const nav = document.getElementById('navbar');
+                    if (window.scrollY > 20) {
+                        nav.classList.add('shadow-md', 'bg-bg/90');
+                        nav.classList.remove('bg-bg/80', 'border-transparent');
+                    } else {
+                        nav.classList.remove('shadow-md', 'bg-bg/90');
+                        nav.classList.add('bg-bg/80', 'border-transparent');
+                    }
+                },
+
+                toggleMobileMenu: () => {
+                    state.isMobileMenuOpen = !state.isMobileMenuOpen;
+                    const drawer = document.getElementById('mobile-drawer');
+                    const icon = document.getElementById('menu-icon');
+                    
+                    if (state.isMobileMenuOpen) {
+                        drawer.classList.remove('translate-x-full');
+                        icon.setAttribute('data-lucide', 'x');
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        UI.closeMobileMenu();
+                    }
+                    lucide.createIcons();
+                },
+
+                closeMobileMenu: () => {
+                    state.isMobileMenuOpen = false;
+                    document.getElementById('mobile-drawer').classList.add('translate-x-full');
+                    document.getElementById('menu-icon').setAttribute('data-lucide', 'menu');
+                    document.body.style.overflow = '';
+                    lucide.createIcons();
+                },
+
+                initScrollObserver: () => {
+                    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('active');
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    }, observerOptions);
+
+                    document.querySelectorAll('.reveal, .reveal-group').forEach(el => observer.observe(el));
+                },
+
+                /**
+                 * Toast Notification System
+                 * @param {string} msg 
+                 * @param {'success'|'error'|'warning'|'info'} type 
+                 */
+                showToast: (msg, type = 'success') => {
+                    const container = document.getElementById('toast-container');
+                    
+                    const icons = {
+                        success: '<i data-lucide="check-circle" class="w-5 h-5 text-success"></i>',
+                        error: '<i data-lucide="alert-circle" class="w-5 h-5 text-error"></i>',
+                        warning: '<i data-lucide="alert-triangle" class="w-5 h-5 text-warning"></i>',
+                        info: '<i data-lucide="info" class="w-5 h-5 text-info"></i>'
+                    };
+
+                    const toast = document.createElement('div');
+                    toast.className = 'flex items-center gap-3 p-4 bg-card border border-border rounded-lg shadow-lg pointer-events-auto transform translate-x-full opacity-0 transition-all duration-300';
+                    toast.innerHTML = `
+                        ${icons[type]}
+                        <p class="text-sm font-medium text-white flex-1">${msg}</p>
+                        <button class="text-textMuted hover:text-white focus:outline-none" onclick="this.parentElement.remove()">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    `;
+
+                    container.appendChild(toast);
+                    lucide.createIcons();
+
+                    // Animate in
+                    setTimeout(() => {
+                        toast.classList.remove('translate-x-full', 'opacity-0');
+                    }, 10);
+
+                    // Auto remove
+                    setTimeout(() => {
+                        toast.classList.add('opacity-0', 'translate-x-2');
+                        setTimeout(() => toast.remove(), 300);
+                    }, 4000);
                 }
-                closeDevModal();
-            } catch (err) {
-                console.error(err);
-                // Nếu báo permission denied, nhắc người dùng về Rules Firebase
-                const errorMsg = err.message.includes("Permission denied") 
-                    ? "Lỗi quyền (Rules): Hãy mở quyền .write = true trong Firebase Realtime Database!" 
-                    : err.message;
-                showToast('error', 'Không thể lưu data', errorMsg);
-            } finally {
-                if(btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> Lưu Thay Đổi';
-                    btn.classList.remove('opacity-70', 'cursor-not-allowed');
+            };
+
+            // --- MODAL CONTROLLER ---
+            const Modal = {
+                open: (id) => {
+                    const modal = document.getElementById(id);
+                    const content = document.getElementById(`${id}-content`);
+                    if(!modal || !content) return;
+                    
+                    modal.classList.remove('hidden-accessible');
+                    // Force reflow
+                    void modal.offsetWidth;
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                    document.body.style.overflow = 'hidden';
+                    
+                    // Manage focus
+                    const firstInput = modal.querySelector('input');
+                    if(firstInput) firstInput.focus();
+                },
+                close: (id) => {
+                    const modal = document.getElementById(id);
+                    const content = document.getElementById(`${id}-content`);
+                    if(!modal || !content) return;
+
+                    content.classList.remove('scale-100', 'opacity-100');
+                    content.classList.add('scale-95', 'opacity-0');
+                    
+                    setTimeout(() => {
+                        modal.classList.add('hidden-accessible');
+                        if(!state.isMobileMenuOpen) document.body.style.overflow = '';
+                    }, 300);
+                }
+            };
+
+            // --- SEARCH FEATURE DEMO ---
+            const SearchDemo = {
+                init: () => {
+                    const input = document.getElementById('demo-search-input');
+                    if(!input) return;
+
+                    // Keyboard shortcut listener (CMD/CTRL + K)
+                    window.addEventListener('keydown', (e) => {
+                        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                            e.preventDefault();
+                            input.focus();
+                            UI.scrollTo('demo');
+                        }
+                    });
+
+                    input.addEventListener('input', (e) => {
+                        clearTimeout(state.searchDebounceTimer);
+                        const val = e.target.value.trim();
+                        
+                        if (val.length === 0) {
+                            SearchDemo.switchState('default');
+                            return;
+                        }
+
+                        SearchDemo.switchState('loading');
+                        
+                        // Fake network request
+                        state.searchDebounceTimer = setTimeout(async () => {
+                            try {
+                                if (val.toLowerCase() === 'error') {
+                                    throw new Error("Simulated Server Error");
+                                }
+                                
+                                await Utils.delay(600); // Network latency
+                                const results = Utils.getMockData(val);
+                                
+                                if (results.length === 0) {
+                                    SearchDemo.switchState('empty');
+                                } else {
+                                    SearchDemo.renderResults(results);
+                                    SearchDemo.switchState('results');
+                                }
+                            } catch (err) {
+                                SearchDemo.switchState('default');
+                                UI.showToast('Lỗi kết nối máy chủ (Simulated)', 'error');
+                            }
+                        }, 500); // Debounce time
+                    });
+                },
+                switchState: (stateName) => {
+                    const states = ['default', 'loading', 'empty', 'results'];
+                    states.forEach(s => {
+                        const el = document.getElementById(`state-${s}`);
+                        if(el) {
+                            if(s === stateName) el.classList.remove('hidden-accessible');
+                            else el.classList.add('hidden-accessible');
+                        }
+                    });
+                },
+                renderResults: (data) => {
+                    const list = document.getElementById('results-list');
+                    list.innerHTML = '';
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-center gap-3 p-3 bg-surface border border-border rounded-lg hover:border-primary/50 hover:bg-surface/80 transition-colors cursor-pointer group';
+                        li.innerHTML = `
+                            <div class="w-8 h-8 rounded bg-bg flex items-center justify-center text-textMuted group-hover:text-primary transition-colors">
+                                <i data-lucide="${item.icon}" class="w-4 h-4"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-white">${item.title}</p>
+                                <p class="text-xs text-textMuted">${item.type}</p>
+                            </div>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-textMuted opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        `;
+                        list.appendChild(li);
+                    });
                     lucide.createIcons();
                 }
-            }
-        };
+            };
 
-        window.deletePack = async (id) => {
-            if (!confirm("Bạn có chắc chắn muốn xóa pack này vĩnh viễn?")) return;
-            try {
-                await remove(ref(db, `galaxy_craft_packs/${id}`));
-                showToast('info', 'Đã xóa', 'Pack đã được gỡ khỏi hệ thống.');
-            } catch(err) {
-                showToast('error', 'Lỗi khi xóa', err.message);
-            }
-        };
+            // --- FORM CONTROLLER ---
+            const FormController = {
+                init: () => {
+                    const form = document.getElementById('signup-form');
+                    if(!form) return;
 
-        // Giao diện Modal Thêm/Sửa Tối Ưu Mới (2 Cột trên màn hình to)
-        const renderDevModal = (pack) => {
-            const isEdit = !!pack;
-            
-            document.getElementById('modal-root').innerHTML = `
-                <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-                    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDevModal()"></div>
-                    
-                    <div class="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] flex flex-col animate-scale-in overflow-hidden">
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const nameInput = document.getElementById('name');
+                        const emailInput = document.getElementById('email');
+                        const btnText = document.getElementById('btn-text');
+                        const btnLoader = document.getElementById('btn-loader');
                         
-                        <!-- Header -->
-                        <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                                    <i data-lucide="${isEdit ? 'edit-2' : 'plus'}" class="w-4 h-4"></i>
-                                </div>
-                                <h3 class="text-lg font-semibold text-white">${isEdit ? 'Chỉnh Sửa Nội Dung' : 'Thêm Nội Dung Mới'}</h3>
-                            </div>
-                            <button onclick="closeDevModal()" class="text-white/40 hover:text-white p-2 hover:bg-white/5 rounded-lg transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-                        </div>
+                        // Reset errors
+                        document.getElementById('error-name').classList.add('hidden-accessible');
+                        document.getElementById('error-email').classList.add('hidden-accessible');
+                        nameInput.classList.remove('border-error', 'focus:ring-error');
+                        emailInput.classList.remove('border-error', 'focus:ring-error');
 
-                        <!-- Body (2 Columns on Desktop) -->
-                        <div class="p-6 overflow-y-auto flex-1 grid grid-cols-1 lg:grid-cols-5 gap-8 custom-scrollbar">
-                            
-                            <!-- Cột Trái: Ảnh -->
-                            <div class="lg:col-span-2 space-y-4">
-                                <label class="block text-xs font-semibold text-white/60 uppercase tracking-wider">Thumbnail Cover</label>
-                                <div onclick="document.getElementById('pack-file-input').click()" class="relative w-full aspect-video bg-white/[0.02] border-2 border-dashed border-white/10 hover:border-emerald-500/50 rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors group overflow-hidden">
-                                    <img id="image-preview" src="${pack?.imageUrl || ''}" class="w-full h-full object-cover absolute inset-0 ${pack?.imageUrl ? '' : 'hidden'}" referrerpolicy="no-referrer">
-                                    <div id="image-placeholder" class="${pack?.imageUrl ? 'hidden' : 'flex'} flex-col items-center text-white/40 group-hover:text-emerald-400 z-10 transition-colors">
-                                        <i data-lucide="image-plus" class="w-8 h-8 mb-2"></i>
-                                        <span class="text-sm font-medium">Click để tải ảnh lên</span>
-                                    </div>
-                                </div>
-                                <div class="text-center text-xs text-white/40">Hoặc sử dụng URL ảnh trực tiếp:</div>
-                                <input id="pack-img-input" oninput="updateImagePreview(this.value)" type="text" value="${pack?.imageUrl && !pack.imageUrl.startsWith('data:') ? pack.imageUrl : ''}" class="w-full h-10 modern-input rounded-lg px-4 text-xs text-white" placeholder="https://domain.com/image.png">
-                                <input type="file" id="pack-file-input" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
-                            </div>
+                        let isValid = true;
 
-                            <!-- Cột Phải: Thông tin -->
-                            <div class="lg:col-span-3 space-y-5">
-                                <div>
-                                    <label class="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Tên Pack <span class="text-rose-500">*</span></label>
-                                    <input id="pack-title" type="text" value="${pack?.title || ''}" class="w-full h-11 modern-input rounded-lg px-4 text-sm text-white font-medium" placeholder="Ví dụ: Ultra Realism Shader">
-                                </div>
-                                
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Thể Loại</label>
-                                        <select id="pack-cat" class="w-full h-11 modern-input rounded-lg px-4 text-sm text-white appearance-none cursor-pointer">
-                                            ${["Mod", "Addon", "Texture", "Shader"].map(c => `<option value="${c}" ${pack?.category === c ? 'selected' : ''} class="bg-card">${c}</option>`).join('')}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Link Tải <span class="text-rose-500">*</span></label>
-                                        <input id="pack-link" type="text" value="${pack?.downloadUrl || ''}" class="w-full h-11 modern-input rounded-lg px-4 text-sm text-white" placeholder="Mediafire, Drive, Linkvertise...">
-                                    </div>
-                                </div>
+                        if (nameInput.value.trim().length < 2) {
+                            document.getElementById('error-name').classList.remove('hidden-accessible');
+                            nameInput.classList.add('border-error', 'focus:ring-error');
+                            isValid = false;
+                        }
 
-                                <div>
-                                    <label class="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Mô Tả Chi Tiết</label>
-                                    <textarea id="pack-desc" rows="4" class="w-full modern-input rounded-lg px-4 py-3 text-sm text-white resize-none" placeholder="Giới thiệu về nội dung, tính năng nổi bật...">${pack?.description || ''}</textarea>
-                                </div>
-                            </div>
-                        </div>
+                        if (!Utils.validateEmail(emailInput.value)) {
+                            document.getElementById('error-email').classList.remove('hidden-accessible');
+                            emailInput.classList.add('border-error', 'focus:ring-error');
+                            isValid = false;
+                        }
 
-                        <!-- Footer -->
-                        <div class="px-6 py-4 border-t border-white/5 bg-white/[0.01] flex justify-end gap-3">
-                            <button onclick="closeDevModal()" class="px-5 py-2.5 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors">Hủy bỏ</button>
-                            <button id="save-pack-btn" onclick="savePack('${pack?.id || ''}')" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-                                <i data-lucide="save" class="w-4 h-4"></i> Lưu Thay Đổi
-                            </button>
-                        </div>
+                        if (!isValid) return;
 
-                    </div>
-                </div>`;
-            lucide.createIcons();
-        };
+                        // Start Loading
+                        btnText.style.opacity = '0';
+                        btnLoader.classList.remove('hidden-accessible');
+                        document.getElementById('submit-btn').disabled = true;
 
-        // ==========================================
-        // UI CHÍNH (Header, Hero, Grid)
-        // ==========================================
-        window.handleSearchInput = (val) => {
-            currentSearchTerm = val.toLowerCase(); 
-            renderPackGrid();
-        };
+                        // Mock API Call
+                        await Utils.delay(1500);
 
-        window.handleCategoryFilter = (cat, event) => {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
-                btn.classList.add('text-white/50', 'border-transparent', 'hover:bg-white/5');
-            });
-            event.currentTarget.classList.remove('text-white/50', 'border-transparent', 'hover:bg-white/5');
-            event.currentTarget.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
-            renderPackGrid();
-        };
-
-        const renderPackGrid = () => {
-            const gridContainer = document.getElementById('pack-grid');
-            if (!gridContainer) return;
-
-            let filteredPacks = allPacks.filter(p => {
-                const matchCat = currentCategory === "All" || p.category === currentCategory;
-                const matchSearch = !currentSearchTerm || p.title.toLowerCase().includes(currentSearchTerm) || (p.description && p.description.toLowerCase().includes(currentSearchTerm));
-                return matchCat && matchSearch;
-            });
-
-            if (filteredPacks.length === 0) {
-                gridContainer.innerHTML = `
-                    <div class="col-span-full py-20 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-white/[0.02]">
-                        <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4 text-white/20"><i data-lucide="package-open" class="w-8 h-8"></i></div>
-                        <h3 class="text-lg font-semibold text-white/80">Chưa có nội dung nào</h3>
-                        <p class="text-sm text-white/40 mt-1">Vui lòng thử danh mục khác hoặc tìm kiếm lại.</p>
-                    </div>`;
-                lucide.createIcons(); return;
-            }
-
-            gridContainer.innerHTML = filteredPacks.map((p, i) => `
-                <div class="premium-card rounded-xl overflow-hidden flex flex-col h-full animate-fade-up" style="animation-delay: ${i * 0.05}s; opacity: 0;">
-                    <div class="h-44 bg-surface relative overflow-hidden group">
-                        ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" referrerpolicy="no-referrer">` : `<div class="w-full h-full flex items-center justify-center bg-white/5 text-white/20"><i data-lucide="image" class="w-8 h-8"></i></div>`}
-                        <div class="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent opacity-90"></div>
-                        <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md border border-white/10 text-xs px-2.5 py-1 rounded-md text-emerald-400 font-medium flex items-center gap-1.5 shadow-lg"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span> ${p.category || 'Mod'}</div>
-                    </div>
-                    
-                    <div class="p-5 flex-1 flex flex-col">
-                        <h3 class="text-base font-bold text-white mb-1.5 line-clamp-1 group-hover:text-emerald-400 transition-colors">${p.title}</h3>
-                        <p class="text-sm text-white/50 line-clamp-2 mb-4 flex-1 leading-relaxed">${p.description || 'Chưa có mô tả chi tiết.'}</p>
+                        // Stop Loading & Show Success
+                        btnText.style.opacity = '1';
+                        btnLoader.classList.add('hidden-accessible');
+                        document.getElementById('submit-btn').disabled = false;
                         
-                        <div class="flex items-center gap-2 mt-auto pt-4 border-t border-white/5">
-                            <a href="${p.downloadUrl}" target="_blank" class="flex-1 bg-emerald-500/10 hover:bg-emerald-500 hover:text-white text-emerald-400 border border-emerald-500/20 transition-all h-9 rounded-lg flex items-center justify-center text-sm font-semibold gap-2">
-                                <i data-lucide="download" class="w-4 h-4"></i> Download
-                            </a>
-                            ${isDev ? `
-                                <button onclick="openEditModal('${p.id}')" class="w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-white/50 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                                <button onclick="deletePack('${p.id}')" class="w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-white/50 hover:text-rose-400 hover:border-rose-500/30 transition-colors"><i data-lucide="trash" class="w-4 h-4"></i></button>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        };
+                        UI.showToast(`Cảm ơn ${nameInput.value}! Lời mời đã được gửi tới email của bạn.`, 'success');
+                        form.reset();
+                    });
+                }
+            };
 
-        const Header = () => `
-            <header class="sticky top-0 z-40 glass-panel border-b border-white/5">
-                <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                    <!-- Logo -->
-                    <div class="flex items-center gap-3 relative">
-                        <div class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center relative cursor-pointer" onclick="${isDev ? 'toggleDevMenu()' : ''}">
-                            <i data-lucide="hexagon" class="w-5 h-5 text-emerald-400"></i>
-                            ${isDev ? '<span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span>' : ''}
-                        </div>
-                        <span class="font-bold text-xl text-white tracking-tight hidden sm:block">Galaxy<span class="text-emerald-400">Craft</span></span>
-                        
-                        ${isDev && isDevMenuOpen ? `
-                            <!-- Dev Dropdown -->
-                            <div class="absolute top-12 left-0 w-48 bg-card border border-white/10 rounded-xl shadow-2xl py-1 animate-scale-in z-50">
-                                <div class="px-3 py-2 border-b border-white/5 mb-1">
-                                    <p class="text-[10px] text-white/40 uppercase font-bold tracking-wider">Admin Panel</p>
-                                </div>
-                                <button onclick="openAddModal()" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-white/70 hover:text-emerald-400 hover:bg-white/5 transition-colors">
-                                    <i data-lucide="plus" class="w-4 h-4"></i> Đăng Pack Mới
-                                </button>
-                                <button onclick="handleLogout()" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-white/70 hover:text-rose-400 hover:bg-white/5 transition-colors">
-                                    <i data-lucide="log-out" class="w-4 h-4"></i> Đăng xuất DEV
-                                </button>
-                            </div>
-                        ` : ''}
-                    </div>
-                    
-                    <!-- Search Bar (Desktop) -->
-                    <div class="hidden md:block flex-1 max-w-md mx-6">
-                        <div class="relative">
-                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"></i>
-                            <input type="text" oninput="handleSearchInput(this.value)" placeholder="Tìm kiếm tài nguyên..." class="w-full h-10 modern-input rounded-full pl-10 pr-4 text-sm text-white">
-                        </div>
-                    </div>
+            // Expose public API
+            return {
+                init: () => {
+                    UI.init();
+                    SearchDemo.init();
+                    FormController.init();
+                },
+                UI,
+                Modal
+            };
+        })();
 
-                    <!-- Auth -->
-                    <div class="flex items-center gap-4">
-                        ${currentUser ? `
-                            <div class="flex items-center gap-3">
-                                <div class="text-right hidden sm:block">
-                                    <p class="text-sm font-semibold text-white">${currentUser.displayName}</p>
-                                    <p class="text-[10px] text-emerald-400 font-bold tracking-wider">${isDev ? 'ADMINISTRATOR' : 'MEMBER'}</p>
-                                </div>
-                                <img src="${currentUser.photoURL}" alt="User" class="w-9 h-9 rounded-full border-2 border-white/10" referrerpolicy="no-referrer">
-                                ${!isDev ? `<button onclick="handleLogout()" class="text-white/40 hover:text-white ml-1"><i data-lucide="log-out" class="w-5 h-5"></i></button>` : ''}
-                            </div>
-                        ` : `
-                            <button onclick="handleLogin()" class="h-9 px-4 rounded-lg bg-white text-black text-sm font-semibold hover:bg-gray-200 transition-colors flex items-center gap-2">
-                                Đăng nhập
-                            </button>
-                        `}
-                    </div>
-                </nav>
-            </header>
-        `;
-
-        const renderApp = () => {
-            document.getElementById('app').innerHTML = `
-                ${Header()}
-                <main class="w-full">
-                    <!-- Hero Section -->
-                    <section class="py-24 sm:py-32 relative flex flex-col items-center justify-center text-center px-4">
-                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
-                            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
-                            Minecraft Premium Hub
-                        </div>
-                        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-3xl mb-6">
-                            Khám phá <span class="gradient-text">Vũ Trụ Của Bạn</span>
-                        </h1>
-                        <p class="text-white/50 text-base sm:text-lg max-w-xl mb-10">
-                            Nền tảng chia sẻ Mod, Addon và Shader chất lượng cao dành riêng cho cộng đồng Minecraft.
-                        </p>
-                        
-                        <!-- Search (Mobile Only) -->
-                        <div class="w-full max-w-md md:hidden mb-8 relative">
-                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"></i>
-                            <input type="text" oninput="handleSearchInput(this.value)" placeholder="Tìm kiếm nội dung..." class="w-full h-12 modern-input rounded-xl pl-11 pr-4 text-sm text-white">
-                        </div>
-                    </section>
-
-                    <!-- Content Section -->
-                    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-8">
-                            ${["All", "Mod", "Addon", "Texture", "Shader"].map(cat => `
-                                <button onclick="handleCategoryFilter('${cat}', event)" class="cat-btn px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${cat === 'All' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-white/50 border border-transparent hover:bg-white/5'}">
-                                    ${cat}
-                                </button>
-                            `).join('')}
-                        </div>
-                        
-                        <div id="pack-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
-                    </section>
-                </main>
-                
-                <!-- Footer -->
-                <footer class="border-t border-white/5 bg-white/[0.01] py-12">
-                    <div class="max-w-7xl mx-auto px-4 text-center text-white/30 text-sm">
-                        <p>© 2024 Galaxy Craft. All rights reserved.</p>
-                    </div>
-                </footer>
-            `;
-            lucide.createIcons();
-            renderPackGrid();
-            renderSecretContainer();
-        };
-
-        renderApp();
+        // Bootstrap App when DOM is ready
+        document.addEventListener('DOMContentLoaded', App.init);
     </script>
 </body>
 </html>
