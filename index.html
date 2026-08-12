@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="vi" class="scroll-smooth">
+<html lang="vi" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexusSync | Modern Data Platform</title>
-    <meta name="description" content="Nền tảng đồng bộ và phân tích dữ liệu chuyên nghiệp dành cho doanh nghiệp hiện đại.">
-    
-    <!-- Fonts -->
+    <title>Galaxy Craft | Nền Tảng Minecraft Modpack & Addon Hàng Đầu</title>
+    <meta name="description" content="Tải xuống các Modpack, Addon, Texture Pack và Shaders Minecraft mới nhất, mượt mà và an toàn tại Galaxy Craft.">
+    <meta name="google-signin-client_id" content="263702418999-b3emaq40hrpe26k6rk95j2a2cnc35dgr.apps.googleusercontent.com">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Tailwind Custom Configuration -->
     <script>
         tailwind.config = {
@@ -21,837 +22,934 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        bg: '#0A0A0B',
-                        surface: '#171719',
-                        card: '#1C1C1F',
+                        bg: '#090A10',
+                        surface: '#12131C',
+                        card: '#181A26',
                         border: 'rgba(255,255,255,0.08)',
                         textMain: '#FFFFFF',
-                        textMuted: '#A1A1AA',
-                        primary: '#22C55E',
-                        primaryHover: '#16A34A',
-                        error: '#EF4444',
-                        success: '#22C55E',
-                        warning: '#F59E0B',
-                        info: '#3B82F6'
+                        textMuted: '#94A3B8',
+                        galaxyViolet: '#8B5CF6',
+                        galaxyPink: '#EC4899',
+                        mcEmerald: '#22C55E',
+                        devGold: '#F59E0B'
                     },
-                    animation: {
-                        'spin-slow': 'spin 3s linear infinite',
-                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'fade-in': 'fadeIn 0.3s ease-out forwards',
-                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        }
+                    boxShadow: {
+                        'neon-violet': '0 0 25px rgba(139, 92, 246, 0.25)',
+                        'neon-emerald': '0 0 25px rgba(34, 197, 94, 0.25)',
+                        'neon-gold': '0 0 25px rgba(245, 158, 11, 0.3)',
                     }
                 }
             }
         }
     </script>
 
-    <!-- Custom CSS for specific modern effects -->
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Firebase SDK (Compat Version for Single-File Architecture) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <!-- Custom Style Rules -->
     <style>
-        /* Base Variables & Reset */
-        :root {
-            --glass-bg: rgba(23, 23, 25, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
-        
         body {
-            background-color: #0A0A0B;
+            background-color: #090A10;
             color: #FFFFFF;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(34, 197, 94, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0A0A0B;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1C1C1F;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #333336;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #090A10; }
+        ::-webkit-scrollbar-thumb { background: #181A26; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
 
-        /* UI Utilities */
         .glass-panel {
-            background: var(--glass-bg);
+            background: rgba(18, 19, 28, 0.75);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .text-gradient {
-            background: linear-gradient(135deg, #FFFFFF 0%, #A1A1AA 100%);
+        .text-gradient-galaxy {
+            background: linear-gradient(135deg, #FFFFFF 0%, #C084FC 50%, #8B5CF6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Scroll Reveal Animation */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        .text-gradient-dev {
+            background: linear-gradient(135deg, #FDE047 0%, #F59E0B 50%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Staggered Children Reveal */
-        .reveal-group > * {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal-group.active > *:nth-child(1) { transition-delay: 0.1s; opacity: 1; transform: translateY(0); }
-        .reveal-group.active > *:nth-child(2) { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
-        .reveal-group.active > *:nth-child(3) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
-        .reveal-group.active > *:nth-child(4) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
 
-        /* Loader Spinner Custom */
-        .loader-ring {
+        .badge-dev-animated {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.2), rgba(245, 158, 11, 0.15));
+            background-size: 200% 100%;
+            animation: devGlow 3s infinite linear;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        @keyframes devGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hidden-accessible { display: none !important; }
+
+        .loader-spinner {
             width: 1.25rem;
             height: 1.25rem;
             border: 2px solid rgba(255,255,255,0.2);
-            border-top-color: currentColor;
+            border-top-color: #8B5CF6;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-
-        /* Hide elements dynamically */
-        .hidden-accessible {
-            display: none !important;
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
-    
-    <!-- Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="selection:bg-primary/30 selection:text-white flex flex-col min-h-screen">
+<body class="selection:bg-galaxyViolet/30 selection:text-white flex flex-col min-h-screen">
 
-    <!-- Global Toast Container -->
+    <!-- Toast Notifications Container -->
     <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none w-full max-w-sm px-4 md:px-0"></div>
 
-    <!-- Navigation -->
-    <header class="fixed top-0 w-full z-50 glass-panel border-t-0 border-l-0 border-r-0 border-b transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <!-- HEADER / NAVIGATION -->
+    <header class="fixed top-0 w-full z-50 glass-panel border-b border-border transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
             <!-- Logo -->
-            <a href="#" class="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md">
-                <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary/20 transition-colors">
-                    <i data-lucide="hexagon" class="text-primary w-5 h-5"></i>
+            <a href="#" class="flex items-center gap-3 group focus:outline-none">
+                <div class="w-10 h-10 rounded-xl bg-galaxyViolet/10 border border-galaxyViolet/30 flex items-center justify-center group-hover:bg-galaxyViolet/20 group-hover:shadow-neon-violet transition-all duration-300">
+                    <i data-lucide="box" class="text-galaxyViolet w-6 h-6"></i>
                 </div>
-                <span class="font-bold text-lg tracking-tight">NexusSync</span>
+                <div>
+                    <span class="font-display font-extrabold text-xl tracking-wide text-white block leading-none">GALAXY<span class="text-galaxyViolet">CRAFT</span></span>
+                    <span class="text-[10px] text-textMuted tracking-wider font-semibold uppercase">Minecraft Resource Hub</span>
+                </div>
             </a>
 
-            <!-- Desktop Nav -->
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="#features" class="text-sm font-medium text-textMuted hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">Tính năng</a>
-                <a href="#demo" class="text-sm font-medium text-textMuted hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">Khám phá</a>
-                <a href="#integration" class="text-sm font-medium text-textMuted hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">Tích hợp</a>
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <button onclick="App.Filter.setCategory('All')" class="nav-link text-white hover:text-galaxyViolet transition-colors">Trang Chủ</button>
+                <button onclick="App.Filter.setCategory('Modpack')" class="nav-link text-textMuted hover:text-white transition-colors">Modpack</button>
+                <button onclick="App.Filter.setCategory('Addon')" class="nav-link text-textMuted hover:text-white transition-colors">Addon / Mods</button>
+                <button onclick="App.Filter.setCategory('Texture')" class="nav-link text-textMuted hover:text-white transition-colors">Texture Pack</button>
+                <button onclick="App.Filter.setCategory('Shader')" class="nav-link text-textMuted hover:text-white transition-colors">Shaders</button>
             </nav>
 
-            <!-- Actions -->
-            <div class="hidden md:flex items-center gap-4">
-                <button onclick="App.Modal.open('login-modal')" class="text-sm font-medium text-white hover:text-primary transition-colors px-4 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md">
-                    Đăng nhập
+            <!-- User Actions & Auth -->
+            <div class="flex items-center gap-3">
+                <!-- DEV Action: Add New Pack (Visible ONLY to Dev) -->
+                <button id="dev-add-btn" onclick="App.Modal.open('item-modal')" class="hidden-accessible px-3.5 py-2 rounded-lg badge-dev-animated text-devGold text-xs font-bold flex items-center gap-1.5 hover:scale-105 transition-transform shadow-neon-gold">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>THÊM PACK MỚI</span>
                 </button>
-                <button onclick="App.UI.scrollTo('contact')" class="text-sm font-medium bg-primary hover:bg-primaryHover text-white px-5 py-2 rounded-lg transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]">
-                    Bắt đầu miễn phí
+
+                <!-- Auth Container -->
+                <div id="auth-container">
+                    <!-- Loading State -->
+                    <div id="auth-loading" class="loader-spinner"></div>
+
+                    <!-- Login Button -->
+                    <button id="login-btn" onclick="App.Auth.loginWithGoogle()" class="hidden-accessible px-4 py-2 rounded-xl bg-surface border border-border hover:border-galaxyViolet/50 text-white text-sm font-medium transition-all flex items-center gap-2 hover:shadow-neon-violet">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                        <span>Đăng Nhập</span>
+                    </button>
+
+                    <!-- User Profile Dropdown -->
+                    <div id="user-profile" class="hidden-accessible flex items-center gap-3">
+                        <div class="relative group">
+                            <button class="flex items-center gap-2.5 p-1.5 rounded-xl bg-surface border border-border group-hover:border-galaxyViolet transition-all">
+                                <img id="user-avatar" src="" alt="Avatar" class="w-8 h-8 rounded-lg object-cover border border-border">
+                                <span id="user-name" class="text-xs font-semibold max-w-[100px] truncate hidden sm:inline-block">User</span>
+                                <span id="user-role-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-surface border border-border text-textMuted">MEMBER</span>
+                            </button>
+                            <!-- Dropdown Menu -->
+                            <div class="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-2xl p-2 hidden group-hover:block transition-all">
+                                <div class="px-3 py-2 border-b border-border/50 mb-1">
+                                    <p id="user-email" class="text-[11px] text-textMuted truncate"></p>
+                                </div>
+                                <button onclick="App.Auth.logout()" class="w-full text-left px-3 py-2 text-xs text-error hover:bg-error/10 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Đăng Xuất
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-btn" onclick="App.UI.toggleMobileMenu()" class="md:hidden p-2 text-textMuted hover:text-white rounded-lg border border-border">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
             </div>
-
-            <!-- Mobile Menu Toggle -->
-            <button id="mobile-menu-btn" class="md:hidden p-2 text-textMuted hover:text-white focus:outline-none rounded-md" aria-label="Toggle Menu">
-                <i data-lucide="menu" class="w-6 h-6" id="menu-icon"></i>
-            </button>
         </div>
     </header>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 z-40 bg-bg/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 md:hidden flex flex-col pt-20 px-6 pb-6 border-l border-border">
-        <nav class="flex flex-col gap-6 text-lg mt-8">
-            <a href="#features" class="font-medium text-textMuted hover:text-white mobile-link">Tính năng</a>
-            <a href="#demo" class="font-medium text-textMuted hover:text-white mobile-link">Khám phá</a>
-            <a href="#integration" class="font-medium text-textMuted hover:text-white mobile-link">Tích hợp</a>
+    <div id="mobile-drawer" class="fixed inset-0 z-40 bg-bg/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 md:hidden flex flex-col pt-24 px-6 pb-6">
+        <nav class="flex flex-col gap-4 text-base font-medium">
+            <button onclick="App.Filter.setCategory('All'); App.UI.closeMobileMenu();" class="text-left py-2 text-white border-b border-border/50">Trang Chủ</button>
+            <button onclick="App.Filter.setCategory('Modpack'); App.UI.closeMobileMenu();" class="text-left py-2 text-textMuted border-b border-border/50">Modpack</button>
+            <button onclick="App.Filter.setCategory('Addon'); App.UI.closeMobileMenu();" class="text-left py-2 text-textMuted border-b border-border/50">Addon / Mods</button>
+            <button onclick="App.Filter.setCategory('Texture'); App.UI.closeMobileMenu();" class="text-left py-2 text-textMuted border-b border-border/50">Texture Pack</button>
+            <button onclick="App.Filter.setCategory('Shader'); App.UI.closeMobileMenu();" class="text-left py-2 text-textMuted border-b border-border/50">Shaders</button>
         </nav>
-        <div class="mt-auto flex flex-col gap-4">
-            <button onclick="App.Modal.open('login-modal'); App.UI.closeMobileMenu();" class="w-full py-3 rounded-lg border border-border text-white font-medium active:bg-surface">Đăng nhập</button>
-            <button onclick="App.UI.scrollTo('contact'); App.UI.closeMobileMenu();" class="w-full py-3 rounded-lg bg-primary text-white font-medium active:bg-primaryHover">Bắt đầu miễn phí</button>
-        </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="flex-1 w-full relative">
-        <!-- Background decorative effects -->
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-screen-xl h-[500px] opacity-20 pointer-events-none mix-blend-screen" style="background: radial-gradient(circle at 50% 0%, #22C55E 0%, transparent 70%);"></div>
-
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 pt-28 pb-20 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+        
         <!-- HERO SECTION -->
-        <section class="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden flex flex-col items-center text-center">
-            <div class="reveal max-w-4xl mx-auto flex flex-col items-center">
-                <!-- Badge -->
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-semibold mb-8">
-                    <span class="relative flex h-2 w-2">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                    </span>
-                    Phiên bản 2.0 đã ra mắt
-                </div>
-                
-                <!-- Heading -->
-                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gradient leading-[1.1] mb-6">
-                    Đồng bộ dữ liệu.<br />
-                    <span class="text-white">Tối ưu hiệu suất.</span>
-                </h1>
-                
-                <!-- Description -->
-                <p class="text-lg md:text-xl text-textMuted max-w-2xl mb-10 leading-relaxed">
-                    Nền tảng kết nối toàn diện giúp doanh nghiệp xử lý hàng triệu data point theo thời gian thực mà không cần viết code phức tạp.
-                </p>
-                
-                <!-- CTAs -->
-                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                    <button onclick="App.UI.scrollTo('contact')" class="h-12 px-8 rounded-lg bg-primary hover:bg-primaryHover text-white font-medium transition-all active:scale-95 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(34,197,94,0.2)]">
-                        Bắt đầu miễn phí <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </button>
-                    <button onclick="App.UI.scrollTo('demo')" class="h-12 px-8 rounded-lg glass-panel hover:bg-surface text-white font-medium transition-all active:scale-95 flex items-center justify-center gap-2">
-                        <i data-lucide="play-circle" class="w-4 h-4"></i> Xem demo
-                    </button>
-                </div>
+        <section class="relative py-12 md:py-16 text-center flex flex-col items-center">
+            <!-- DEV WELCOME BANNER (Dynamic) -->
+            <div id="dev-welcome-banner" class="hidden-accessible mb-6 badge-dev-animated px-4 py-2 rounded-full flex items-center gap-2 shadow-neon-gold">
+                <i data-lucide="crown" class="w-4 h-4 text-devGold"></i>
+                <span class="text-xs font-bold text-devGold">XIN CHÀO DEV GALAXY (HMINH) - QUYỀN CHỈNH SỬA TOÀN QUYỀN ĐÃ BẬT</span>
             </div>
 
-            <!-- Dashboard Preview Graphic (Mockup) -->
-            <div class="reveal mt-16 w-full max-w-5xl mx-auto perspective-1000">
-                <div class="relative rounded-2xl glass-panel border border-border p-2 shadow-2xl transform rotate-x-12 hover:rotate-x-0 transition-transform duration-700 ease-out">
-                    <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-2xl"></div>
-                    <div class="bg-card rounded-xl overflow-hidden border border-border/50">
-                        <!-- Mac OS style header -->
-                        <div class="h-10 border-b border-border bg-surface/50 flex items-center px-4 gap-2">
-                            <div class="w-3 h-3 rounded-full bg-error/80"></div>
-                            <div class="w-3 h-3 rounded-full bg-warning/80"></div>
-                            <div class="w-3 h-3 rounded-full bg-success/80"></div>
-                        </div>
-                        <!-- Mockup body -->
-                        <div class="p-6 md:p-8 flex gap-6 h-[300px] md:h-[450px]">
-                            <!-- Sidebar -->
-                            <div class="hidden md:flex w-48 flex-col gap-4">
-                                <div class="h-8 bg-surface rounded animate-pulse"></div>
-                                <div class="h-8 bg-surface rounded animate-pulse"></div>
-                                <div class="h-8 bg-surface rounded animate-pulse w-3/4"></div>
-                            </div>
-                            <!-- Main Chart Area -->
-                            <div class="flex-1 flex flex-col gap-6">
-                                <div class="flex gap-4">
-                                    <div class="flex-1 h-24 bg-surface rounded-lg border border-border p-4 flex flex-col justify-end">
-                                        <div class="w-1/2 h-3 bg-white/10 rounded mb-2"></div>
-                                        <div class="w-3/4 h-6 bg-primary/20 rounded"></div>
-                                    </div>
-                                    <div class="flex-1 h-24 bg-surface rounded-lg border border-border p-4 flex flex-col justify-end">
-                                        <div class="w-1/2 h-3 bg-white/10 rounded mb-2"></div>
-                                        <div class="w-2/3 h-6 bg-info/20 rounded"></div>
-                                    </div>
-                                </div>
-                                <div class="flex-1 bg-surface rounded-lg border border-border relative overflow-hidden">
-                                    <div class="absolute bottom-0 w-full h-3/4 bg-gradient-to-t from-primary/10 to-transparent"></div>
-                                    <svg class="absolute bottom-0 w-full h-1/2 opacity-30" preserveAspectRatio="none" viewBox="0 0 100 100">
-                                        <path d="M0,100 C20,80 40,120 60,60 C80,0 100,40 100,40 L100,100 Z" fill="#22C55E"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-galaxyViolet/30 bg-galaxyViolet/10 text-galaxyViolet text-xs font-bold mb-6">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Kho Tài Nguyên Minecraft Số 1 Việt Nam
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-gradient-galaxy tracking-tight leading-tight max-w-4xl mb-6">
+                Nâng Tầm Trải Nghiệm Minecraft Của Bạn Cùng Galaxy Craft
+            </h1>
+
+            <p class="text-textMuted text-sm sm:text-base max-w-2xl mb-8 leading-relaxed">
+                Tải xuống hàng ngàn Modpack chuẩn OptiFine, Addon Bedrock/Java, Shaders chân thực và Texture Pack tối ưu FPS hoàn toàn miễn phí.
+            </p>
+
+            <!-- SMART SEARCH & FILTER BAR -->
+            <div class="w-full max-w-3xl glass-panel p-2 sm:p-3 rounded-2xl shadow-2xl border border-border flex flex-col sm:flex-row gap-2">
+                <!-- Search Input -->
+                <div class="relative flex-1">
+                    <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-textMuted"></i>
+                    <input type="text" id="search-input" placeholder="Tìm tên Modpack, Addon, Version (VD: 1.20, RLCraft...)" 
+                        class="w-full h-11 pl-10 pr-4 bg-surface border border-border/60 rounded-xl text-white text-sm placeholder:text-textMuted/60 focus:outline-none focus:border-galaxyViolet focus:ring-1 focus:ring-galaxyViolet transition-all">
                 </div>
+
+                <!-- Category Selector -->
+                <select id="category-select" class="h-11 px-3 bg-surface border border-border/60 rounded-xl text-white text-sm focus:outline-none focus:border-galaxyViolet transition-all cursor-pointer">
+                    <option value="All">Tất cả danh mục</option>
+                    <option value="Modpack">Modpacks</option>
+                    <option value="Addon">Addons / Mods</option>
+                    <option value="Texture">Texture Packs</option>
+                    <option value="Shader">Shaders</option>
+                </select>
             </div>
         </section>
 
-        <!-- FEATURES SECTION (CARD SYSTEM) -->
-        <section id="features" class="py-24 px-6 border-t border-border/50">
-            <div class="max-w-7xl mx-auto">
-                <div class="reveal mb-16 max-w-2xl">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Mọi thứ bạn cần để scale</h2>
-                    <p class="text-textMuted text-lg">Kiến trúc mạnh mẽ kết hợp với thiết kế UI tối giản, mang lại trải nghiệm phát triển không giới hạn.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal-group">
-                    <!-- Card 1 -->
-                    <div class="group bg-card rounded-2xl p-6 border border-border hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
-                        <div class="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center mb-6 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                            <i data-lucide="zap" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">Tốc độ siêu tốc</h3>
-                        <p class="text-textMuted leading-relaxed">Phản hồi dưới 50ms nhờ hạ tầng Edge Network toàn cầu. Trải nghiệm mượt mà không độ trễ.</p>
+        <!-- MONETIZATION / ADVERTISEMENT BANNER (Legal Ads Place) -->
+        <section class="my-8">
+            <div class="glass-panel p-4 rounded-2xl border border-galaxyViolet/20 bg-gradient-to-r from-galaxyViolet/10 via-surface to-mcEmerald/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-mcEmerald/20 border border-mcEmerald/40 flex items-center justify-center text-mcEmerald shrink-0">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
                     </div>
-                    
-                    <!-- Card 2 -->
-                    <div class="group bg-card rounded-2xl p-6 border border-border hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
-                        <div class="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center mb-6 group-hover:bg-info/10 group-hover:text-info transition-colors">
-                            <i data-lucide="shield-check" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">Bảo mật cấp doanh nghiệp</h3>
-                        <p class="text-textMuted leading-relaxed">Mã hóa end-to-end, tuân thủ SOC2 và GDPR. Dữ liệu của bạn luôn được bảo vệ tuyệt đối.</p>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="group bg-card rounded-2xl p-6 border border-border hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
-                        <div class="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center mb-6 group-hover:bg-warning/10 group-hover:text-warning transition-colors">
-                            <i data-lucide="blocks" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold mb-3">Tích hợp dễ dàng</h3>
-                        <p class="text-textMuted leading-relaxed">API RESTful và GraphQL linh hoạt. Kết nối với stack hiện tại của bạn chỉ trong 5 phút.</p>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Ủng hộ Server & Tải Tốc Độ Cao (VIP Pass)</h4>
+                        <p class="text-xs text-textMuted">Nâng cấp VIP để bỏ qua 10 giây đếm ngược tải file và tải không giới hạn băng thông.</p>
                     </div>
                 </div>
+                <button onclick="App.Modal.open('vip-modal')" class="px-5 py-2.5 rounded-xl bg-mcEmerald hover:bg-mcEmerald/90 text-bg font-bold text-xs tracking-wider transition-all shadow-neon-emerald whitespace-nowrap">
+                    NÂNG CẤP VIP PASS
+                </button>
             </div>
         </section>
 
-        <!-- INTERACTIVE APP DEMO SECTION (Search/Data Logic) -->
-        <section id="demo" class="py-24 px-6 border-t border-border/50 bg-surface/30">
-            <div class="max-w-4xl mx-auto reveal">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Trải nghiệm tính năng tìm kiếm</h2>
-                    <p class="text-textMuted">Thử nhập "user", "error" hoặc "empty" để xem các state khác nhau của hệ thống.</p>
-                </div>
-
-                <!-- App Container -->
-                <div class="bg-card border border-border rounded-2xl overflow-hidden shadow-2xl">
-                    <!-- Search Header -->
-                    <div class="p-4 border-b border-border bg-surface/50">
-                        <div class="relative group">
-                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-textMuted group-focus-within:text-primary transition-colors"></i>
-                            <input type="text" id="demo-search-input" placeholder="Tìm kiếm dữ liệu, dự án hoặc thành viên..." 
-                                class="w-full h-12 pl-12 pr-4 bg-bg border border-border rounded-lg text-white placeholder:text-textMuted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
-                            <div class="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1">
-                                <kbd class="px-2 py-1 bg-surface border border-border rounded text-xs text-textMuted font-mono">⌘</kbd>
-                                <kbd class="px-2 py-1 bg-surface border border-border rounded text-xs text-textMuted font-mono">K</kbd>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Main App Area -->
-                    <div class="p-4 md:p-6 min-h-[350px] flex flex-col relative" id="demo-content-area">
-                        <!-- Default State -->
-                        <div id="state-default" class="flex-1 flex flex-col items-center justify-center text-center fade-in">
-                            <div class="w-16 h-16 rounded-full bg-surface border border-border flex items-center justify-center mb-4 text-textMuted">
-                                <i data-lucide="database" class="w-8 h-8"></i>
-                            </div>
-                            <h3 class="text-lg font-medium mb-1">Cơ sở dữ liệu sẵn sàng</h3>
-                            <p class="text-sm text-textMuted">Bắt đầu gõ để tìm kiếm qua 10,000+ bản ghi giả lập.</p>
-                        </div>
-
-                        <!-- Loading State -->
-                        <div id="state-loading" class="hidden-accessible flex-1 flex flex-col gap-4 fade-in">
-                            <div class="h-6 w-1/3 bg-surface rounded animate-pulse mb-2"></div>
-                            <div class="flex items-center gap-4 p-4 border border-border rounded-lg">
-                                <div class="w-10 h-10 bg-surface rounded-full animate-pulse"></div>
-                                <div class="flex-1 space-y-2">
-                                    <div class="h-4 bg-surface rounded w-3/4 animate-pulse"></div>
-                                    <div class="h-3 bg-surface rounded w-1/2 animate-pulse"></div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4 p-4 border border-border rounded-lg">
-                                <div class="w-10 h-10 bg-surface rounded-full animate-pulse"></div>
-                                <div class="flex-1 space-y-2">
-                                    <div class="h-4 bg-surface rounded w-2/3 animate-pulse"></div>
-                                    <div class="h-3 bg-surface rounded w-1/3 animate-pulse"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Empty State -->
-                        <div id="state-empty" class="hidden-accessible flex-1 flex flex-col items-center justify-center text-center fade-in">
-                            <div class="w-16 h-16 rounded-full bg-surface border border-border flex items-center justify-center mb-4 text-textMuted">
-                                <i data-lucide="search-x" class="w-8 h-8"></i>
-                            </div>
-                            <h3 class="text-lg font-medium mb-1">Không tìm thấy kết quả</h3>
-                            <p class="text-sm text-textMuted">Hãy thử sử dụng từ khóa khác xem sao.</p>
-                        </div>
-
-                        <!-- Result State -->
-                        <div id="state-results" class="hidden-accessible flex-1 flex flex-col gap-3 fade-in">
-                            <h4 class="text-xs font-semibold text-textMuted uppercase tracking-wider mb-2">Kết quả trả về</h4>
-                            <ul id="results-list" class="flex flex-col gap-2">
-                                <!-- JS injected items -->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FORM SECTION -->
-        <section id="contact" class="py-24 px-6 border-t border-border/50 relative overflow-hidden">
-            <!-- Decorative gradient -->
-            <div class="absolute right-0 bottom-0 w-1/2 h-1/2 opacity-20 pointer-events-none blur-3xl rounded-full bg-primary mix-blend-screen"></div>
-
-            <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10 reveal">
+        <!-- CONTENT GRID SECTION -->
+        <section class="mt-12">
+            <!-- Section Header -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Sẵn sàng nâng cấp?</h2>
-                    <p class="text-textMuted mb-6">Tham gia cùng hàng nghìn doanh nghiệp đang sử dụng NexusSync để tối ưu hóa quy trình làm việc mỗi ngày.</p>
-                    <ul class="flex flex-col gap-3 text-sm text-textMuted">
-                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Miễn phí 14 ngày dùng thử</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Không yêu cầu thẻ tín dụng</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Hỗ trợ 24/7 chuyên nghiệp</li>
-                    </ul>
+                    <h2 class="text-2xl font-display font-bold text-white flex items-center gap-2">
+                        <i data-lucide="layers" class="w-5 h-5 text-galaxyViolet"></i>
+                        Danh Sách Tài Nguyên
+                    </h2>
+                    <p class="text-xs text-textMuted mt-1">Cập nhật thời gian thực từ cơ sở dữ liệu Firebase</p>
                 </div>
 
-                <div class="bg-card border border-border rounded-2xl p-6 shadow-xl">
-                    <form id="signup-form" class="flex flex-col gap-5">
-                        <div class="flex flex-col gap-1.5">
-                            <label for="name" class="text-sm font-medium text-white">Họ và tên</label>
-                            <input type="text" id="name" name="name" placeholder="Nguyễn Văn A" 
-                                class="w-full h-11 px-4 bg-surface border border-border rounded-lg text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
-                            <span class="text-error text-xs hidden-accessible mt-1" id="error-name">Vui lòng nhập tên hợp lệ.</span>
-                        </div>
-                        
-                        <div class="flex flex-col gap-1.5">
-                            <label for="email" class="text-sm font-medium text-white">Email công việc</label>
-                            <input type="email" id="email" name="email" placeholder="name@company.com" 
-                                class="w-full h-11 px-4 bg-surface border border-border rounded-lg text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
-                            <span class="text-error text-xs hidden-accessible mt-1" id="error-email">Email không đúng định dạng.</span>
-                        </div>
-
-                        <button type="submit" id="submit-btn" class="mt-2 h-11 w-full bg-primary hover:bg-primaryHover text-white font-medium rounded-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 relative">
-                            <span id="btn-text">Yêu cầu truy cập</span>
-                            <div id="btn-loader" class="hidden-accessible loader-ring absolute"></div>
-                        </button>
-                        <p class="text-xs text-center text-textMuted">Bằng việc đăng ký, bạn đồng ý với <a href="#" class="text-primary hover:underline">Điều khoản</a> của chúng tôi.</p>
-                    </form>
+                <!-- Category Quick Pills -->
+                <div class="flex flex-wrap gap-2" id="category-pills">
+                    <button onclick="App.Filter.setCategory('All')" class="pill-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-galaxyViolet text-white border border-galaxyViolet transition-all">Tất Cả</button>
+                    <button onclick="App.Filter.setCategory('Modpack')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all">Modpack</button>
+                    <button onclick="App.Filter.setCategory('Addon')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all">Addon</button>
+                    <button onclick="App.Filter.setCategory('Texture')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all">Texture</button>
+                    <button onclick="App.Filter.setCategory('Shader')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all">Shader</button>
                 </div>
+            </div>
+
+            <!-- Loading State Grid -->
+            <div id="grid-loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-card border border-border rounded-2xl p-4 h-80 animate-pulse flex flex-col gap-4">
+                    <div class="w-full h-44 bg-surface rounded-xl"></div>
+                    <div class="h-5 bg-surface rounded w-3/4"></div>
+                    <div class="h-4 bg-surface rounded w-1/2"></div>
+                </div>
+                <div class="bg-card border border-border rounded-2xl p-4 h-80 animate-pulse flex flex-col gap-4">
+                    <div class="w-full h-44 bg-surface rounded-xl"></div>
+                    <div class="h-5 bg-surface rounded w-3/4"></div>
+                    <div class="h-4 bg-surface rounded w-1/2"></div>
+                </div>
+                <div class="bg-card border border-border rounded-2xl p-4 h-80 animate-pulse flex flex-col gap-4">
+                    <div class="w-full h-44 bg-surface rounded-xl"></div>
+                    <div class="h-5 bg-surface rounded w-3/4"></div>
+                    <div class="h-4 bg-surface rounded w-1/2"></div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="grid-empty" class="hidden-accessible py-16 flex flex-col items-center text-center glass-panel rounded-2xl border border-border">
+                <i data-lucide="package-open" class="w-12 h-12 text-textMuted mb-3"></i>
+                <h3 class="text-base font-bold text-white mb-1">Không tìm thấy tài nguyên nào</h3>
+                <p class="text-xs text-textMuted">Thử tìm kiếm với từ khóa khác hoặc chuyển danh mục.</p>
+            </div>
+
+            <!-- Real Items Grid -->
+            <div id="items-grid" class="hidden-accessible grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Injected dynamically from Firebase -->
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-card border-t border-border pt-16 pb-8 px-6">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-            <div class="col-span-1 md:col-span-1">
-                <a href="#" class="flex items-center gap-2 mb-4">
-                    <div class="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center border border-primary/20">
-                        <i data-lucide="hexagon" class="text-primary w-4 h-4"></i>
-                    </div>
-                    <span class="font-bold tracking-tight">NexusSync</span>
-                </a>
-                <p class="text-sm text-textMuted leading-relaxed">Xây dựng giải pháp dữ liệu tốt nhất cho các nhóm hiện đại. Được tin dùng bởi các nhà phát triển trên toàn cầu.</p>
+    <!-- FOOTER -->
+    <footer class="bg-surface/50 border-t border-border py-12 px-4 sm:px-6 mt-auto">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-textMuted">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-galaxyViolet/10 border border-galaxyViolet/30 flex items-center justify-center text-galaxyViolet">
+                    <i data-lucide="box" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-white">Galaxy Craft &copy; 2026</p>
+                    <p class="text-[11px]">Không liên kết trực tiếp với Mojang AB hoặc Microsoft.</p>
+                </div>
             </div>
-            <div>
-                <h4 class="font-semibold mb-4">Sản phẩm</h4>
-                <ul class="flex flex-col gap-3 text-sm text-textMuted">
-                    <li><a href="#" class="hover:text-white transition-colors">Tính năng</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Tích hợp</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Bảng giá</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Changelog</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-semibold mb-4">Tài nguyên</h4>
-                <ul class="flex flex-col gap-3 text-sm text-textMuted">
-                    <li><a href="#" class="hover:text-white transition-colors">Tài liệu API</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Hướng dẫn</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Cộng đồng</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-semibold mb-4">Pháp lý</h4>
-                <ul class="flex flex-col gap-3 text-sm text-textMuted">
-                    <li><a href="#" class="hover:text-white transition-colors">Điều khoản dịch vụ</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Chính sách bảo mật</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Cookie</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border/50 text-xs text-textMuted">
-            <p>&copy; 2024 NexusSync Inc. All rights reserved.</p>
-            <div class="flex items-center gap-4 mt-4 md:mt-0">
-                <a href="#" class="hover:text-white transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
-                <a href="#" class="hover:text-white transition-colors"><i data-lucide="github" class="w-4 h-4"></i></a>
-                <a href="#" class="hover:text-white transition-colors"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-white transition-colors">Điều Khoản Service</a>
+                <a href="#" class="hover:text-white transition-colors">Bản Quyền DMCA</a>
+                <a href="#" class="hover:text-white transition-colors">Liên Hệ Dev</a>
             </div>
         </div>
     </footer>
 
-    <!-- MODAL COMPONENT -->
-    <div id="login-modal" class="fixed inset-0 z-[60] flex items-center justify-center hidden-accessible" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-bg/80 backdrop-blur-sm transition-opacity" onclick="App.Modal.close('login-modal')"></div>
-        
-        <!-- Modal Content -->
-        <div class="bg-card border border-border rounded-2xl p-6 shadow-2xl w-full max-w-sm relative z-10 transform scale-95 opacity-0 transition-all duration-300" id="login-modal-content">
-            <button onclick="App.Modal.close('login-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+    <!-- MODAL 1: ITEM DETAIL & DOWNLOAD (MONETIZED DELAY) -->
+    <div id="download-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden-accessible">
+        <div class="fixed inset-0 bg-bg/80 backdrop-blur-md" onclick="App.Modal.close('download-modal')"></div>
+        <div class="bg-card border border-border rounded-2xl p-6 shadow-2xl w-full max-w-lg relative z-10 max-h-[90vh] overflow-y-auto">
+            <button onclick="App.Modal.close('download-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
-            <div class="text-center mb-6 mt-2">
-                <h3 id="modal-title" class="text-xl font-bold mb-2">Đăng nhập</h3>
-                <p class="text-sm text-textMuted">Chào mừng bạn quay lại NexusSync</p>
+
+            <div id="modal-item-content">
+                <!-- Dynamically filled -->
             </div>
-            
-            <form id="login-form" class="flex flex-col gap-4">
-                <div>
-                    <input type="email" placeholder="Email của bạn" class="w-full h-11 px-4 bg-surface border border-border rounded-lg text-white focus:outline-none focus:border-primary transition-all text-sm">
+
+            <!-- Download Monetization Area -->
+            <div class="mt-6 pt-6 border-t border-border/60">
+                <!-- Ad Banner Simulator -->
+                <div class="p-3 bg-surface border border-border/80 rounded-xl mb-4 text-center">
+                    <span class="text-[10px] text-textMuted uppercase tracking-wider block mb-1">Quảng cáo hỗ trợ Duy trì Server</span>
+                    <div class="h-16 bg-bg/60 rounded-lg border border-dashed border-border/60 flex items-center justify-center text-xs text-galaxyViolet font-semibold">
+                        🌌 Galaxy Craft AdSpace - Tải Modpack Mượt Mà Nhất
+                    </div>
                 </div>
-                <div>
-                    <input type="password" placeholder="Mật khẩu" class="w-full h-11 px-4 bg-surface border border-border rounded-lg text-white focus:outline-none focus:border-primary transition-all text-sm">
+
+                <!-- Timer & Download Actions -->
+                <div id="download-action-area" class="flex flex-col items-center">
+                    <button id="start-download-btn" onclick="App.Download.startTimer()" class="w-full h-12 rounded-xl bg-galaxyViolet hover:bg-galaxyViolet/90 text-white font-bold text-sm transition-all shadow-neon-violet flex items-center justify-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i> LẤY LINK TẢI XUỐNG
+                    </button>
+
+                    <!-- Countdown View -->
+                    <div id="timer-view" class="hidden-accessible w-full flex flex-col items-center gap-3">
+                        <p class="text-xs text-textMuted font-medium">Đang chuẩn bị đường truyền an toàn...</p>
+                        <div class="text-3xl font-display font-bold text-galaxyViolet" id="countdown-text">10s</div>
+                        <div class="w-full bg-surface h-2 rounded-full overflow-hidden border border-border">
+                            <div id="timer-progress" class="bg-galaxyViolet h-full w-0 transition-all duration-1000"></div>
+                        </div>
+                    </div>
+
+                    <!-- Final Download Button -->
+                    <a id="final-download-link" href="#" target="_blank" onclick="App.Download.completeDownload()" class="hidden-accessible w-full h-12 rounded-xl bg-mcEmerald hover:bg-mcEmerald/90 text-bg font-bold text-sm transition-all shadow-neon-emerald flex items-center justify-center gap-2">
+                        <i data-lucide="external-link" class="w-4 h-4"></i> TẢI XUỐNG NGAY (FILE CHÍNH THỨC)
+                    </a>
                 </div>
-                <button type="button" onclick="App.UI.showToast('Tính năng đang phát triển', 'info'); App.Modal.close('login-modal');" class="h-11 w-full bg-white text-bg font-semibold rounded-lg hover:bg-gray-200 transition-colors">
-                    Đăng nhập
-                </button>
-            </form>
-            
-            <div class="mt-6 flex items-center justify-center gap-2">
-                <div class="h-px bg-border flex-1"></div>
-                <span class="text-xs text-textMuted">Hoặc</span>
-                <div class="h-px bg-border flex-1"></div>
             </div>
-            
-            <button type="button" onclick="App.UI.showToast('Oauth chưa được cấu hình', 'error')" class="mt-6 h-11 w-full bg-surface border border-border text-white font-medium rounded-lg hover:bg-surface/80 transition-colors flex items-center justify-center gap-2 text-sm">
-                <i data-lucide="github" class="w-4 h-4"></i> Tiếp tục với Github
-            </button>
         </div>
     </div>
 
-    <!-- MAIN JAVASCRIPT APPLICATION -->
+    <!-- MODAL 2: DEV ADD/EDIT ITEM (DEV ONLY) -->
+    <div id="item-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden-accessible">
+        <div class="fixed inset-0 bg-bg/80 backdrop-blur-md" onclick="App.Modal.close('item-modal')"></div>
+        <div class="bg-card border border-devGold/40 rounded-2xl p-6 shadow-2xl w-full max-w-xl relative z-10 max-h-[90vh] overflow-y-auto">
+            <button onclick="App.Modal.close('item-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-2 mb-6">
+                <i data-lucide="shield-alert" class="w-6 h-6 text-devGold"></i>
+                <h3 class="text-lg font-bold text-white" id="modal-form-title">QUẢN TRỊ DEV: Thêm Tài Nguyên Mới</h3>
+            </div>
+
+            <form id="pack-form" class="flex flex-col gap-4">
+                <input type="hidden" id="form-item-id">
+                
+                <div>
+                    <label class="text-xs font-semibold text-textMuted block mb-1">Tên Modpack / Addon *</label>
+                    <input type="text" id="form-title" required placeholder="VD: Dragon Craft Ultra V2" class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-semibold text-textMuted block mb-1">Danh Mục *</label>
+                        <select id="form-category" class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
+                            <option value="Modpack">Modpack</option>
+                            <option value="Addon">Addon / Mods</option>
+                            <option value="Texture">Texture Pack</option>
+                            <option value="Shader">Shaders</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-textMuted block mb-1">Phiên Bản Minecraft *</label>
+                        <input type="text" id="form-version" required placeholder="VD: 1.20.x / PE & Java" class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-textMuted block mb-1">URL Ảnh Bìa (Cover Image) *</label>
+                    <input type="url" id="form-image" required placeholder="https://images.unsplash.com/..." class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-textMuted block mb-1">URL File Tải Xuống *</label>
+                    <input type="url" id="form-download" required placeholder="https://drive.google.com/... hoặc Mediafire" class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-textMuted block mb-1">Mô Tả Chi Tiết *</label>
+                    <textarea id="form-description" rows="3" required placeholder="Mô tả các tính năng chính của Modpack này..." class="w-full p-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none"></textarea>
+                </div>
+
+                <button type="submit" class="mt-2 h-11 bg-devGold hover:bg-devGold/90 text-bg font-extrabold text-sm rounded-lg transition-all shadow-neon-gold">
+                    LƯU VÀ PHÁT HÀNH LÊN FIREBASE
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: VIP MONETIZATION -->
+    <div id="vip-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden-accessible">
+        <div class="fixed inset-0 bg-bg/80 backdrop-blur-md" onclick="App.Modal.close('vip-modal')"></div>
+        <div class="bg-card border border-mcEmerald/40 rounded-2xl p-6 shadow-2xl w-full max-w-md relative z-10 text-center">
+            <button onclick="App.Modal.close('vip-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="w-12 h-12 rounded-2xl bg-mcEmerald/20 border border-mcEmerald/40 text-mcEmerald flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="crown" class="w-6 h-6"></i>
+            </div>
+
+            <h3 class="text-xl font-bold text-white mb-2">Nâng Cấp VIP PASS Galaxy Craft</h3>
+            <p class="text-xs text-textMuted mb-6">Ủng hộ Server hoạt động & Nhận đặc quyền cao cấp nhất</p>
+
+            <div class="p-4 bg-surface rounded-xl border border-border text-left space-y-2 text-xs text-textMuted mb-6">
+                <p class="flex items-center gap-2 text-white"><i data-lucide="check" class="w-4 h-4 text-mcEmerald"></i> Tải file lập tức (Không chờ 10s)</p>
+                <p class="flex items-center gap-2 text-white"><i data-lucide="check" class="w-4 h-4 text-mcEmerald"></i> Huy hiệu VIP màu Emerald nổi bật</p>
+                <p class="flex items-center gap-2 text-white"><i data-lucide="check" class="w-4 h-4 text-mcEmerald"></i> Link Google Drive VIP Tốc độ cao</p>
+            </div>
+
+            <div class="p-4 bg-bg rounded-xl border border-border flex flex-col items-center gap-2 mb-4">
+                <p class="text-xs font-bold text-devGold">Quét Mã QR Ngân Hàng / MoMo</p>
+                <div class="w-36 h-36 bg-white p-2 rounded-lg flex items-center justify-center text-bg font-mono font-bold text-xs">
+                    [QR BANKING PLACEHOLDER]
+                </div>
+                <p class="text-[11px] text-textMuted">Nội dung CK: VIP [Email của bạn]</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION LOGIC -->
     <script>
         /**
-         * NexusSync Core JS Application
-         * Architecture: Module Pattern / Namespace
+         * GALAXY CRAFT - CORE ENGINE
+         * Single File Integrated Architecture
          */
-        const App = (() => {
-            
-            // --- CONSTANTS & STATE ---
-            const state = {
-                isMobileMenuOpen: false,
-                searchDebounceTimer: null,
-            };
 
-            // --- UTILITIES ---
-            const Utils = {
-                validateEmail: (email) => {
-                    return String(email).toLowerCase().match(
-                        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                    );
-                },
-                delay: (ms) => new Promise(res => setTimeout(res, ms)),
-                // Dummy Data Generator
-                getMockData: (query) => {
-                    const db = [
-                        { id: 1, title: 'User Management System', type: 'Project', icon: 'users' },
-                        { id: 2, title: 'Database Migration v2', type: 'Task', icon: 'database' },
-                        { id: 3, title: 'Analytics Dashboard UI', type: 'Design', icon: 'layout-dashboard' },
-                        { id: 4, title: 'Fix Auth Error', type: 'Bug', icon: 'bug' }
-                    ];
-                    return db.filter(item => item.title.toLowerCase().includes(query.toLowerCase()) || item.type.toLowerCase().includes(query.toLowerCase()));
-                }
-            };
+        // 1. FIREBASE CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyDBlMGmdcdxzJQ-dYBzw2zzfRTu2vh6GG0",
+            authDomain: "goggle-login-39224.firebaseapp.com",
+            databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com",
+            projectId: "goggle-login-39224",
+            storageBucket: "goggle-login-39224.firebasestorage.app",
+            messagingSenderId: "479026449758",
+            appId: "1:479026449758:web:661543f85ebeb7621393cf",
+            measurementId: "G-11EF7RQKS3"
+        };
 
-            // --- UI CONTROLLER ---
-            const UI = {
-                init: () => {
-                    // Init Icons
-                    lucide.createIcons();
-                    
-                    // Init Scroll Observer for animations
-                    UI.initScrollObserver();
-                    
-                    // Setup Navbar scroll effect
-                    window.addEventListener('scroll', UI.handleNavbarScroll, { passive: true });
-                    
-                    // Setup Mobile menu events
-                    document.getElementById('mobile-menu-btn').addEventListener('click', UI.toggleMobileMenu);
-                },
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
 
-                scrollTo: (id) => {
-                    const el = document.getElementById(id);
-                    if(el) {
-                        const navHeight = document.getElementById('navbar').offsetHeight;
-                        const top = el.getBoundingClientRect().top + window.scrollY - navHeight;
-                        window.scrollTo({ top, behavior: 'smooth' });
-                    }
-                },
+        // DEV CONSTANT
+        const DEV_EMAIL = "hminhgalaxy@gmail.com";
 
-                handleNavbarScroll: () => {
-                    const nav = document.getElementById('navbar');
-                    if (window.scrollY > 20) {
-                        nav.classList.add('shadow-md', 'bg-bg/90');
-                        nav.classList.remove('bg-bg/80', 'border-transparent');
-                    } else {
-                        nav.classList.remove('shadow-md', 'bg-bg/90');
-                        nav.classList.add('bg-bg/80', 'border-transparent');
-                    }
-                },
+        // APP STATE
+        const state = {
+            currentUser: null,
+            isDev: false,
+            items: [],
+            activeCategory: 'All',
+            searchQuery: '',
+            selectedItem: null,
+            downloadTimer: null
+        };
 
-                toggleMobileMenu: () => {
-                    state.isMobileMenuOpen = !state.isMobileMenuOpen;
-                    const drawer = document.getElementById('mobile-drawer');
-                    const icon = document.getElementById('menu-icon');
-                    
-                    if (state.isMobileMenuOpen) {
-                        drawer.classList.remove('translate-x-full');
-                        icon.setAttribute('data-lucide', 'x');
-                        document.body.style.overflow = 'hidden';
-                    } else {
-                        UI.closeMobileMenu();
-                    }
-                    lucide.createIcons();
-                },
+        // INITIAL MOCK DATA (Seeded automatically if Firebase DB is empty)
+        const initialPacks = {
+            "pack_1": {
+                id: "pack_1",
+                title: "RLCraft Deluxe Edition 1.20",
+                category: "Modpack",
+                version: "1.20.4 Java",
+                image: "https://images.unsplash.com/photo-1627856013091-fed6e4e30025?auto=format&fit=crop&w=800&q=80",
+                downloadUrl: "https://mediafire.com",
+                description: "Gói Modpack sinh tồn siêu khó nổi tiếng bậc nhất đã được tối ưu lại mượt mà cho Minecraft 1.20.",
+                downloadsCount: 1420,
+                rating: 4.9,
+                createdAt: Date.now()
+            },
+            "pack_2": {
+                id: "pack_2",
+                title: "Dragon Craft Evolution Addon",
+                category: "Addon",
+                version: "1.20.80 PE/BE",
+                image: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=800&q=80",
+                downloadUrl: "https://drive.google.com",
+                description: "Thêm hơn 25 loại Rồng thần thoại có thể thuần phục, cưỡi và chiến đấu cực đẹp mắt.",
+                downloadsCount: 2890,
+                rating: 4.8,
+                createdAt: Date.now() - 100000
+            },
+            "pack_3": {
+                id: "pack_3",
+                title: "Faithful 64x Ultra HD Texture",
+                category: "Texture",
+                version: "1.16 - 1.20+",
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+                downloadUrl: "https://curseforge.com",
+                description: "Bộ Texture sắc nét x64 giữ nguyên phong cách gốc Minecraft nhưng chân thực hơn gấp 4 lần.",
+                downloadsCount: 5120,
+                rating: 5.0,
+                createdAt: Date.now() - 200000
+            }
+        };
 
-                closeMobileMenu: () => {
-                    state.isMobileMenuOpen = false;
-                    document.getElementById('mobile-drawer').classList.add('translate-x-full');
-                    document.getElementById('menu-icon').setAttribute('data-lucide', 'menu');
-                    document.body.style.overflow = '';
-                    lucide.createIcons();
-                },
+        // APPLICATION MODULE
+        const App = {
+            init: () => {
+                lucide.createIcons();
+                App.Auth.listen();
+                App.Database.listenPacks();
+                App.UI.setupListeners();
+            },
 
-                initScrollObserver: () => {
-                    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                entry.target.classList.add('active');
-                                observer.unobserve(entry.target);
+            // --- AUTHENTICATION MODULE ---
+            Auth: {
+                listen: () => {
+                    auth.onAuthStateChanged((user) => {
+                        const loading = document.getElementById('auth-loading');
+                        const loginBtn = document.getElementById('login-btn');
+                        const userProfile = document.getElementById('user-profile');
+                        const devAddBtn = document.getElementById('dev-add-btn');
+                        const devBanner = document.getElementById('dev-welcome-banner');
+
+                        loading.classList.add('hidden-accessible');
+
+                        if (user) {
+                            state.currentUser = user;
+                            state.isDev = (user.email === DEV_EMAIL);
+
+                            // UI Update User Info
+                            loginBtn.classList.add('hidden-accessible');
+                            userProfile.classList.remove('hidden-accessible');
+                            document.getElementById('user-avatar').src = user.photoURL || 'https://via.placeholder.com/40';
+                            document.getElementById('user-name').innerText = user.displayName || 'User';
+                            document.getElementById('user-email').innerText = user.email;
+
+                            // DEV ROLE CHECK & UI OVERRIDE
+                            if (state.isDev) {
+                                const badge = document.getElementById('user-role-badge');
+                                badge.innerText = "✨ DEV GALAXY";
+                                badge.className = "px-2 py-0.5 rounded text-[10px] font-extrabold badge-dev-animated text-devGold shadow-neon-gold";
+                                
+                                devAddBtn.classList.remove('hidden-accessible');
+                                devBanner.classList.remove('hidden-accessible');
+
+                                App.UI.showToast("Đã xác nhận DEV GALAXY! Quyền quản trị đã kích hoạt.", "warning");
+                            } else {
+                                devAddBtn.classList.add('hidden-accessible');
+                                devBanner.classList.add('hidden-accessible');
+                                App.UI.showToast(`Xin chào ${user.displayName}!`, "info");
                             }
-                        });
-                    }, observerOptions);
-
-                    document.querySelectorAll('.reveal, .reveal-group').forEach(el => observer.observe(el));
-                },
-
-                /**
-                 * Toast Notification System
-                 * @param {string} msg 
-                 * @param {'success'|'error'|'warning'|'info'} type 
-                 */
-                showToast: (msg, type = 'success') => {
-                    const container = document.getElementById('toast-container');
-                    
-                    const icons = {
-                        success: '<i data-lucide="check-circle" class="w-5 h-5 text-success"></i>',
-                        error: '<i data-lucide="alert-circle" class="w-5 h-5 text-error"></i>',
-                        warning: '<i data-lucide="alert-triangle" class="w-5 h-5 text-warning"></i>',
-                        info: '<i data-lucide="info" class="w-5 h-5 text-info"></i>'
-                    };
-
-                    const toast = document.createElement('div');
-                    toast.className = 'flex items-center gap-3 p-4 bg-card border border-border rounded-lg shadow-lg pointer-events-auto transform translate-x-full opacity-0 transition-all duration-300';
-                    toast.innerHTML = `
-                        ${icons[type]}
-                        <p class="text-sm font-medium text-white flex-1">${msg}</p>
-                        <button class="text-textMuted hover:text-white focus:outline-none" onclick="this.parentElement.remove()">
-                            <i data-lucide="x" class="w-4 h-4"></i>
-                        </button>
-                    `;
-
-                    container.appendChild(toast);
-                    lucide.createIcons();
-
-                    // Animate in
-                    setTimeout(() => {
-                        toast.classList.remove('translate-x-full', 'opacity-0');
-                    }, 10);
-
-                    // Auto remove
-                    setTimeout(() => {
-                        toast.classList.add('opacity-0', 'translate-x-2');
-                        setTimeout(() => toast.remove(), 300);
-                    }, 4000);
-                }
-            };
-
-            // --- MODAL CONTROLLER ---
-            const Modal = {
-                open: (id) => {
-                    const modal = document.getElementById(id);
-                    const content = document.getElementById(`${id}-content`);
-                    if(!modal || !content) return;
-                    
-                    modal.classList.remove('hidden-accessible');
-                    // Force reflow
-                    void modal.offsetWidth;
-                    content.classList.remove('scale-95', 'opacity-0');
-                    content.classList.add('scale-100', 'opacity-100');
-                    document.body.style.overflow = 'hidden';
-                    
-                    // Manage focus
-                    const firstInput = modal.querySelector('input');
-                    if(firstInput) firstInput.focus();
-                },
-                close: (id) => {
-                    const modal = document.getElementById(id);
-                    const content = document.getElementById(`${id}-content`);
-                    if(!modal || !content) return;
-
-                    content.classList.remove('scale-100', 'opacity-100');
-                    content.classList.add('scale-95', 'opacity-0');
-                    
-                    setTimeout(() => {
-                        modal.classList.add('hidden-accessible');
-                        if(!state.isMobileMenuOpen) document.body.style.overflow = '';
-                    }, 300);
-                }
-            };
-
-            // --- SEARCH FEATURE DEMO ---
-            const SearchDemo = {
-                init: () => {
-                    const input = document.getElementById('demo-search-input');
-                    if(!input) return;
-
-                    // Keyboard shortcut listener (CMD/CTRL + K)
-                    window.addEventListener('keydown', (e) => {
-                        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                            e.preventDefault();
-                            input.focus();
-                            UI.scrollTo('demo');
+                        } else {
+                            state.currentUser = null;
+                            state.isDev = false;
+                            loginBtn.classList.remove('hidden-accessible');
+                            userProfile.classList.add('hidden-accessible');
+                            devAddBtn.classList.add('hidden-accessible');
+                            devBanner.classList.add('hidden-accessible');
                         }
-                    });
 
-                    input.addEventListener('input', (e) => {
-                        clearTimeout(state.searchDebounceTimer);
-                        const val = e.target.value.trim();
+                        // Re-render items grid to show/hide edit buttons based on DEV role
+                        App.Render.items();
+                    });
+                },
+
+                loginWithGoogle: async () => {
+                    try {
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        await auth.signInWithPopup(provider);
+                    } catch (error) {
+                        console.error("Google Auth Error:", error);
+                        App.UI.showToast("Đăng nhập Google thất bại: " + error.message, "error");
+                    }
+                },
+
+                logout: async () => {
+                    await auth.signOut();
+                    App.UI.showToast("Đã đăng xuất tài khoản.", "info");
+                }
+            },
+
+            // --- DATABASE MODULE ---
+            Database: {
+                listenPacks: () => {
+                    const packsRef = db.ref('packs');
+                    packsRef.on('value', (snapshot) => {
+                        const data = snapshot.val();
                         
-                        if (val.length === 0) {
-                            SearchDemo.switchState('default');
+                        // Seed database if empty
+                        if (!data) {
+                            db.ref('packs').set(initialPacks);
                             return;
                         }
 
-                        SearchDemo.switchState('loading');
+                        state.items = Object.values(data);
                         
-                        // Fake network request
-                        state.searchDebounceTimer = setTimeout(async () => {
-                            try {
-                                if (val.toLowerCase() === 'error') {
-                                    throw new Error("Simulated Server Error");
-                                }
-                                
-                                await Utils.delay(600); // Network latency
-                                const results = Utils.getMockData(val);
-                                
-                                if (results.length === 0) {
-                                    SearchDemo.switchState('empty');
-                                } else {
-                                    SearchDemo.renderResults(results);
-                                    SearchDemo.switchState('results');
-                                }
-                            } catch (err) {
-                                SearchDemo.switchState('default');
-                                UI.showToast('Lỗi kết nối máy chủ (Simulated)', 'error');
-                            }
-                        }, 500); // Debounce time
+                        document.getElementById('grid-loading').classList.add('hidden-accessible');
+                        App.Render.items();
                     });
                 },
-                switchState: (stateName) => {
-                    const states = ['default', 'loading', 'empty', 'results'];
-                    states.forEach(s => {
-                        const el = document.getElementById(`state-${s}`);
-                        if(el) {
-                            if(s === stateName) el.classList.remove('hidden-accessible');
-                            else el.classList.add('hidden-accessible');
+
+                savePack: async (packData) => {
+                    if (!state.isDev) {
+                        App.UI.showToast("Chỉ có DEV GALAXY mới có quyền thực hiện!", "error");
+                        return;
+                    }
+
+                    const id = packData.id || db.ref('packs').push().key;
+                    const finalData = {
+                        ...packData,
+                        id: id,
+                        createdAt: packData.createdAt || Date.now(),
+                        downloadsCount: packData.downloadsCount || 0,
+                        rating: packData.rating || 5.0
+                    };
+
+                    await db.ref('packs/' + id).set(finalData);
+                    App.UI.showToast("Đã lưu tài nguyên lên Firebase thành công!", "success");
+                    App.Modal.close('item-modal');
+                },
+
+                deletePack: async (id) => {
+                    if (!state.isDev) {
+                        App.UI.showToast("Chỉ có DEV GALAXY mới có quyền xóa!", "error");
+                        return;
+                    }
+
+                    if (confirm("Bạn có chắc chắn muốn xóa Modpack này khỏi Firebase?")) {
+                        await db.ref('packs/' + id).remove();
+                        App.UI.showToast("Đã xóa tài nguyên thành công.", "info");
+                    }
+                },
+
+                incrementDownload: (id) => {
+                    db.ref(`packs/${id}/downloadsCount`).transaction((count) => (count || 0) + 1);
+                }
+            },
+
+            // --- FILTER & SEARCH MODULE ---
+            Filter: {
+                setCategory: (cat) => {
+                    state.activeCategory = cat;
+                    document.getElementById('category-select').value = cat;
+                    
+                    // Update quick pill active state
+                    document.querySelectorAll('.pill-btn').forEach(btn => {
+                        if (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('Tất Cả'))) {
+                            btn.className = "pill-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-galaxyViolet text-white border border-galaxyViolet transition-all";
+                        } else {
+                            btn.className = "pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all";
                         }
                     });
-                },
-                renderResults: (data) => {
-                    const list = document.getElementById('results-list');
-                    list.innerHTML = '';
-                    data.forEach(item => {
-                        const li = document.createElement('li');
-                        li.className = 'flex items-center gap-3 p-3 bg-surface border border-border rounded-lg hover:border-primary/50 hover:bg-surface/80 transition-colors cursor-pointer group';
-                        li.innerHTML = `
-                            <div class="w-8 h-8 rounded bg-bg flex items-center justify-center text-textMuted group-hover:text-primary transition-colors">
-                                <i data-lucide="${item.icon}" class="w-4 h-4"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-white">${item.title}</p>
-                                <p class="text-xs text-textMuted">${item.type}</p>
-                            </div>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-textMuted opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                        `;
-                        list.appendChild(li);
+
+                    App.Render.items();
+                }
+            },
+
+            // --- RENDER ENGINE ---
+            Render: {
+                items: () => {
+                    const grid = document.getElementById('items-grid');
+                    const empty = document.getElementById('grid-empty');
+                    
+                    grid.innerHTML = '';
+
+                    const filtered = state.items.filter(item => {
+                        const matchesCategory = (state.activeCategory === 'All' || item.category === state.activeCategory);
+                        const matchesSearch = item.title.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
+                                              item.version.toLowerCase().includes(state.searchQuery.toLowerCase());
+                        return matchesCategory && matchesSearch;
                     });
+
+                    if (filtered.length === 0) {
+                        grid.classList.add('hidden-accessible');
+                        empty.classList.remove('hidden-accessible');
+                        return;
+                    }
+
+                    empty.classList.add('hidden-accessible');
+                    grid.classList.remove('hidden-accessible');
+
+                    filtered.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = "group bg-card border border-border hover:border-galaxyViolet/50 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-neon-violet flex flex-col justify-between relative";
+
+                        card.innerHTML = `
+                            <div>
+                                <!-- Image Container -->
+                                <div class="relative w-full h-44 rounded-xl overflow-hidden mb-4 border border-border/50">
+                                    <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-bg/80 backdrop-blur-md text-galaxyViolet border border-galaxyViolet/30 uppercase">
+                                        ${item.category}
+                                    </span>
+                                    <span class="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-bg/80 backdrop-blur-md text-mcEmerald border border-mcEmerald/30">
+                                        ${item.version}
+                                    </span>
+                                </div>
+
+                                <!-- Content -->
+                                <h3 class="text-base font-bold text-white mb-2 line-clamp-1 group-hover:text-galaxyViolet transition-colors">${item.title}</h3>
+                                <p class="text-xs text-textMuted line-clamp-2 leading-relaxed mb-4">${item.description}</p>
+                            </div>
+
+                            <!-- Footer Meta & Actions -->
+                            <div>
+                                <div class="flex items-center justify-between text-xs text-textMuted border-t border-border/50 pt-3 mb-3">
+                                    <span class="flex items-center gap-1"><i data-lucide="download-cloud" class="w-3.5 h-3.5 text-galaxyViolet"></i> ${item.downloadsCount || 0} lượt tải</span>
+                                    <span class="flex items-center gap-1 text-devGold"><i data-lucide="star" class="w-3.5 h-3.5 fill-devGold"></i> ${item.rating || '5.0'}</span>
+                                </div>
+
+                                <div class="flex items-center gap-2">
+                                    <button onclick="App.Download.openModal('${item.id}')" class="flex-1 h-9 rounded-lg bg-surface border border-border hover:border-galaxyViolet text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5 group-hover:bg-galaxyViolet group-hover:text-white">
+                                        <span>Xem & Tải File</span>
+                                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                                    </button>
+
+                                    <!-- DEV Controls (Sửa / Xóa) -->
+                                    ${state.isDev ? `
+                                        <button onclick="App.UI.editPack('${item.id}')" class="p-2 rounded-lg bg-devGold/10 border border-devGold/30 text-devGold hover:bg-devGold hover:text-bg transition-colors" title="Sửa (Dev)">
+                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                        </button>
+                                        <button onclick="App.Database.deletePack('${item.id}')" class="p-2 rounded-lg bg-error/10 border border-error/30 text-error hover:bg-error hover:text-white transition-colors" title="Xóa (Dev)">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+
                     lucide.createIcons();
                 }
-            };
+            },
 
-            // --- FORM CONTROLLER ---
-            const FormController = {
-                init: () => {
-                    const form = document.getElementById('signup-form');
-                    if(!form) return;
+            // --- DOWNLOAD & MONETIZATION TIMER ---
+            Download: {
+                openModal: (id) => {
+                    const item = state.items.find(i => i.id === id);
+                    if (!item) return;
 
-                    form.addEventListener('submit', async (e) => {
-                        e.preventDefault();
-                        const nameInput = document.getElementById('name');
-                        const emailInput = document.getElementById('email');
-                        const btnText = document.getElementById('btn-text');
-                        const btnLoader = document.getElementById('btn-loader');
-                        
-                        // Reset errors
-                        document.getElementById('error-name').classList.add('hidden-accessible');
-                        document.getElementById('error-email').classList.add('hidden-accessible');
-                        nameInput.classList.remove('border-error', 'focus:ring-error');
-                        emailInput.classList.remove('border-error', 'focus:ring-error');
+                    state.selectedItem = item;
 
-                        let isValid = true;
+                    const container = document.getElementById('modal-item-content');
+                    container.innerHTML = `
+                        <div class="flex gap-4 items-start mb-4">
+                            <img src="${item.image}" class="w-20 h-20 rounded-xl object-cover border border-border shrink-0">
+                            <div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-galaxyViolet/20 text-galaxyViolet border border-galaxyViolet/30 uppercase mb-1 inline-block">${item.category}</span>
+                                <h3 class="text-lg font-bold text-white leading-tight">${item.title}</h3>
+                                <p class="text-xs text-mcEmerald font-medium mt-1">Phiên bản: ${item.version}</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-textMuted leading-relaxed bg-surface p-3 rounded-xl border border-border">${item.description}</p>
+                    `;
 
-                        if (nameInput.value.trim().length < 2) {
-                            document.getElementById('error-name').classList.remove('hidden-accessible');
-                            nameInput.classList.add('border-error', 'focus:ring-error');
-                            isValid = false;
-                        }
+                    // Reset Timer UI
+                    document.getElementById('start-download-btn').classList.remove('hidden-accessible');
+                    document.getElementById('timer-view').classList.add('hidden-accessible');
+                    document.getElementById('final-download-link').classList.add('hidden-accessible');
 
-                        if (!Utils.validateEmail(emailInput.value)) {
-                            document.getElementById('error-email').classList.remove('hidden-accessible');
-                            emailInput.classList.add('border-error', 'focus:ring-error');
-                            isValid = false;
-                        }
-
-                        if (!isValid) return;
-
-                        // Start Loading
-                        btnText.style.opacity = '0';
-                        btnLoader.classList.remove('hidden-accessible');
-                        document.getElementById('submit-btn').disabled = true;
-
-                        // Mock API Call
-                        await Utils.delay(1500);
-
-                        // Stop Loading & Show Success
-                        btnText.style.opacity = '1';
-                        btnLoader.classList.add('hidden-accessible');
-                        document.getElementById('submit-btn').disabled = false;
-                        
-                        UI.showToast(`Cảm ơn ${nameInput.value}! Lời mời đã được gửi tới email của bạn.`, 'success');
-                        form.reset();
-                    });
-                }
-            };
-
-            // Expose public API
-            return {
-                init: () => {
-                    UI.init();
-                    SearchDemo.init();
-                    FormController.init();
+                    App.Modal.open('download-modal');
                 },
-                UI,
-                Modal
-            };
-        })();
 
-        // Bootstrap App when DOM is ready
+                startTimer: () => {
+                    document.getElementById('start-download-btn').classList.add('hidden-accessible');
+                    document.getElementById('timer-view').classList.remove('hidden-accessible');
+
+                    let timeLeft = 10;
+                    const countdownText = document.getElementById('countdown-text');
+                    const progressBar = document.getElementById('timer-progress');
+
+                    clearInterval(state.downloadTimer);
+
+                    state.downloadTimer = setInterval(() => {
+                        timeLeft--;
+                        countdownText.innerText = `${timeLeft}s`;
+                        progressBar.style.width = `${((10 - timeLeft) / 10) * 100}%`;
+
+                        if (timeLeft <= 0) {
+                            clearInterval(state.downloadTimer);
+                            document.getElementById('timer-view').classList.add('hidden-accessible');
+                            
+                            const finalLink = document.getElementById('final-download-link');
+                            finalLink.href = state.selectedItem.downloadUrl;
+                            finalLink.classList.remove('hidden-accessible');
+                        }
+                    }, 1000);
+                },
+
+                completeDownload: () => {
+                    if (state.selectedItem) {
+                        App.Database.incrementDownload(state.selectedItem.id);
+                        App.UI.showToast("Cảm ơn bạn đã tải tài nguyên từ Galaxy Craft!", "success");
+                        App.Modal.close('download-modal');
+                    }
+                }
+            },
+
+            // --- UI HELPERS ---
+            UI: {
+                setupListeners: () => {
+                    // Search Input Debounce
+                    document.getElementById('search-input').addEventListener('input', (e) => {
+                        state.searchQuery = e.target.value;
+                        App.Render.items();
+                    });
+
+                    // Category Select
+                    document.getElementById('category-select').addEventListener('change', (e) => {
+                        App.Filter.setCategory(e.target.value);
+                    });
+
+                    // Form Submit (Dev Add/Edit Pack)
+                    document.getElementById('pack-form').addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const packData = {
+                            id: document.getElementById('form-item-id').value,
+                            title: document.getElementById('form-title').value,
+                            category: document.getElementById('form-category').value,
+                            version: document.getElementById('form-version').value,
+                            image: document.getElementById('form-image').value,
+                            downloadUrl: document.getElementById('form-download').value,
+                            description: document.getElementById('form-description').value,
+                        };
+                        App.Database.savePack(packData);
+                    });
+                },
+
+                editPack: (id) => {
+                    const item = state.items.find(i => i.id === id);
+                    if (!item) return;
+
+                    document.getElementById('modal-form-title').innerText = "QUẢN TRỊ DEV: Chỉnh Sửa Resource";
+                    document.getElementById('form-item-id').value = item.id;
+                    document.getElementById('form-title').value = item.title;
+                    document.getElementById('form-category').value = item.category;
+                    document.getElementById('form-version').value = item.version;
+                    document.getElementById('form-image').value = item.image;
+                    document.getElementById('form-download').value = item.downloadUrl;
+                    document.getElementById('form-description').value = item.description;
+
+                    App.Modal.open('item-modal');
+                },
+
+                toggleMobileMenu: () => {
+                    const drawer = document.getElementById('mobile-drawer');
+                    drawer.classList.toggle('translate-x-full');
+                },
+
+                closeMobileMenu: () => {
+                    document.getElementById('mobile-drawer').classList.add('translate-x-full');
+                },
+
+                showToast: (msg, type = 'info') => {
+                    const container = document.getElementById('toast-container');
+                    const toast = document.createElement('div');
+                    toast.className = `p-4 rounded-xl bg-card border border-border shadow-2xl flex items-center gap-3 text-xs font-semibold text-white pointer-events-auto transition-all duration-300 transform translate-x-full`;
+
+                    const icons = {
+                        success: '<i data-lucide="check-circle" class="w-4 h-4 text-mcEmerald"></i>',
+                        error: '<i data-lucide="alert-circle" class="w-4 h-4 text-error"></i>',
+                        warning: '<i data-lucide="crown" class="w-4 h-4 text-devGold"></i>',
+                        info: '<i data-lucide="info" class="w-4 h-4 text-galaxyViolet"></i>'
+                    };
+
+                    toast.innerHTML = `${icons[type]} <span>${msg}</span>`;
+                    container.appendChild(toast);
+                    lucide.createIcons();
+
+                    setTimeout(() => toast.classList.remove('translate-x-full'), 10);
+                    setTimeout(() => {
+                        toast.classList.add('opacity-0', 'translate-x-full');
+                        setTimeout(() => toast.remove(), 300);
+                    }, 4000);
+                }
+            },
+
+            // --- MODAL CONTROLLER ---
+            Modal: {
+                open: (id) => {
+                    if (id === 'item-modal' && !state.isDev) {
+                        App.UI.showToast("Chỉ DEV GALAXY mới có quyền mở bảng này!", "error");
+                        return;
+                    }
+                    if (id === 'item-modal' && !document.getElementById('form-item-id').value) {
+                        document.getElementById('modal-form-title').innerText = "QUẢN TRỊ DEV: Thêm Tài Nguyên Mới";
+                        document.getElementById('pack-form').reset();
+                        document.getElementById('form-item-id').value = '';
+                    }
+                    document.getElementById(id).classList.remove('hidden-accessible');
+                },
+                close: (id) => {
+                    document.getElementById(id).classList.add('hidden-accessible');
+                    if (id === 'download-modal') clearInterval(state.downloadTimer);
+                }
+            }
+        };
+
+        // Launch Engine on DOM Load
         document.addEventListener('DOMContentLoaded', App.init);
     </script>
 </body>
