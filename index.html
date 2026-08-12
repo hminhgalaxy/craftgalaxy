@@ -1,17 +1,530 @@
-<!doctype html>
-<html lang="en">
-  <head>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Nexus Analytics - Modern SaaS platform for real-time website tracking and user behavior visualization." />
+    <meta name="description" content="Galaxy Craft - Nền tảng chia sẻ Mod, Addon, Texture Pack Minecraft tốt nhất." />
+    <title>Galaxy Craft | Minecraft Mods & Addons</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M12 2L2 7L12 12L22 7L12 2Z' fill='%2322C55E'/><path d='M2 17L12 22L22 17' stroke='%2322C55E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <title>Nexus Analytics | Premium SaaS Analytics</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+    <!-- Tailwind CSS & Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#0A0A0B', surface: '#171719', card: '#1C1C1F', border: 'rgba(255,255,255,0.08)',
+                        'text-main': '#FFFFFF', 'text-muted': '#A1A1AA',
+                        accent: '#22C55E', 'accent-hover': '#16A34A',
+                        success: '#22C55E', warning: '#F59E0B', error: '#EF4444', info: '#3B82F6',
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    boxShadow: { 'soft': '0 4px 20px rgba(0,0,0,0.1)', 'glow': '0 0 20px rgba(34, 197, 94, 0.15)' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0A0A0B; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444; }
+        *:focus-visible { outline: none; box-shadow: 0 0 0 2px #0A0A0B, 0 0 0 4px #22C55E; border-radius: 4px; }
+        .glass { background: rgba(23, 23, 25, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .grid-bg { background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; }
+        .gradient-text { background: clip-text; -webkit-background-clip: text; color: transparent; background-image: linear-gradient(to right, #FFFFFF, #A1A1AA); }
+        
+        /* Animations */
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes slideInRight { 0% { opacity: 0; transform: translateX(50px); } 100% { opacity: 1; transform: translateX(0); } }
+        .animate-slide-in-right { animation: slideInRight 0.3s ease-out forwards; }
+        @keyframes scaleIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+        .animate-scale-in { animation: scaleIn 0.3s ease-out forwards; }
+
+        /* Intro Overlay Animation */
+        #intro-overlay {
+            position: fixed; inset: 0; z-index: 9999; background: #000;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; transition: opacity 1s ease-out, visibility 1s;
+        }
+        #intro-overlay.hidden-intro { opacity: 0; visibility: hidden; pointer-events: none; }
+        .intro-text {
+            font-size: 5rem; font-weight: 800; letter-spacing: -0.05em;
+            background: linear-gradient(to right, #22C55E, #16A34A);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            z-index: 10; animation: introFade 3s ease-out forwards;
+            text-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
+        }
+        @keyframes introFade {
+            0% { opacity: 0; transform: scale(0.8); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.1); }
+        }
+        .meteor {
+            position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255,255,255,0.5); opacity: 0;
+        }
+        .meteor::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 120px; height: 1px;
+            background: linear-gradient(to right, rgba(255,255,255,0.8), transparent);
+            transform: translateX(-100%) rotate(45deg); transform-origin: right;
+        }
+        @keyframes meteorFly {
+            0% { transform: translateX(-100px) translateY(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateX(100vw) translateY(100vh); opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body class="text-white font-sans antialiased">
+    
+    <!-- INTRO OVERAY -->
+    <div id="intro-overlay">
+        <div class="meteor" style="top: 10%; left: 10%; animation: meteorFly 1.5s linear infinite;"></div>
+        <div class="meteor" style="top: 30%; left: 50%; animation: meteorFly 2s linear infinite 0.5s;"></div>
+        <div class="meteor" style="top: 70%; left: 20%; animation: meteorFly 1.2s linear infinite 1s;"></div>
+        <div class="meteor" style="top: 50%; left: 80%; animation: meteorFly 1.8s linear infinite 0.2s;"></div>
+        <div class="meteor" style="top: 20%; left: 90%; animation: meteorFly 1.4s linear infinite 0.8s;"></div>
+        <div class="meteor" style="top: 80%; left: 60%; animation: meteorFly 1.6s linear infinite 1.2s;"></div>
+        <h1 class="intro-text">GalaxyCraft</h1>
+    </div>
+
+    <div id="app"></div>
+    <div id="modal-root"></div>
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 w-full max-w-sm pointer-events-none"></div>
+
+    <script type="module">
+        // ==========================================
+        // INTRO LOGIC
+        // ==========================================
+        setTimeout(() => {
+            document.getElementById('intro-overlay').classList.add('hidden-intro');
+        }, 3000); // Hide after 3 seconds
+
+        // ==========================================
+        // FIREBASE INITIALIZATION
+        // ==========================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDBlMGmdcdxzJQ-dYBzw2zzfRTu2vh6GG0",
+            authDomain: "goggle-login-39224.firebaseapp.com",
+            databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com",
+            projectId: "goggle-login-39224",
+            storageBucket: "goggle-login-39224.firebasestorage.app",
+            messagingSenderId: "479026449758",
+            appId: "1:479026449758:web:661543f85ebeb7621393cf",
+            measurementId: "G-11EF7RQKS3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        const db = getDatabase(app);
+
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        let currentUser = null;
+        let isDev = false;
+        let allPacks = [];
+        let currentSearchTerm = "";
+        let currentCategory = "All";
+
+        // Official Google Logo SVG
+        const GoogleLogo = `<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>`;
+
+        window.handleLogin = () => {
+            signInWithPopup(auth, provider).catch(err => showToast('error', 'Login Failed', err.message));
+        };
+
+        window.handleLogout = () => {
+            signOut(auth).then(() => showToast('info', 'Logged out', 'See you again!'));
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                if (user.email === "hminhgalaxy@gmail.com") {
+                    isDev = true;
+                    showToast('success', 'DEV Access Granted', 'Welcome back, Developer!');
+                } else {
+                    isDev = false;
+                    showToast('success', 'Logged in', `Welcome, ${user.displayName}!`);
+                }
+            } else {
+                currentUser = null;
+                isDev = false;
+            }
+            renderApp();
+        });
+
+        // ==========================================
+        // DATABASE LISTENER
+        // ==========================================
+        const packsRef = ref(db, 'galaxy_craft_packs');
+        onValue(packsRef, (snapshot) => {
+            const data = snapshot.val();
+            allPacks = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+            renderPackGrid();
+        });
+
+        // ==========================================
+        // TOAST SYSTEM
+        // ==========================================
+        window.showToast = (type, title, message) => {
+            const container = document.getElementById('toast-container');
+            const id = `toast-${Math.random().toString(36).substr(2, 9)}`;
+            const icons = { success: 'check-circle', error: 'x-circle', warning: 'alert-circle', info: 'info' };
+            const colors = { success: 'text-success', error: 'text-error', warning: 'text-warning', info: 'text-info' };
+
+            const toast = document.createElement('div');
+            toast.id = id;
+            toast.className = "pointer-events-auto p-4 rounded-xl glass border border-border shadow-soft flex items-start gap-3 animate-slide-in-right";
+            toast.innerHTML = `
+                <i data-lucide="${icons[type]}" class="w-5 h-5 mt-0.5 flex-shrink-0 ${colors[type]}"></i>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-semibold text-white text-sm">${title}</h4>
+                    ${message ? `<p class="text-gray-400 text-xs mt-1">${message}</p>` : ''}
+                </div>
+                <button class="text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            toast.querySelector('button').onclick = () => removeToast(toast);
+            setTimeout(() => removeToast(toast), 5000);
+        };
+
+        function removeToast(el) {
+            if (!el) return;
+            el.style.transition = 'opacity 0.3s, transform 0.3s';
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(50px)';
+            setTimeout(() => el.remove(), 300);
+        }
+
+        // ==========================================
+        // DEV FUNCTIONS (CRUD)
+        // ==========================================
+        window.openAddModal = () => { renderDevModal(null); };
+        window.openEditModal = (id) => {
+            const pack = allPacks.find(p => p.id === id);
+            if (pack) renderDevModal(pack);
+        };
+
+        window.savePack = (id) => {
+            const title = document.getElementById('pack-title').value;
+            const description = document.getElementById('pack-desc').value;
+            const category = document.getElementById('pack-cat').value;
+            const imageUrl = document.getElementById('pack-img').value;
+            const downloadUrl = document.getElementById('pack-link').value;
+
+            if (!title || !downloadUrl) {
+                showToast('error', 'Validation Error', 'Title and Download Link are required.');
+                return;
+            }
+
+            const packData = { title, description, category, imageUrl, downloadUrl, updatedAt: Date.now() };
+
+            if (id) {
+                update(ref(db, `galaxy_craft_packs/${id}`), packData).then(() => {
+                    showToast('success', 'Pack Updated', `${title} has been updated.`);
+                    closeDevModal();
+                });
+            } else {
+                push(ref(db, 'galaxy_craft_packs'), { ...packData, createdAt: Date.now(), author: currentUser.displayName }).then(() => {
+                    showToast('success', 'Pack Added', `${title} is now live.`);
+                    closeDevModal();
+                });
+            }
+        };
+
+        window.deletePack = (id) => {
+            if (!confirm("Are you sure you want to delete this pack?")) return;
+            remove(ref(db, `galaxy_craft_packs/${id}`)).then(() => {
+                showToast('warning', 'Pack Deleted', 'The pack has been removed.');
+            });
+        };
+
+        window.closeDevModal = () => { document.getElementById('modal-root').innerHTML = ''; };
+
+        // ==========================================
+        // SEARCH & FILTER
+        // ==========================================
+        let searchDebounce;
+        window.handleSearchInput = (val) => {
+            clearTimeout(searchDebounce);
+            searchDebounce = setTimeout(() => {
+                currentSearchTerm = val.toLowerCase();
+                renderPackGrid();
+            }, 300);
+        };
+
+        window.handleCategoryFilter = (cat) => {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('bg-accent/10', 'text-accent', 'border-transparent'));
+            event.currentTarget.classList.add('bg-accent/10', 'text-accent', 'border-transparent');
+            renderPackGrid();
+        };
+
+        // ==========================================
+        // UI COMPONENTS
+        // ==========================================
+        const Header = () => {
+            const user = currentUser;
+            return `
+                <header class="sticky top-0 z-40 glass border-b border-border">
+                    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center justify-between h-16">
+                            <div class="flex items-center gap-2">
+                                <div class="w-9 h-9 rounded-lg bg-accent flex items-center justify-center transform rotate-45">
+                                    <i data-lucide="box" class="w-5 h-5 text-bg transform -rotate-45"></i>
+                                </div>
+                                <span class="font-bold text-xl text-white hidden sm:block">Galaxy Craft</span>
+                            </div>
+                            
+                            <div class="flex-1 max-w-md mx-4 hidden md:block">
+                                <div class="relative">
+                                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"></i>
+                                    <input type="text" oninput="handleSearchInput(this.value)" placeholder="Tìm kiếm mod, addon, shader..." class="w-full h-10 bg-surface border border-border rounded-lg pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:border-accent transition-colors" />
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                ${isDev ? `<button onclick="openAddModal()" class="hidden sm:flex items-center gap-2 text-sm bg-accent/10 text-accent px-3 py-2 rounded-lg hover:bg-accent/20 transition-colors"><i data-lucide="plus-circle" class="w-4 h-4"></i> Add Pack</button>` : ''}
+                                ${user ? `
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-right hidden sm:block">
+                                            <p class="text-sm font-medium text-white flex items-center gap-1">${user.displayName} ${isDev ? '<span class="bg-yellow-500/20 text-yellow-400 text-[10px] px-1.5 py-0.5 rounded-full font-bold">DEV</span>' : ''}</p>
+                                            <p class="text-xs text-gray-500">Member</p>
+                                        </div>
+                                        <img src="${user.photoURL}" alt="avatar" class="w-9 h-9 rounded-full border border-border" referrerpolicy="no-referrer" />
+                                        <button onclick="handleLogout()" class="text-gray-400 hover:text-white p-2"><i data-lucide="log-out" class="w-4 h-4"></i></button>
+                                    </div>
+                                ` : `
+                                    <button onclick="handleLogin()" class="inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 active:scale-[0.98] whitespace-nowrap bg-white text-gray-900 hover:bg-gray-200 h-10 px-4 text-sm gap-2">
+                                        ${GoogleLogo} Login Google
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+            `;
+        };
+
+        const Hero = () => `
+            <section class="relative pt-24 pb-16 overflow-hidden">
+                <div class="absolute inset-0 grid-bg" style="mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-accent/10 rounded-full blur-[120px] pointer-events-none"></div>
+                
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium mb-6 animate-fade-in">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Hệ thống chia sẻ Minecraft tốt nhất
+                    </div>
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight gradient-text max-w-4xl mx-auto animate-fade-in" style="animation-delay: 0.1s; opacity: 0;">
+                        Khám phá Vũ trụ Minecraft
+                    </h1>
+                    <p class="mt-6 text-lg text-gray-400 max-w-2xl mx-auto animate-fade-in" style="animation-delay: 0.2s; opacity: 0;">
+                        Tải xuống các Mod, Addon, Texture Pack và Shader đồ họa cao cấp. Đăng nhập để lưu tiến trình và ủng hộ tác giả.
+                    </p>
+                    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style="animation-delay: 0.3s; opacity: 0;">
+                        <button onclick="document.getElementById('packs-section').scrollIntoView({behavior:'smooth'})" class="inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 active:scale-[0.98] whitespace-nowrap bg-accent text-bg hover:bg-accent-hover shadow-glow h-12 px-6 text-base gap-2">
+                            Khám phá Packs <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        `;
+
+        const renderPackGrid = () => {
+            const gridContainer = document.getElementById('pack-grid');
+            if (!gridContainer) return;
+
+            let filteredPacks = allPacks.filter(p => {
+                const matchCat = currentCategory === "All" || p.category === currentCategory;
+                const matchSearch = !currentSearchTerm || p.title.toLowerCase().includes(currentSearchTerm) || (p.description && p.description.toLowerCase().includes(currentSearchTerm));
+                return matchCat && matchSearch;
+            });
+
+            if (filteredPacks.length === 0) {
+                gridContainer.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <div class="w-16 h-16 mx-auto rounded-full bg-surface flex items-center justify-center mb-4">
+                            <i data-lucide="package-x" class="w-8 h-8 text-gray-500"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white">Không tìm thấy Pack</h3>
+                        <p class="text-sm text-gray-400 mt-1">Thử từ khóa khác hoặc ${isDev ? 'thêm pack mới.' : 'đợi tác giả cập nhật.'}</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            gridContainer.innerHTML = filteredPacks.map((p, i) => `
+                <div class="bg-card border border-border rounded-xl overflow-hidden hover:border-accent/30 hover:shadow-soft hover:-translate-y-1 transition-all duration-300 flex flex-col animate-fade-in" style="animation-delay: ${i * 0.05}s; opacity: 0;">
+                    <div class="h-44 bg-surface relative overflow-hidden group">
+                        ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" referrerpolicy="no-referrer">` : `<div class="w-full h-full flex items-center justify-center text-gray-600"><i data-lucide="image" class="w-10 h-10"></i></div>`}
+                        <span class="absolute top-2 right-2 bg-black/80 text-xs px-2 py-1 rounded-md text-accent border border-accent/20 font-medium backdrop-blur-sm">${p.category || 'Mod'}</span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <h3 class="text-base font-semibold text-white mb-1 truncate">${p.title}</h3>
+                        <p class="text-xs text-gray-400 line-clamp-2 mb-4 flex-1">${p.description || 'No description provided.'}</p>
+                        <div class="flex items-center justify-between gap-2 mt-auto">
+                            <a href="${p.downloadUrl}" target="_blank" class="inline-flex items-center justify-center font-medium rounded-lg transition-all whitespace-nowrap bg-accent text-bg hover:bg-accent-hover h-9 px-3 text-xs gap-1.5 flex-1">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i> Tải xuống
+                            </a>
+                            ${isDev ? `
+                                <button onclick="openEditModal('${p.id}')" class="bg-surface border border-border text-gray-400 hover:text-white p-2 rounded-lg h-9 w-9 flex items-center justify-center"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                                <button onclick="deletePack('${p.id}')" class="bg-surface border border-border text-gray-400 hover:text-red-500 p-2 rounded-lg h-9 w-9 flex items-center justify-center"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        };
+
+        const PacksSection = () => `
+            <section id="packs-section" class="py-16 relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold text-white">Kho lưu trữ Packs</h2>
+                            <p class="text-gray-400 mt-2">Tìm kiếm các bản mod và addon mới nhất.</p>
+                        </div>
+                        <div class="md:hidden w-full mb-4">
+                            <div class="relative">
+                                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"></i>
+                                <input type="text" oninput="handleSearchInput(this.value)" placeholder="Tìm kiếm pack..." class="w-full h-10 bg-surface border border-border rounded-lg pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:border-accent" />
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            ${["All", "Mod", "Addon", "Texture", "Shader"].map(cat => `
+                                <button onclick="handleCategoryFilter('${cat}')" class="cat-btn px-4 py-2 rounded-lg text-sm font-medium border border-border bg-surface text-gray-400 hover:text-white transition-colors ${cat === 'All' ? 'bg-accent/10 text-accent border-transparent' : ''}">${cat}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div id="pack-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </section>
+        `;
+
+        const Footer = () => `
+            <footer class="border-t border-border py-12 bg-bg mt-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-col md:flex-row justify-between gap-8">
+                        <div class="max-w-xs">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-8 h-8 rounded-lg bg-accent flex items-center justify-center transform rotate-45">
+                                    <i data-lucide="box" class="w-4 h-4 text-bg transform -rotate-45"></i>
+                                </div>
+                                <span class="font-bold text-lg text-white">Galaxy Craft</span>
+                            </div>
+                            <p class="text-sm text-gray-400">Nền tảng chia sẻ nội dung Minecraft minh bạch và ủng hộ tác giả.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-12">
+                            <div><h4 class="text-sm font-semibold text-white mb-4">Product</h4><ul class="space-y-2 text-sm text-gray-400"><li>Packs</li><li>Mods</li><li>Shaders</li></ul></div>
+                            <div><h4 class="text-sm font-semibold text-white mb-4">Company</h4><ul class="space-y-2 text-sm text-gray-400"><li>About</li><li>Privacy</li><li>Terms</li></ul></div>
+                        </div>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p class="text-xs text-gray-400">© 2024 Galaxy Craft. All rights reserved.</p>
+                    </div>
+                </div>
+            </footer>
+        `;
+
+        const renderDevModal = (pack) => {
+            const root = document.getElementById('modal-root');
+            const isEdit = !!pack;
+            root.innerHTML = `
+                <div class="fixed inset-0 z-[90] flex items-center justify-center p-4">
+                    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeDevModal()"></div>
+                    <div class="relative bg-card border border-border rounded-2xl shadow-soft w-full max-w-lg p-6 animate-scale-in max-h-[90vh] overflow-y-auto">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-white">${isEdit ? 'Edit Pack' : 'Add New Pack'}</h3>
+                            <button onclick="closeDevModal()" class="text-gray-400 hover:text-white p-2"><i data-lucide="x" class="w-5 h-5"></i></button>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1.5">Title *</label>
+                                <input id="pack-title" type="text" value="${pack?.title || ''}" class="w-full h-11 bg-surface border border-border rounded-lg px-4 text-sm text-white focus:border-accent" placeholder="VD: Shader Realistico">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1.5">Category</label>
+                                <select id="pack-cat" class="w-full h-11 bg-surface border border-border rounded-lg px-4 text-sm text-white focus:border-accent">
+                                    ${["Mod", "Addon", "Texture", "Shader"].map(c => `<option value="${c}" ${pack?.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1.5">Description</label>
+                                <textarea id="pack-desc" rows="3" class="w-full bg-surface border border-border rounded-lg px-4 py-3 text-sm text-white focus:border-accent" placeholder="Mô tả ngắn gọn về pack...">${pack?.description || ''}</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1.5">Image URL</label>
+                                <input id="pack-img" type="text" value="${pack?.imageUrl || ''}" class="w-full h-11 bg-surface border border-border rounded-lg px-4 text-sm text-white focus:border-accent" placeholder="https://imgur.com/...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1.5">Download URL *</label>
+                                <input id="pack-link" type="text" value="${pack?.downloadUrl || ''}" class="w-full h-11 bg-surface border border-border rounded-lg px-4 text-sm text-white focus:border-accent" placeholder="https://mediafire.com/...">
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-end gap-3">
+                            <button onclick="closeDevModal()" class="bg-surface border border-border text-white font-medium h-11 px-5 rounded-lg hover:bg-bg transition-colors">Cancel</button>
+                            <button onclick="savePack('${pack?.id || ''}')" class="bg-accent text-bg font-bold h-11 px-5 rounded-lg hover:bg-accent-hover transition-colors">Save Pack</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        };
+
+        // ==========================================
+        // MAIN RENDER
+        // ==========================================
+        function renderApp() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                ${Header()}
+                <main>
+                    ${Hero()}
+                    ${PacksSection()}
+                    ${Footer()}
+                </main>
+            `;
+            lucide.createIcons();
+            renderPackGrid();
+        }
+
+        // Initial Render before Firebase loads
+        renderApp();
+    </script>
+</body>
 </html>
