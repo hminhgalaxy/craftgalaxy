@@ -62,19 +62,20 @@
     <style>
         body { background-color: #090A10; color: #FFFFFF; overflow-x: hidden; }
 
-        /* HỆ THỐNG NỀN ĐỘNG TRÔI NỔI (FIXED) */
-        .fixed-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background-color: #090A10; overflow: hidden; }
+        /* NỀN ĐỘNG (ĐÃ TỐI ƯU HÓA GPU - KHÔNG DÙNG BLUR) */
+        .fixed-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background-color: #090A10; overflow: hidden; pointer-events: none; }
         
         @keyframes float-orb {
             0%, 100% { transform: translateY(0) translateX(0) scale(1); }
-            33% { transform: translateY(-30px) translateX(30px) scale(1.1); }
-            66% { transform: translateY(20px) translateX(-20px) scale(0.9); }
+            33% { transform: translateY(-40px) translateX(30px) scale(1.1); }
+            66% { transform: translateY(20px) translateX(-30px) scale(0.9); }
         }
         
-        .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.3; animation: float-orb 15s ease-in-out infinite; }
-        .orb-1 { width: 300px; height: 300px; background: #8B5CF6; top: -10%; left: -10%; }
-        .orb-2 { width: 250px; height: 250px; background: #22C55E; bottom: -5%; right: -5%; animation-delay: -5s; }
-        .orb-3 { width: 200px; height: 200px; background: #EC4899; top: 40%; left: 50%; animation-delay: -10s; opacity: 0.15;}
+        /* Sử dụng radial-gradient thay cho filter: blur để mượt mà trên mobile */
+        .orb { position: absolute; border-radius: 50%; opacity: 0.5; animation: float-orb 15s ease-in-out infinite; }
+        .orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 60%); top: -20%; left: -10%; }
+        .orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 60%); bottom: -10%; right: -10%; animation-delay: -5s; }
+        .orb-3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(236,72,153,0.1) 0%, transparent 60%); top: 30%; left: 40%; animation-delay: -10s; }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -82,27 +83,28 @@
         ::-webkit-scrollbar-thumb { background: #181A26; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
 
-        .glass-panel { background: rgba(18, 19, 28, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-panel { background: rgba(18, 19, 28, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .text-gradient-galaxy { background: linear-gradient(135deg, #FFFFFF 0%, #C084FC 50%, #8B5CF6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         .badge-dev-animated { background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.2), rgba(245, 158, 11, 0.15)); background-size: 200% 100%; animation: devGlow 3s infinite linear; border: 1px solid rgba(245, 158, 11, 0.4); }
         @keyframes devGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* Modal Animated Background */
-        .modal-animated-bg { position: absolute; inset: -50%; background: conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.2), transparent, rgba(34, 197, 94, 0.1), transparent); animation: spin 10s linear infinite; z-index: 0; pointer-events: none; }
-        .modal-inner { position: relative; z-index: 10; background: #181A26; border-radius: inherit; }
+        .modal-inner { position: relative; z-index: 10; background: #181A26; border-radius: 1rem; border: 1px solid rgba(139, 92, 246, 0.2); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
 
         /* Splash Screen */
-        #splash-screen { transition: opacity 0.8s ease-out, visibility 0.8s; }
+        #splash-screen { transition: opacity 0.6s ease-out, visibility 0.6s; }
         .splash-ring { position: absolute; border-radius: 50%; border: 2px dashed rgba(139, 92, 246, 0.5); animation: spin 4s linear infinite; }
 
         .hidden-accessible { display: none !important; }
-        .g_id_signin { display: flex; justify-content: center; }
+        .g_id_signin { display: flex; justify-content: center; width: 100%; }
+        
+        /* Spinner */
+        .loader-spin { width: 1.25rem; height: 1.25rem; border: 2px solid rgba(255,255,255,0.3); border-top-color: currentColor; border-radius: 50%; animation: spin 0.8s linear infinite; }
     </style>
 </head>
 <body class="selection:bg-galaxyViolet/30 selection:text-white flex flex-col min-h-screen">
 
-    <!-- HIỆU ỨNG NỀN ĐỘNG (BACKGROUND) -->
+    <!-- NỀN ĐỘNG SIÊU NHẸ -->
     <div class="fixed-bg">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -112,8 +114,8 @@
     <!-- SPLASH SCREEN INTRO -->
     <div id="splash-screen" class="fixed inset-0 z-[200] bg-bg flex flex-col items-center justify-center">
         <div class="relative flex items-center justify-center w-64 h-64">
-            <div class="splash-ring w-48 h-48 border-galaxyViolet/30"></div>
-            <div class="splash-ring w-56 h-56 border-mcEmerald/20" style="animation-direction: reverse; animation-duration: 6s;"></div>
+            <div class="splash-ring w-48 h-48 border-galaxyViolet/40"></div>
+            <div class="splash-ring w-56 h-56 border-mcEmerald/30" style="animation-direction: reverse; animation-duration: 6s;"></div>
             <div class="absolute z-10 text-center">
                 <i data-lucide="box" class="w-12 h-12 text-galaxyViolet mx-auto mb-2 animate-pulse"></i>
                 <h1 class="font-display font-extrabold text-3xl tracking-widest text-gradient-galaxy">GALAXY</h1>
@@ -122,15 +124,14 @@
         </div>
     </div>
 
-    <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-3 pointer-events-none w-full max-w-sm px-4"></div>
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[150] flex flex-col gap-3 pointer-events-none w-full max-w-md px-4"></div>
 
-    <!-- HEADER / NAVIGATION -->
+    <!-- HEADER -->
     <header class="fixed top-0 w-full z-50 glass-panel border-b border-border transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
-            <!-- Logo -->
             <a href="#" class="flex items-center gap-3 group focus:outline-none">
-                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-galaxyViolet/10 border border-galaxyViolet/30 flex items-center justify-center group-hover:bg-galaxyViolet/20 transition-all">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-galaxyViolet/10 border border-galaxyViolet/30 flex items-center justify-center group-hover:bg-galaxyViolet/20 transition-all">
                     <i data-lucide="box" class="text-galaxyViolet w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
                 <div>
@@ -138,7 +139,6 @@
                 </div>
             </a>
 
-            <!-- Desktop Nav Links -->
             <nav class="hidden md:flex items-center justify-center gap-8 text-sm font-medium flex-1">
                 <button onclick="App.Filter.setCategory('All')" class="text-white hover:text-galaxyViolet transition-colors">Trang Chủ</button>
                 <button onclick="App.Filter.setCategory('Modpack')" class="text-textMuted hover:text-white transition-colors">Modpack</button>
@@ -147,9 +147,8 @@
                 <button onclick="App.Filter.setCategory('Shader')" class="text-textMuted hover:text-white transition-colors">Shaders</button>
             </nav>
 
-            <!-- Desktop User Actions -->
             <div class="hidden md:flex items-center gap-3">
-                <button id="dev-add-btn-desktop" onclick="App.Modal.open('item-modal')" class="hidden-accessible px-3.5 py-2 rounded-lg badge-dev-animated text-devGold text-xs font-bold flex items-center gap-1.5 hover:scale-105 shadow-neon-gold">
+                <button id="dev-add-btn-desktop" onclick="App.Modal.open('item-modal')" class="hidden-accessible px-4 py-2 rounded-lg badge-dev-animated text-devGold text-xs font-bold flex items-center gap-2 hover:scale-105 shadow-neon-gold">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i> THÊM MỤC
                 </button>
 
@@ -159,14 +158,14 @@
                 </div>
 
                 <div id="user-profile-desktop" class="hidden-accessible flex items-center gap-3 relative group">
-                    <button class="flex items-center gap-2.5 p-1.5 rounded-xl bg-surface border border-border group-hover:border-galaxyViolet transition-all">
+                    <button class="flex items-center gap-2.5 p-1.5 rounded-xl bg-surface border border-border hover:border-galaxyViolet transition-all">
                         <img id="user-avatar-desktop" src="" alt="Avatar" class="w-8 h-8 rounded-lg object-cover">
-                        <div class="text-left flex flex-col items-start hidden lg:flex">
-                            <span id="user-name-desktop" class="text-xs font-semibold max-w-[100px] truncate">User</span>
+                        <div class="text-left flex flex-col items-start">
+                            <span id="user-name-desktop" class="text-xs font-bold max-w-[100px] truncate">User</span>
                             <span id="user-role-badge-desktop" class="text-[10px] text-textMuted">MEMBER</span>
                         </div>
                     </button>
-                    <div class="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-2xl p-2 hidden group-hover:block transition-all">
+                    <div class="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-xl p-2 hidden group-hover:block transition-all">
                         <button onclick="App.Auth.logout()" class="w-full text-left px-3 py-2 text-xs text-error hover:bg-error/10 rounded-lg font-medium flex items-center gap-2">
                             <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Đăng Xuất
                         </button>
@@ -175,8 +174,8 @@
             </div>
 
             <!-- Mobile Menu Toggle -->
-            <button onclick="App.UI.toggleMobileMenu()" class="md:hidden p-2 text-textMuted hover:text-white rounded-lg border border-border">
-                <i data-lucide="menu" class="w-6 h-6"></i>
+            <button onclick="App.UI.toggleMobileMenu()" class="md:hidden p-2 text-textMuted hover:text-white rounded-lg border border-border bg-surface">
+                <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
         </div>
     </header>
@@ -184,38 +183,36 @@
     <!-- MOBILE DRAWER MENU -->
     <div id="mobile-drawer" class="fixed inset-0 z-[60] bg-bg/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 md:hidden flex flex-col">
         <div class="flex items-center justify-between p-4 border-b border-border">
-            <span class="font-display font-bold text-lg">MENU</span>
+            <span class="font-display font-bold text-lg text-white">MENU ĐIỀU HƯỚNG</span>
             <button onclick="App.UI.closeMobileMenu()" class="p-2 text-white bg-surface rounded-lg border border-border">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
         
-        <nav class="flex flex-col text-center text-base font-medium p-4 gap-2 overflow-y-auto">
-            <button onclick="App.Filter.setCategory('All'); App.UI.closeMobileMenu();" class="py-3 text-white bg-surface/50 rounded-lg border border-border/50">Trang Chủ</button>
-            <button onclick="App.Filter.setCategory('Modpack'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white">Modpack</button>
-            <button onclick="App.Filter.setCategory('Addon'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white">Addon / Mods</button>
-            <button onclick="App.Filter.setCategory('Texture'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white">Texture Pack</button>
+        <nav class="flex flex-col text-center text-base font-medium p-4 gap-3 overflow-y-auto">
+            <button onclick="App.Filter.setCategory('All'); App.UI.closeMobileMenu();" class="py-3 text-white bg-surface/50 rounded-xl border border-border/50">Trang Chủ</button>
+            <button onclick="App.Filter.setCategory('Modpack'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white bg-surface/20 rounded-xl">Modpack</button>
+            <button onclick="App.Filter.setCategory('Addon'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white bg-surface/20 rounded-xl">Addon / Mods</button>
+            <button onclick="App.Filter.setCategory('Texture'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white bg-surface/20 rounded-xl">Texture Pack</button>
             
-            <!-- NÚT THÊM MỤC CHO DEV TRÊN MOBILE -->
             <button id="dev-add-btn-mobile" onclick="App.Modal.open('item-modal'); App.UI.closeMobileMenu();" class="hidden-accessible mt-4 py-3 bg-devGold/20 border border-devGold/50 text-devGold rounded-xl font-bold flex justify-center items-center gap-2 shadow-neon-gold">
-                <i data-lucide="plus-circle" class="w-5 h-5"></i> ĐĂNG BÀI (DEV)
+                <i data-lucide="plus-circle" class="w-5 h-5"></i> ĐĂNG TÀI NGUYÊN (DEV)
             </button>
         </nav>
 
-        <div class="mt-auto p-6 border-t border-border flex flex-col items-center bg-surface/30">
+        <div class="mt-auto p-6 border-t border-border flex flex-col items-center bg-surface/50">
             <div id="auth-container-mobile" class="w-full flex justify-center">
-                <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-text="signin_with" data-shape="rectangular" data-logo_alignment="center" data-width="250"></div>
+                <!-- Wrapper được style 100% chiều rộng -->
+                <div class="g_id_signin w-full" data-type="standard" data-theme="filled_black" data-text="signin_with" data-shape="rectangular" data-logo_alignment="center"></div>
             </div>
             
             <div id="user-profile-mobile" class="hidden-accessible w-full flex flex-col items-center gap-3">
-                <div class="relative">
-                    <img id="user-avatar-mobile" src="" class="w-16 h-16 rounded-full border-2 border-galaxyViolet object-cover">
-                </div>
+                <img id="user-avatar-mobile" src="" class="w-16 h-16 rounded-full border-2 border-galaxyViolet object-cover shadow-neon-violet">
                 <div class="text-center">
                     <span id="user-name-mobile" class="text-base font-bold block text-white">User</span>
-                    <span id="user-role-badge-mobile" class="text-xs font-bold px-2 py-0.5 rounded-full bg-surface border border-border mt-1 inline-block">MEMBER</span>
+                    <span id="user-role-badge-mobile" class="text-xs font-bold px-3 py-1 rounded-full bg-surface border border-border mt-2 inline-block">MEMBER</span>
                 </div>
-                <button onclick="App.Auth.logout(); App.UI.closeMobileMenu();" class="mt-3 w-full py-3 rounded-xl bg-error/10 text-error font-bold flex items-center justify-center gap-2 border border-error/20">
+                <button onclick="App.Auth.logout(); App.UI.closeMobileMenu();" class="mt-4 w-full py-3 rounded-xl bg-error/10 text-error font-bold flex items-center justify-center gap-2 border border-error/20">
                     <i data-lucide="log-out" class="w-4 h-4"></i> ĐĂNG XUẤT
                 </button>
             </div>
@@ -223,29 +220,28 @@
     </div>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 pt-24 sm:pt-28 pb-20 px-4 sm:px-6 max-w-7xl mx-auto w-full flex flex-col items-center">
+    <main class="flex-1 pt-24 sm:pt-28 pb-20 px-4 sm:px-6 max-w-7xl mx-auto w-full flex flex-col items-center z-10">
         
-        <!-- HERO SECTION -->
         <section class="relative py-8 md:py-16 text-center w-full flex flex-col items-center">
-            <div id="dev-welcome-banner" class="hidden-accessible mb-6 badge-dev-animated px-4 py-2 rounded-full flex items-center gap-2 shadow-neon-gold justify-center w-fit mx-auto">
+            <div id="dev-welcome-banner" class="hidden-accessible mb-6 badge-dev-animated px-5 py-2 rounded-full flex items-center gap-2 shadow-neon-gold justify-center w-fit mx-auto">
                 <i data-lucide="crown" class="w-4 h-4 text-devGold"></i>
-                <span class="text-xs sm:text-sm font-bold text-devGold">DEV GALAXY KÍCH HOẠT QUYỀN CHỈNH SỬA</span>
+                <span class="text-xs sm:text-sm font-bold text-devGold uppercase tracking-wider">Chào mừng Dev. Quyền chỉnh sửa khả dụng.</span>
             </div>
 
             <h1 class="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-gradient-galaxy tracking-tight leading-tight max-w-4xl mx-auto mb-4 text-center">
                 Vũ Trụ Tài Nguyên Minecraft<br>Chất Lượng Nhất
             </h1>
             <p class="text-textMuted text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed text-center px-4">
-                Modpack chuẩn, Addon mượt mà, Texture sắc nét. Đồng bộ dữ liệu Realtime.
+                Modpack tối ưu, Addon mượt mà, Texture sắc nét. Đồng bộ dữ liệu Realtime nhanh chóng.
             </p>
 
-            <div class="w-full max-w-3xl glass-panel p-2 rounded-2xl shadow-2xl border border-border flex flex-col sm:flex-row gap-2 mx-auto">
+            <div class="w-full max-w-3xl glass-panel p-2 rounded-2xl shadow-lg border border-border flex flex-col sm:flex-row gap-2 mx-auto">
                 <div class="relative flex-1">
-                    <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-textMuted"></i>
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-textMuted"></i>
                     <input type="text" id="search-input" placeholder="Tìm tên Modpack, Addon..." 
-                        class="w-full h-12 pl-10 pr-4 bg-surface border border-border/60 rounded-xl text-white text-sm focus:outline-none focus:border-galaxyViolet transition-all">
+                        class="w-full h-12 pl-12 pr-4 bg-bg/50 border border-border/60 rounded-xl text-white text-sm focus:outline-none focus:border-galaxyViolet transition-all">
                 </div>
-                <select id="category-select" class="h-12 px-4 bg-surface border border-border/60 rounded-xl text-white text-sm focus:outline-none focus:border-galaxyViolet text-center cursor-pointer">
+                <select id="category-select" class="h-12 px-4 bg-bg/50 border border-border/60 rounded-xl text-white text-sm focus:outline-none focus:border-galaxyViolet text-center cursor-pointer">
                     <option value="All">Tất cả</option>
                     <option value="Modpack">Modpacks</option>
                     <option value="Addon">Addons</option>
@@ -255,7 +251,6 @@
             </div>
         </section>
 
-        <!-- CONTENT GRID SECTION -->
         <section class="mt-4 sm:mt-8 w-full z-10">
             <div class="flex flex-col items-center justify-center gap-4 mb-8 text-center">
                 <h2 class="text-2xl font-display font-bold text-white flex items-center justify-center gap-2">
@@ -263,9 +258,9 @@
                     Danh Sách Tài Nguyên
                 </h2>
                 <div class="flex flex-wrap justify-center gap-2" id="category-pills">
-                    <button onclick="App.Filter.setCategory('All')" class="pill-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-galaxyViolet text-white border border-galaxyViolet">Tất Cả</button>
-                    <button onclick="App.Filter.setCategory('Modpack')" class="pill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white">Modpack</button>
-                    <button onclick="App.Filter.setCategory('Addon')" class="pill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white">Addon</button>
+                    <button onclick="App.Filter.setCategory('All')" class="pill-btn active px-5 py-2 rounded-xl text-xs font-bold bg-galaxyViolet text-white border border-galaxyViolet shadow-neon-violet">Tất Cả</button>
+                    <button onclick="App.Filter.setCategory('Modpack')" class="pill-btn px-5 py-2 rounded-xl text-xs font-bold bg-surface border border-border text-textMuted hover:text-white transition-all">Modpack</button>
+                    <button onclick="App.Filter.setCategory('Addon')" class="pill-btn px-5 py-2 rounded-xl text-xs font-bold bg-surface border border-border text-textMuted hover:text-white transition-all">Addon</button>
                 </div>
             </div>
 
@@ -273,11 +268,18 @@
             <div id="grid-empty" class="hidden-accessible py-20 flex flex-col items-center justify-center text-center glass-panel rounded-2xl w-full max-w-2xl mx-auto">
                 <i data-lucide="package-open" class="w-16 h-16 text-textMuted mb-4"></i>
                 <h3 class="text-lg font-bold text-white mb-2">Không tìm thấy dữ liệu</h3>
-                <p class="text-sm text-textMuted">Hiện tại danh mục này chưa có tài nguyên nào.</p>
+                <p class="text-sm text-textMuted">Hãy là người đầu tiên đăng tải vào danh mục này.</p>
+            </div>
+
+            <!-- Loading Skeleton -->
+            <div id="grid-loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
+                <div class="bg-card border border-border rounded-2xl p-4 h-72 animate-pulse"><div class="w-full h-40 bg-surface rounded-xl mb-4"></div><div class="h-4 bg-surface rounded w-3/4 mb-2"></div><div class="h-4 bg-surface rounded w-1/2"></div></div>
+                <div class="bg-card border border-border rounded-2xl p-4 h-72 animate-pulse"><div class="w-full h-40 bg-surface rounded-xl mb-4"></div><div class="h-4 bg-surface rounded w-3/4 mb-2"></div><div class="h-4 bg-surface rounded w-1/2"></div></div>
+                <div class="bg-card border border-border rounded-2xl p-4 h-72 animate-pulse"><div class="w-full h-40 bg-surface rounded-xl mb-4"></div><div class="h-4 bg-surface rounded w-3/4 mb-2"></div><div class="h-4 bg-surface rounded w-1/2"></div></div>
             </div>
 
             <!-- Items Grid -->
-            <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
+            <div id="items-grid" class="hidden-accessible grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
                 <!-- Data injected by JS -->
             </div>
         </section>
@@ -289,112 +291,103 @@
                 <i data-lucide="box" class="w-5 h-5 text-galaxyViolet"></i>
                 <p class="font-bold text-white">Galaxy Craft &copy; 2026</p>
             </div>
-            <p class="text-xs text-textMuted">Không liên kết với Mojang AB.</p>
+            <p class="text-xs text-textMuted">Tài nguyên được đóng góp từ cộng đồng Minecraft.</p>
         </div>
     </footer>
 
-    <!-- MODAL ĐĂNG BÀI (UPLOAD ẢNH & THÊM MỤC) - DEV ONLY -->
+    <!-- MODAL ĐĂNG BÀI (DEV ONLY) -->
     <div id="item-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden-accessible">
         <div class="fixed inset-0 bg-bg/90 backdrop-blur-md" onclick="App.Modal.close('item-modal')"></div>
-        <div class="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-[1px]">
-            <div class="modal-animated-bg"></div>
-            <div class="modal-inner p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
-                <button onclick="App.Modal.close('item-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white bg-surface p-1 rounded-lg">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
+        <div class="modal-inner w-full max-w-md p-5 sm:p-6 max-h-[90vh] overflow-y-auto">
+            <button onclick="App.Modal.close('item-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white bg-surface p-1 rounded-lg transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
 
-                <div class="flex items-center gap-2 mb-4">
-                    <i data-lucide="shield-alert" class="w-6 h-6 text-devGold"></i>
-                    <h3 class="text-lg font-bold text-white" id="modal-form-title">THÊM TÀI NGUYÊN MỚI</h3>
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="shield-alert" class="w-6 h-6 text-devGold"></i>
+                <h3 class="text-lg font-bold text-white uppercase tracking-wide" id="modal-form-title">Đăng Tài Nguyên Mới</h3>
+            </div>
+
+            <form id="pack-form" class="flex flex-col gap-4">
+                <input type="hidden" id="form-item-id">
+                
+                <div>
+                    <label class="text-xs font-semibold text-textMuted block mb-2">Ảnh Bìa (Nhấn vào khung) *</label>
+                    <div class="relative group cursor-pointer w-full h-44 border-2 border-dashed border-border rounded-xl overflow-hidden flex items-center justify-center bg-bg hover:border-galaxyViolet transition-all" onclick="document.getElementById('image-upload').click()">
+                        <input type="file" id="image-upload" accept="image/*" class="hidden" onchange="App.UI.handleImageUpload(event)">
+                        <img id="image-preview" src="" class="hidden w-full h-full object-cover">
+                        <div id="image-placeholder" class="text-center flex flex-col items-center p-4">
+                            <i data-lucide="image-plus" class="w-10 h-10 text-textMuted mb-2 group-hover:text-galaxyViolet transition-colors"></i>
+                            <span class="text-xs text-textMuted font-medium">Tải ảnh lên (Max 2MB)</span>
+                        </div>
+                    </div>
                 </div>
 
-                <form id="pack-form" class="flex flex-col gap-4">
-                    <input type="hidden" id="form-item-id">
-                    
-                    <!-- VÙNG BẤM TẢI ẢNH (IMAGE UPLOAD) -->
+                <div>
+                    <label class="text-xs font-semibold text-textMuted block mb-1">Tên Pack / Addon *</label>
+                    <input type="text" id="form-title" required placeholder="VD: RL Craft V2" class="w-full h-11 px-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none transition-colors">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs font-semibold text-textMuted block mb-1">Ảnh Bìa (Bấm vào khung để tải ảnh lên) *</label>
-                        <div class="relative group cursor-pointer w-full h-40 border-2 border-dashed border-border rounded-xl overflow-hidden flex items-center justify-center bg-bg hover:border-galaxyViolet transition-all" onclick="document.getElementById('image-upload').click()">
-                            <input type="file" id="image-upload" accept="image/*" class="hidden" onchange="App.UI.handleImageUpload(event)">
-                            <img id="image-preview" src="" class="hidden w-full h-full object-cover">
-                            <div id="image-placeholder" class="text-center flex flex-col items-center p-4">
-                                <i data-lucide="image-plus" class="w-8 h-8 text-textMuted mb-2 group-hover:text-galaxyViolet transition-colors"></i>
-                                <span class="text-xs text-textMuted">Tải ảnh từ thư viện máy</span>
-                            </div>
-                        </div>
-                        <input type="hidden" id="form-image-base64" required>
+                        <label class="text-xs font-semibold text-textMuted block mb-1">Danh Mục *</label>
+                        <select id="form-category" class="w-full h-11 px-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
+                            <option value="Modpack">Modpack</option>
+                            <option value="Addon">Addon / Mods</option>
+                            <option value="Texture">Texture Pack</option>
+                            <option value="Shader">Shaders</option>
+                        </select>
                     </div>
-
                     <div>
-                        <label class="text-xs font-semibold text-textMuted block mb-1">Tên Pack / Addon *</label>
-                        <input type="text" id="form-title" required placeholder="VD: RL Craft V2" class="w-full h-11 px-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
+                        <label class="text-xs font-semibold text-textMuted block mb-1">Phiên Bản *</label>
+                        <input type="text" id="form-version" required placeholder="VD: 1.20" class="w-full h-11 px-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none transition-colors">
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-semibold text-textMuted block mb-1">Danh Mục *</label>
-                            <select id="form-category" class="w-full h-11 px-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
-                                <option value="Modpack">Modpack</option>
-                                <option value="Addon">Addon / Mods</option>
-                                <option value="Texture">Texture Pack</option>
-                                <option value="Shader">Shaders</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-textMuted block mb-1">Phiên Bản *</label>
-                            <input type="text" id="form-version" required placeholder="VD: 1.20" class="w-full h-11 px-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
-                        </div>
-                    </div>
+                <div>
+                    <label class="text-xs font-semibold text-textMuted block mb-1">Link Tải File *</label>
+                    <input type="url" id="form-download" required placeholder="https://..." class="w-full h-11 px-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none transition-colors">
+                </div>
 
-                    <div>
-                        <label class="text-xs font-semibold text-textMuted block mb-1">Link Tải (Google Drive/Mediafire) *</label>
-                        <input type="url" id="form-download" required placeholder="https://..." class="w-full h-11 px-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
-                    </div>
+                <div>
+                    <label class="text-xs font-semibold text-textMuted block mb-1">Mô Tả *</label>
+                    <textarea id="form-description" rows="3" required placeholder="Mô tả nội dung..." class="w-full p-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none transition-colors"></textarea>
+                </div>
 
-                    <div>
-                        <label class="text-xs font-semibold text-textMuted block mb-1">Mô Tả *</label>
-                        <textarea id="form-description" rows="2" required placeholder="Mô tả pack..." class="w-full p-3 bg-bg border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none"></textarea>
-                    </div>
-
-                    <button type="submit" class="mt-2 h-12 bg-devGold text-bg font-extrabold text-sm rounded-xl transition-all shadow-neon-gold flex items-center justify-center gap-2">
-                        <i data-lucide="upload-cloud" class="w-5 h-5"></i> LƯU VÀ ĐĂNG BÀI
-                    </button>
-                </form>
-            </div>
+                <button type="submit" id="submit-pack-btn" class="mt-2 h-12 bg-devGold hover:bg-devGold/90 text-bg font-extrabold text-sm rounded-xl transition-all shadow-neon-gold flex items-center justify-center gap-2">
+                    <i data-lucide="upload-cloud" class="w-5 h-5"></i> XÁC NHẬN ĐĂNG BÀI
+                </button>
+            </form>
         </div>
     </div>
 
     <!-- MODAL DOWNLOAD -->
     <div id="download-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden-accessible">
         <div class="fixed inset-0 bg-bg/80 backdrop-blur-md" onclick="App.Modal.close('download-modal')"></div>
-        <div class="relative w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl p-[1px]">
-            <div class="modal-animated-bg"></div>
-            <div class="modal-inner p-6">
-                <button onclick="App.Modal.close('download-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white bg-surface p-1 rounded-lg">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+        <div class="modal-inner w-full max-w-sm p-6 text-center flex flex-col items-center">
+            <button onclick="App.Modal.close('download-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white bg-surface p-1 rounded-lg">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div id="modal-item-content" class="w-full flex flex-col items-center"></div>
+            <div class="mt-5 pt-5 border-t border-border/60 w-full">
+                <button id="start-download-btn" onclick="App.Download.startTimer()" class="w-full h-12 rounded-xl bg-galaxyViolet hover:bg-galaxyViolet/90 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-neon-violet transition-all">
+                    <i data-lucide="download" class="w-4 h-4"></i> LẤY LINK TẢI
                 </button>
-                <div id="modal-item-content" class="text-center flex flex-col items-center">
-                </div>
-                <div class="mt-4 pt-4 border-t border-border/60 w-full flex flex-col items-center">
-                    <button id="start-download-btn" onclick="App.Download.startTimer()" class="w-full h-12 rounded-xl bg-galaxyViolet text-white font-bold text-sm flex items-center justify-center gap-2 mx-auto">
-                        <i data-lucide="download" class="w-4 h-4"></i> LẤY LINK TẢI
-                    </button>
-                    <div id="timer-view" class="hidden-accessible w-full flex flex-col items-center gap-3 text-center">
-                        <p class="text-xs text-textMuted">Đang chuẩn bị link tải...</p>
-                        <div class="text-3xl font-display font-bold text-galaxyViolet" id="countdown-text">10s</div>
-                        <div class="w-full bg-surface h-2 rounded-full overflow-hidden border border-border">
-                            <div id="timer-progress" class="bg-galaxyViolet h-full w-0 transition-all duration-1000"></div>
-                        </div>
+                <div id="timer-view" class="hidden-accessible w-full flex flex-col items-center gap-2">
+                    <p class="text-xs text-textMuted">Đang khởi tạo đường truyền...</p>
+                    <div class="text-4xl font-display font-bold text-galaxyViolet my-1" id="countdown-text">10s</div>
+                    <div class="w-full bg-surface h-2.5 rounded-full overflow-hidden border border-border">
+                        <div id="timer-progress" class="bg-galaxyViolet h-full w-0 transition-all duration-1000"></div>
                     </div>
-                    <a id="final-download-link" href="#" target="_blank" onclick="App.Download.completeDownload()" class="hidden-accessible w-full h-12 rounded-xl bg-mcEmerald text-bg font-bold text-sm flex items-center justify-center gap-2">
-                        TẢI XUỐNG NGAY
-                    </a>
                 </div>
+                <a id="final-download-link" href="#" target="_blank" onclick="App.Download.completeDownload()" class="hidden-accessible w-full h-12 rounded-xl bg-mcEmerald hover:bg-mcEmerald/90 text-bg font-bold text-sm flex items-center justify-center gap-2 shadow-neon-emerald transition-all">
+                    TẢI XUỐNG NGAY
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT ENGINE -->
+    <!-- SCRIPT ENGINE (Đã Fix Lỗi) -->
     <script>
         function handleCredentialResponse(response) {
             const token = response.credential;
@@ -408,6 +401,7 @@
             App.Auth.handleLoginSuccess(user);
         }
 
+        // CẤU HÌNH FIREBASE DATABASE CỦA BẠN
         const firebaseConfig = {
             databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com",
             projectId: "goggle-login-39224",
@@ -423,7 +417,8 @@
             activeCategory: 'All',
             searchQuery: '',
             selectedItem: null,
-            downloadTimer: null
+            downloadTimer: null,
+            currentUploadBase64: '' // Lưu trực tiếp biến JS tránh lỗi Input HTML
         };
 
         const App = {
@@ -445,37 +440,37 @@
                     state.isDev = (user.email === DEV_EMAIL);
                     localStorage.setItem('galaxy_user', JSON.stringify(user));
 
+                    // Desktop UI
                     document.getElementById('google-btn-desktop').classList.add('hidden-accessible');
                     document.getElementById('user-profile-desktop').classList.remove('hidden-accessible');
                     document.getElementById('user-avatar-desktop').src = user.picture;
                     document.getElementById('user-name-desktop').innerText = user.name;
 
+                    // Mobile UI
                     document.getElementById('auth-container-mobile').classList.add('hidden-accessible');
                     document.getElementById('user-profile-mobile').classList.remove('hidden-accessible');
                     document.getElementById('user-avatar-mobile').src = user.picture;
                     document.getElementById('user-name-mobile').innerText = user.name;
                     
                     if (state.isDev) {
-                        // Badge
                         document.getElementById('user-role-badge-desktop').innerText = "DEV GALAXY";
                         document.getElementById('user-role-badge-mobile').innerText = "DEV GALAXY";
-                        document.getElementById('user-role-badge-desktop').classList.add('text-devGold');
+                        document.getElementById('user-role-badge-desktop').classList.add('text-devGold', 'font-bold');
                         
                         let badgeMobile = document.getElementById('user-role-badge-mobile');
                         badgeMobile.classList.remove('bg-surface', 'border-border', 'text-white');
                         badgeMobile.classList.add('bg-devGold/20', 'border-devGold', 'text-devGold');
 
-                        // Show DEV buttons
                         document.getElementById('dev-add-btn-desktop').classList.remove('hidden-accessible');
-                        document.getElementById('dev-add-btn-mobile').classList.remove('hidden-accessible'); // Nút thêm trên Mobile Menu
+                        document.getElementById('dev-add-btn-mobile').classList.remove('hidden-accessible');
                         document.getElementById('dev-welcome-banner').classList.remove('hidden-accessible');
                         
-                        App.UI.showToast("DEV GALAXY Kích Hoạt!", "success");
+                        App.UI.showToast("DEV GALAXY: Đã mở quyền chỉnh sửa!", "success");
                     } else {
                         document.getElementById('dev-add-btn-desktop').classList.add('hidden-accessible');
                         document.getElementById('dev-add-btn-mobile').classList.add('hidden-accessible');
                         document.getElementById('dev-welcome-banner').classList.add('hidden-accessible');
-                        App.UI.showToast(`Chào mừng ${user.name}`);
+                        App.UI.showToast(`Xin chào, ${user.name}`);
                     }
                     
                     App.Render.items();
@@ -496,7 +491,7 @@
                     document.getElementById('dev-add-btn-mobile').classList.add('hidden-accessible');
                     document.getElementById('dev-welcome-banner').classList.add('hidden-accessible');
 
-                    App.UI.showToast("Đã đăng xuất.");
+                    App.UI.showToast("Đã đăng xuất tài khoản.");
                     App.Render.items();
                 }
             },
@@ -505,20 +500,55 @@
                 listenPacks: () => {
                     db.ref('packs').on('value', (snapshot) => {
                         const data = snapshot.val();
-                        state.items = data ? Object.values(data).reverse() : []; // Mới nhất lên đầu
+                        state.items = data ? Object.values(data).reverse() : []; 
+                        
+                        document.getElementById('grid-loading').classList.add('hidden-accessible');
                         App.Render.items();
                     });
                 },
                 savePack: async (packData) => {
                     if (!state.isDev) return;
-                    const id = packData.id || db.ref('packs').push().key;
-                    const finalData = { ...packData, id: id, createdAt: Date.now() };
-                    await db.ref('packs/' + id).set(finalData);
-                    App.UI.showToast("Đã lưu bài viết thành công!", "success");
-                    App.Modal.close('item-modal');
+                    
+                    const btn = document.getElementById('submit-pack-btn');
+                    btn.innerHTML = `<div class="loader-spin"></div> ĐANG XỬ LÝ...`;
+                    btn.disabled = true;
+
+                    try {
+                        const id = packData.id || db.ref('packs').push().key;
+                        const finalData = { ...packData, id: id, createdAt: packData.id ? packData.createdAt : Date.now() };
+                        
+                        // Gọi API Firebase
+                        await db.ref('packs/' + id).set(finalData);
+                        
+                        App.UI.showToast("Đăng tài nguyên thành công!", "success");
+                        App.Modal.close('item-modal');
+                    } catch (error) {
+                        console.error("LỖI FIREBASE:", error);
+                        // BẮT LỖI FIREBASE NẾU QUÊN CÀI RULES
+                        if (error.message.includes('permission_denied')) {
+                            App.UI.showToast("LỖI: Firebase chưa mở quyền '.write': true", "error");
+                        } else {
+                            App.UI.showToast("Có lỗi xảy ra khi lưu! Xem console.", "error");
+                        }
+                    } finally {
+                        btn.innerHTML = `<i data-lucide="upload-cloud" class="w-5 h-5"></i> XÁC NHẬN ĐĂNG BÀI`;
+                        btn.disabled = false;
+                        lucide.createIcons();
+                    }
                 },
                 incrementDownload: (id) => {
                     db.ref(`packs/${id}/downloadsCount`).transaction((c) => (c || 0) + 1);
+                },
+                deletePack: async (id) => {
+                    if(!state.isDev) return;
+                    if(confirm("Bạn có chắc chắn muốn XÓA vĩnh viễn bài đăng này?")) {
+                        try {
+                            await db.ref('packs/' + id).remove();
+                            App.UI.showToast("Đã xóa bài thành công.", "success");
+                        } catch (error) {
+                            App.UI.showToast("Lỗi xóa: Kiểm tra quyền Firebase", "error");
+                        }
+                    }
                 }
             },
 
@@ -528,9 +558,9 @@
                     document.getElementById('category-select').value = cat;
                     document.querySelectorAll('.pill-btn').forEach(btn => {
                         if (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('Tất Cả'))) {
-                            btn.className = "pill-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-galaxyViolet text-white border border-galaxyViolet";
+                            btn.className = "pill-btn active px-5 py-2 rounded-xl text-xs font-bold bg-galaxyViolet text-white border border-galaxyViolet shadow-neon-violet transition-all";
                         } else {
-                            btn.className = "pill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white";
+                            btn.className = "pill-btn px-5 py-2 rounded-xl text-xs font-bold bg-surface border border-border text-textMuted hover:text-white transition-all";
                         }
                     });
                     App.Render.items();
@@ -560,27 +590,27 @@
 
                     filtered.forEach(item => {
                         const card = document.createElement('div');
-                        card.className = "group bg-card border border-border rounded-2xl p-4 flex flex-col justify-between items-center text-center transition-all hover:border-galaxyViolet/50 relative overflow-hidden";
+                        card.className = "group bg-card border border-border rounded-2xl p-4 sm:p-5 flex flex-col justify-between items-center text-center transition-all hover:border-galaxyViolet/50 relative overflow-hidden shadow-lg";
                         card.innerHTML = `
                             <div class="w-full flex flex-col items-center">
-                                <img src="${item.image}" class="w-full h-40 sm:h-48 rounded-xl object-cover mb-3 border border-border">
-                                <span class="px-2 py-1 rounded bg-surface border border-border text-[10px] font-bold text-galaxyViolet mb-2 uppercase tracking-wide">${item.category}</span>
-                                <h3 class="text-base font-bold text-white mb-1 line-clamp-1 px-2">${item.title}</h3>
-                                <p class="text-xs text-textMuted line-clamp-2 px-2">${item.description}</p>
+                                <img src="${item.image}" loading="lazy" class="w-full h-40 sm:h-48 rounded-xl object-cover mb-4 border border-border">
+                                <span class="px-3 py-1 rounded bg-surface border border-border text-[10px] font-bold text-galaxyViolet mb-2 uppercase tracking-wide">${item.category}</span>
+                                <h3 class="text-base font-bold text-white mb-2 line-clamp-1">${item.title}</h3>
+                                <p class="text-xs text-textMuted line-clamp-2 px-1 mb-2">${item.description}</p>
                             </div>
                             
-                            <div class="w-full mt-4 flex flex-col gap-2">
-                                <button onclick="App.Download.openModal('${item.id}')" class="w-full py-2.5 bg-surface border border-border hover:bg-galaxyViolet text-white rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2">
+                            <div class="w-full mt-2 flex flex-col gap-2">
+                                <button onclick="App.Download.openModal('${item.id}')" class="w-full py-3 bg-surface border border-border hover:bg-galaxyViolet text-white rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2">
                                     <i data-lucide="download" class="w-4 h-4"></i> TẢI XUỐNG
                                 </button>
                                 
-                                <!-- NÚT SỬA/XÓA CHO DEV TRỰC TIẾP TRÊN CARD -->
+                                <!-- CÁC NÚT DÀNH RIÊNG CHO DEV -->
                                 ${state.isDev ? `
                                 <div class="flex gap-2 w-full mt-1">
-                                    <button onclick="App.UI.editPack('${item.id}')" class="flex-1 py-2 bg-devGold/20 border border-devGold text-devGold rounded-xl text-xs font-bold flex items-center justify-center gap-1">
+                                    <button onclick="App.UI.editPack('${item.id}')" class="flex-1 py-2.5 bg-devGold/10 border border-devGold/30 text-devGold rounded-xl text-xs font-bold flex items-center justify-center gap-1 hover:bg-devGold hover:text-bg transition-colors">
                                         <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> SỬA
                                     </button>
-                                    <button onclick="if(confirm('Chắc chắn xóa?')) db.ref('packs/${item.id}').remove()" class="flex-1 py-2 bg-error/20 border border-error text-error rounded-xl text-xs font-bold flex items-center justify-center gap-1">
+                                    <button onclick="App.Database.deletePack('${item.id}')" class="flex-1 py-2.5 bg-error/10 border border-error/30 text-error rounded-xl text-xs font-bold flex items-center justify-center gap-1 hover:bg-error hover:text-white transition-colors">
                                         <i data-lucide="trash" class="w-3.5 h-3.5"></i> XÓA
                                     </button>
                                 </div>
@@ -599,9 +629,9 @@
                     if (!state.selectedItem) return;
                     
                     document.getElementById('modal-item-content').innerHTML = `
-                        <img src="${state.selectedItem.image}" class="w-20 h-20 rounded-xl object-cover border border-border mx-auto mb-3">
-                        <h3 class="text-lg font-bold text-white mb-1">${state.selectedItem.title}</h3>
-                        <p class="text-xs text-mcEmerald bg-surface px-3 py-1 rounded-full border border-border mx-auto block w-fit">Bản: ${state.selectedItem.version}</p>
+                        <img src="${state.selectedItem.image}" class="w-24 h-24 rounded-2xl object-cover border border-border mx-auto mb-4 shadow-lg">
+                        <h3 class="text-lg font-bold text-white mb-2">${state.selectedItem.title}</h3>
+                        <p class="text-xs text-mcEmerald font-bold bg-mcEmerald/10 px-4 py-1.5 rounded-full border border-mcEmerald/30 mx-auto block w-fit">Phiên Bản: ${state.selectedItem.version}</p>
                     `;
                     document.getElementById('start-download-btn').classList.remove('hidden-accessible');
                     document.getElementById('timer-view').classList.add('hidden-accessible');
@@ -638,11 +668,11 @@
                     setTimeout(() => {
                         const splash = document.getElementById('splash-screen');
                         splash.style.opacity = '0';
-                        setTimeout(() => splash.remove(), 800);
-                    }, 1500);
+                        setTimeout(() => splash.remove(), 600);
+                    }, 1200);
                 },
                 
-                // HÀM XỬ LÝ UPLOAD ẢNH & NÉN THÀNH BASE64
+                // NÉN ẢNH THÔNG MINH TRÁNH LỖI OVERLOAD
                 handleImageUpload: (event) => {
                     const file = event.target.files[0];
                     if(!file) return;
@@ -651,38 +681,42 @@
                     reader.onload = (e) => {
                         const img = new Image();
                         img.onload = () => {
-                            // Nén ảnh bằng Canvas để tránh phình to database
                             const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 600; // Chiều rộng tối đa
-                            const scaleSize = MAX_WIDTH / img.width;
-                            canvas.width = MAX_WIDTH;
-                            canvas.height = img.height * scaleSize;
+                            const MAX_WIDTH = 500; // Cố định chiều rộng 500px cho nhẹ Firebase
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            if (width > MAX_WIDTH) {
+                                height = Math.round((height * MAX_WIDTH) / width);
+                                width = MAX_WIDTH;
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
                             
                             const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(img, 0, 0, width, height);
                             
-                            // Xuất ra dạng JPEG chất lượng 70%
-                            const base64String = canvas.toDataURL('image/jpeg', 0.7);
+                            // Xuất Base64 JPEG chất lượng 60% (Siêu nhẹ)
+                            const base64String = canvas.toDataURL('image/jpeg', 0.6); 
                             
-                            // Hiển thị lên UI
                             document.getElementById('image-preview').src = base64String;
                             document.getElementById('image-preview').classList.remove('hidden');
                             document.getElementById('image-placeholder').classList.add('hidden');
                             
-                            // Lưu vào Input ẩn
-                            document.getElementById('form-image-base64').value = base64String;
+                            // Gắn thẳng vào biến JS thay vì DOM Input (Fix lỗi đăng ảnh lớn)
+                            state.currentUploadBase64 = base64String;
                         }
                         img.src = e.target.result;
                     }
                     reader.readAsDataURL(file);
                 },
 
-                // Hàm Edit cho DEV
                 editPack: (id) => {
                     const item = state.items.find(i => i.id === id);
                     if (!item) return;
 
-                    document.getElementById('modal-form-title').innerText = "SỬA TÀI NGUYÊN";
+                    document.getElementById('modal-form-title').innerText = "CHỈNH SỬA TÀI NGUYÊN";
                     document.getElementById('form-item-id').value = item.id;
                     document.getElementById('form-title').value = item.title;
                     document.getElementById('form-category').value = item.category;
@@ -690,8 +724,7 @@
                     document.getElementById('form-download').value = item.downloadUrl;
                     document.getElementById('form-description').value = item.description;
                     
-                    // Xử lý hiển thị Ảnh cũ
-                    document.getElementById('form-image-base64').value = item.image;
+                    state.currentUploadBase64 = item.image;
                     document.getElementById('image-preview').src = item.image;
                     document.getElementById('image-preview').classList.remove('hidden');
                     document.getElementById('image-placeholder').classList.add('hidden');
@@ -707,12 +740,10 @@
                         App.Filter.setCategory(e.target.value);
                     });
                     
-                    // Form Đăng Bài Submit Logic
                     document.getElementById('pack-form').addEventListener('submit', (e) => {
                         e.preventDefault();
-                        const imageBase64 = document.getElementById('form-image-base64').value;
-                        if(!imageBase64) {
-                            App.UI.showToast("Vui lòng tải ảnh lên!", "error");
+                        if(!state.currentUploadBase64) {
+                            App.UI.showToast("Chưa chọn ảnh! Hãy nhấp vào khung ảnh.", "error");
                             return;
                         }
 
@@ -721,9 +752,10 @@
                             title: document.getElementById('form-title').value,
                             category: document.getElementById('form-category').value,
                             version: document.getElementById('form-version').value,
-                            image: imageBase64, // Lưu Base64 vào thẳng Firebase
+                            image: state.currentUploadBase64, // Lấy từ biến JS
                             downloadUrl: document.getElementById('form-download').value,
                             description: document.getElementById('form-description').value,
+                            createdAt: state.items.find(i => i.id === document.getElementById('form-item-id').value)?.createdAt
                         };
                         App.Database.savePack(packData);
                     });
@@ -733,34 +765,32 @@
                 showToast: (msg, type='info') => {
                     const c = document.getElementById('toast-container');
                     const t = document.createElement('div');
-                    t.className = "p-3 rounded-xl bg-card border border-border shadow-xl flex items-center justify-center gap-2 text-xs font-bold text-white transition-all transform -translate-y-10 mx-auto w-fit z-[999]";
-                    t.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-galaxyViolet"></i> ${msg}`;
+                    let color = type === 'error' ? 'border-error text-error' : (type === 'success' ? 'border-mcEmerald text-mcEmerald' : 'border-border text-white');
+                    t.className = `p-3 rounded-xl bg-card border shadow-2xl flex items-center justify-center gap-2 text-xs font-bold transition-all transform -translate-y-10 mx-auto w-fit z-[999] ${color}`;
+                    t.innerHTML = `<i data-lucide="info" class="w-4 h-4"></i> ${msg}`;
                     c.appendChild(t); lucide.createIcons();
                     setTimeout(() => t.classList.remove('-translate-y-10'), 10);
-                    setTimeout(() => { t.classList.add('-translate-y-10', 'opacity-0'); setTimeout(()=>t.remove(), 300); }, 3000);
+                    setTimeout(() => { t.classList.add('-translate-y-10', 'opacity-0'); setTimeout(()=>t.remove(), 400); }, 3000);
                 }
             },
 
             Modal: {
                 open: (id) => {
                     if (id === 'item-modal' && !document.getElementById('form-item-id').value) {
-                        document.getElementById('modal-form-title').innerText = "THÊM TÀI NGUYÊN MỚI";
+                        document.getElementById('modal-form-title').innerText = "ĐĂNG TÀI NGUYÊN MỚI";
                         document.getElementById('pack-form').reset();
                         document.getElementById('form-item-id').value = '';
                         document.getElementById('image-preview').classList.add('hidden');
                         document.getElementById('image-placeholder').classList.remove('hidden');
                         document.getElementById('image-preview').src = '';
-                        document.getElementById('form-image-base64').value = '';
+                        state.currentUploadBase64 = ''; // Reset biến ảnh
                     }
                     document.getElementById(id).classList.remove('hidden-accessible');
                 },
                 close: (id) => { 
                     document.getElementById(id).classList.add('hidden-accessible'); 
                     clearInterval(state.downloadTimer); 
-                    // Reset form fields if it's the item modal to prevent old data caching
-                    if(id === 'item-modal') {
-                        document.getElementById('form-item-id').value = '';
-                    }
+                    if(id === 'item-modal') document.getElementById('form-item-id').value = '';
                 }
             }
         };
