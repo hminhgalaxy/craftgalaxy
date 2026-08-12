@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCPE Addon - Đỉnh Cao</title>
-    <!-- Font Awesome cho Icon -->
+    <title>MCPE Addon - Realtime</title>
+    <!-- Font & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Font chữ Inter hiện đại -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* === BIẾN MÀU SẮC (THEME) === */
+        /* === TỐI ƯU HÓA HIỆU NĂNG - KHÔNG DÙNG BLUR NẶNG === */
         :root {
-            --bg-base: #030305;
-            --glass-panel: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --neon-accent: #00e5ff;
-            --neon-glow: rgba(0, 229, 255, 0.4);
-            --text-main: #f4f4f5;
-            --text-sub: #a1a1aa;
+            --bg-base: #1c1c28; /* Nền sáng hơn bản cũ */
+            --bg-card: #28293d;
+            --border-color: #00e5ff; /* Viền màu theo yêu cầu */
+            --text-main: #ffffff;
+            --text-sub: #b5b5c3;
+            --dev-red: #ff3b30;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -26,344 +24,288 @@
         body { 
             background-color: var(--bg-base); 
             color: var(--text-main); 
-            overflow-x: hidden; 
             min-height: 100vh;
-            padding-bottom: 100px;
-        }
-
-        /* === BACKGROUND HIỆU ỨNG ĐỘNG === */
-        .ambient-glow {
-            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(20, 30, 80, 0.3) 0%, transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(0, 229, 255, 0.05) 0%, transparent 30%);
-            z-index: -1; animation: drift 20s infinite linear alternate;
-        }
-        @keyframes drift { 100% { transform: rotate(5deg) scale(1.1); } }
-
-        /* === MÀN HÌNH LOADING === */
-        #preloader {
-            position: fixed; inset: 0; background: var(--bg-base); z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
-            transition: opacity 0.6s cubic-bezier(0.8, 0, 0.2, 1);
-        }
-        .loader-text {
-            font-size: 3rem; font-weight: 900; letter-spacing: -2px;
-            background: linear-gradient(to right, #fff, var(--neon-accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: pulse-glow 1.5s ease-in-out infinite alternate;
-        }
-        @keyframes pulse-glow { 
-            from { text-shadow: 0 0 10px transparent; transform: scale(1); } 
-            to { text-shadow: 0 0 30px var(--neon-glow); transform: scale(1.05); } 
         }
 
         /* === HEADER === */
         header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 24px; position: sticky; top: 0; z-index: 100;
-            background: rgba(3, 3, 5, 0.8); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .header-left .google-btn {
-            background: var(--glass-panel); border: 1px solid var(--glass-border);
-            width: 40px; height: 40px; border-radius: 50%; display: flex;
-            justify-content: center; align-items: center; cursor: pointer; transition: 0.3s;
-        }
-        .header-left .google-btn:hover { border-color: #ea4335; box-shadow: 0 0 15px rgba(234,67,53,0.3); }
-        .header-left .google-btn i { color: #ea4335; font-size: 1.1rem; }
-
-        .header-center h1 {
-            font-size: 1.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-            color: var(--text-main);
+            padding: 15px 20px; position: sticky; top: 0; z-index: 100;
+            background-color: #1c1c28; /* Nền đặc không gây lag */
+            border-bottom: 2px solid var(--border-color); /* Viền nổi bật */
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.1);
         }
 
-        .header-right .clock {
-            font-size: 0.85rem; font-weight: 600; color: var(--neon-accent);
-            background: rgba(0, 229, 255, 0.1); padding: 6px 12px; border-radius: 20px;
+        .auth-section { display: flex; align-items: center; gap: 10px; }
+        
+        .google-btn {
+            background: #ffffff; width: 40px; height: 40px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            transition: 0.2s; border: 2px solid transparent; overflow: hidden;
         }
+        .google-btn:hover { border-color: var(--border-color); transform: scale(1.05); }
+        .google-btn i { color: #ea4335; font-size: 1.2rem; }
+        .google-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* === THANH TÌM KIẾM TỐI GIẢN === */
-        .search-area { padding: 20px 24px; }
-        .search-bar {
-            position: relative; max-width: 600px; margin: 0 auto;
+        /* Nút đăng bài ẩn/hiện theo trạng thái đăng nhập */
+        #create-btn {
+            background: var(--border-color); color: #000; font-weight: bold;
+            padding: 8px 15px; border-radius: 20px; border: none; cursor: pointer;
+            display: none; /* Ẩn mặc định */
+            transition: 0.2s;
         }
+        #create-btn:hover { background: #fff; }
+
+        .logo-title { font-size: 1.2rem; font-weight: 800; text-transform: uppercase; color: var(--border-color); letter-spacing: 1px;}
+
+        /* === THANH TÌM KIẾM === */
+        .search-area { padding: 20px; max-width: 800px; margin: 0 auto; }
+        .search-bar { position: relative; }
         .search-bar input {
-            width: 100%; background: var(--glass-panel); border: 1px solid var(--glass-border);
-            padding: 16px 20px 16px 50px; border-radius: 20px; color: white;
-            font-size: 1rem; outline: none; transition: 0.4s;
+            width: 100%; background: var(--bg-card); 
+            border: 2px solid #3f3f5a; /* Viền khung mặc định */
+            padding: 14px 20px 14px 45px; border-radius: 15px; color: white;
+            font-size: 1rem; outline: none; transition: 0.2s;
         }
-        .search-bar input:focus { border-color: var(--neon-accent); box-shadow: 0 0 25px rgba(0,229,255,0.1); }
-        .search-bar i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+        /* Viền sáng lên khi click */
+        .search-bar input:focus { border-color: var(--border-color); box-shadow: 0 0 10px rgba(0,229,255,0.2); }
+        .search-bar i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
 
-        /* === GRID LAYOUT & CARD === */
+        /* === GRID BÀI VIẾT TỪ FIREBASE === */
         .addon-container {
-            padding: 10px 24px; max-width: 1200px; margin: 0 auto;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;
+            padding: 0 20px 40px; max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
         }
 
         .addon-card {
-            background: var(--glass-panel); border: 1px solid var(--glass-border);
-            border-radius: 20px; overflow: hidden; padding: 12px;
-            opacity: 0; transform: translateY(40px) scale(0.95); /* Setup cho scroll animation */
-            transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s, border-color 0.3s;
+            background: var(--bg-card); 
+            border: 2px solid #3f3f5a; /* Khung viền */
+            border-radius: 15px; overflow: hidden;
+            transition: 0.2s; /* Rút ngắn animation cho nhạy */
+            will-change: transform;
         }
+        .addon-card:hover { 
+            border-color: var(--border-color); /* Đổi màu viền khi hover */
+            transform: translateY(-4px); 
+        }
+
+        .card-img-wrapper { width: 100%; height: 180px; overflow: hidden; }
+        .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .card-content { padding: 12px; }
+        .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
         
-        .addon-card.visible { opacity: 1; transform: translateY(0) scale(1); }
-        
-        .addon-card:hover { border-color: rgba(0, 229, 255, 0.3); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-
-        .card-img-wrapper { position: relative; width: 100%; padding-top: 100%; border-radius: 14px; overflow: hidden; }
-        .card-img-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .addon-card:hover .card-img-wrapper img { transform: scale(1.1); }
-
-        .card-content { padding: 16px 8px 4px; }
-        .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-author { font-size: 0.85rem; color: var(--text-sub); }
-
-        /* === FLOATING DOCK (CHỈ HOME VÀ TẢI LÊN) === */
-        .dock-container {
-            position: fixed; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 100;
+        /* Huy hiệu DEV */
+        .author-line { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-sub); }
+        .dev-badge {
+            background-color: var(--dev-red); color: white;
+            padding: 2px 6px; border-radius: 5px; font-size: 0.7rem; font-weight: bold;
         }
-        .dock {
-            background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); padding: 8px; border-radius: 40px; display: flex; gap: 5px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        .dock-btn {
-            background: transparent; border: none; color: var(--text-sub);
-            padding: 12px 24px; border-radius: 30px; font-size: 1rem; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s;
-        }
-        .dock-btn.active, .dock-btn:hover { color: white; background: rgba(255,255,255,0.05); }
-        
-        /* Nút cộng nổi bật */
-        .dock-btn.upload {
-            background: var(--text-main); color: var(--bg-base); font-weight: 800; margin-left: 10px;
-        }
-        .dock-btn.upload:hover { background: var(--neon-accent); box-shadow: 0 0 20px var(--neon-glow); transform: scale(1.05); }
 
-        /* === MODAL POPUP === */
+        /* === MODAL ĐĂNG BÀI === */
         .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
             display: flex; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: 0.4s ease; z-index: 999;
+            opacity: 0; visibility: hidden; transition: 0.2s; z-index: 999;
         }
         .modal.show { opacity: 1; visibility: visible; }
-        
         .modal-body {
-            background: #0d0d12; width: 90%; max-width: 400px; padding: 30px;
-            border-radius: 24px; border: 1px solid var(--glass-border);
-            transform: translateY(30px); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            background: var(--bg-base); width: 90%; max-width: 400px; padding: 25px;
+            border-radius: 15px; border: 2px solid var(--border-color);
         }
-        .modal.show .modal-body { transform: translateY(0); }
-        
-        .modal-header { font-size: 1.4rem; font-weight: 800; margin-bottom: 25px; text-align: center; }
+        .modal-body h2 { margin-bottom: 20px; text-align: center; }
         .input-group { margin-bottom: 15px; }
         .input-group input {
-            width: 100%; padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03);
-            border: 1px solid var(--glass-border); color: white; font-size: 0.95rem; outline: none; transition: 0.3s;
+            width: 100%; padding: 12px; border-radius: 8px; background: var(--bg-card);
+            border: 1px solid #3f3f5a; color: white; outline: none;
         }
-        .input-group input:focus { border-color: var(--neon-accent); }
-        
-        .modal-actions { display: flex; gap: 12px; margin-top: 25px; }
-        .modal-actions button {
-            flex: 1; padding: 14px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s;
-        }
-        .btn-close { background: transparent; color: white; border: 1px solid var(--glass-border) !important; }
-        .btn-publish { background: white; color: black; }
-        .btn-publish:hover { background: var(--neon-accent); }
-
+        .input-group input:focus { border-color: var(--border-color); }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-cancel { background: #3f3f5a; color: white; }
+        .btn-submit { background: var(--border-color); color: #000; }
     </style>
 </head>
 <body>
 
-    <!-- Màn hình chờ siêu mượt -->
-    <div id="preloader">
-        <div class="loader-text">MCPE.</div>
-    </div>
-
-    <!-- Hiệu ứng nền tĩnh/động -->
-    <div class="ambient-glow"></div>
-
     <header>
-        <div class="header-left">
-            <div class="google-btn" title="Đăng nhập Google">
+        <div class="auth-section">
+            <div class="google-btn" id="login-btn" title="Đăng nhập Google">
                 <i class="fab fa-google"></i>
             </div>
+            <!-- Dấu cộng dời lên đây, gọn gàng -->
+            <button id="create-btn"><i class="fas fa-plus"></i></button>
         </div>
-        <div class="header-center">
-            <h1>MCPE Addon</h1>
-        </div>
-        <div class="header-right">
-            <div class="clock" id="real-clock">00:00</div>
-        </div>
+        
+        <div class="logo-title">MCPE Addon</div>
+        
+        <!-- Đồng hồ mini -->
+        <div id="clock" style="font-size: 0.85rem; font-weight: 600;">00:00</div>
     </header>
 
     <div class="search-area">
         <div class="search-bar">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="Khám phá Maps, Mods, Texture Packs...">
+            <input type="text" placeholder="Tìm kiếm...">
         </div>
     </div>
 
-    <!-- Lưới bài viết (Sử dụng IntersectionObserver để tạo hiệu ứng) -->
+    <!-- Nơi hiển thị dữ liệu từ Firebase -->
     <main class="addon-container" id="feed-container">
-        <!-- Các thẻ bài viết mồi -->
-        <article class="addon-card">
-            <div class="card-img-wrapper"><img src="https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600" alt="Map"></div>
-            <div class="card-content">
-                <h3 class="card-title">Bonkritz Palace Pro</h3>
-                <p class="card-author">Tác giả: Yeggs</p>
-            </div>
-        </article>
-        
-        <article class="addon-card">
-            <div class="card-img-wrapper"><img src="https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=600" alt="Map"></div>
-            <div class="card-content">
-                <h3 class="card-title">Prison Escape V2</h3>
-                <p class="card-author">Tác giả: Impress</p>
-            </div>
-        </article>
-
-        <article class="addon-card">
-            <div class="card-img-wrapper"><img src="https://images.unsplash.com/photo-1614728853352-60298069504e?q=80&w=600" alt="Mod"></div>
-            <div class="card-content">
-                <h3 class="card-title">Cyber Vehicles Mod</h3>
-                <p class="card-author">Tác giả: Nova</p>
-            </div>
-        </article>
-
-        <article class="addon-card">
-            <div class="card-img-wrapper"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600" alt="Texture"></div>
-            <div class="card-content">
-                <h3 class="card-title">Ultra Realism Textures</h3>
-                <p class="card-author">Tác giả: Studio G</p>
-            </div>
-        </article>
+        <p style="text-align: center; width: 100%; color: var(--text-sub);">Đang tải dữ liệu từ server...</p>
     </main>
 
-    <!-- Thanh công cụ (Tối giản tối đa) -->
-    <div class="dock-container">
-        <div class="dock">
-            <button class="dock-btn active"><i class="fas fa-compass"></i> Khám phá</button>
-            <button class="dock-btn upload" onclick="openModal()"><i class="fas fa-plus"></i> Tạo mới</button>
-        </div>
-    </div>
-
-    <!-- Popup Đăng bài -->
+    <!-- Modal Đăng bài (Ẩn) -->
     <div class="modal" id="postModal">
         <div class="modal-body">
-            <div class="modal-header">Đóng góp Addon</div>
+            <h2>Đăng Addon Mới</h2>
             <div class="input-group">
-                <input type="text" id="titleInput" placeholder="Tên Addon / Map (Bắt buộc)">
+                <input type="text" id="titleInput" placeholder="Tên Addon / Map">
             </div>
             <div class="input-group">
-                <input type="text" id="authorInput" placeholder="Tên của bạn">
-            </div>
-            <div class="input-group">
-                <input type="text" id="imgInput" placeholder="Link ảnh minh họa (Tùy chọn)">
+                <input type="text" id="imgInput" placeholder="Link ảnh minh họa">
             </div>
             <div class="modal-actions">
-                <button class="btn-close" onclick="closeModal()">Hủy</button>
-                <button class="btn-publish" onclick="publishPost()">Đăng ngay</button>
+                <button class="btn btn-cancel" id="close-modal-btn">Hủy</button>
+                <button class="btn btn-submit" id="submit-post-btn">Đăng lên</button>
             </div>
         </div>
     </div>
 
-    <script>
-        /* === 1. XỬ LÝ MÀN HÌNH LOADING === */
-        window.addEventListener('load', () => {
-            const preloader = document.getElementById('preloader');
-            setTimeout(() => {
-                preloader.style.opacity = '0';
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                    // Kích hoạt scroll observer sau khi load xong để card đầu tiên bay lên
-                    observeCards();
-                }, 600);
-            }, 1200); // Thời gian delay giả lập loading
-        });
+    <!-- Tích hợp Firebase Web Modular SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        /* === 2. ĐỒNG HỒ THỜI GIAN THỰC === */
-        function updateClock() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('real-clock').textContent = timeStr;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        // 1. Cấu hình Firebase của bạn
+        const firebaseConfig = {
+            apiKey: "AIzaSyDImqkipwn1Rm7BUS0Su9fpd9gnKXcN7jw",
+            authDomain: "addonshare-c1ffd.firebaseapp.com",
+            databaseURL: "https://addonshare-c1ffd-default-rtdb.firebaseio.com",
+            projectId: "addonshare-c1ffd",
+            storageBucket: "addonshare-c1ffd.firebasestorage.app",
+            messagingSenderId: "561066582050",
+            appId: "1:561066582050:web:bacecfc6610a8516066a7b",
+            measurementId: "G-TFQXBNRNYJ"
+        };
 
-        /* === 3. HIỆU ỨNG LƯỚT XUỐNG (SCROLL REVEAL) === */
-        // Sử dụng IntersectionObserver để bắt sự kiện khi cuộn tới thẻ
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    // Tắt theo dõi sau khi đã xuất hiện để tối ưu hiệu năng
-                    observer.unobserve(entry.target); 
-                }
-            });
-        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-
-        function observeCards() {
-            const cards = document.querySelectorAll('.addon-card:not(.visible)');
-            cards.forEach(card => observer.observe(card));
-        }
-
-        /* === 4. LOGIC POPUP (MODAL) === */
-        const modal = document.getElementById('postModal');
-        function openModal() { modal.classList.add('show'); }
-        function closeModal() { modal.classList.remove('show'); }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
         
-        // Đóng modal khi bấm ra ngoài vùng xám
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
+        // Client ID của bạn (Google Provider tự cấu hình ẩn, có thể set parameter nếu cần)
+        const provider = new GoogleAuthProvider();
+
+        // 2. Trạng thái người dùng
+        let currentUser = null;
+        const loginBtn = document.getElementById('login-btn');
+        const createBtn = document.getElementById('create-btn');
+
+        // Theo dõi đăng nhập
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                // Hiện Avatar
+                loginBtn.innerHTML = `<img src="${user.photoURL}" alt="avatar">`;
+                loginBtn.title = "Đăng xuất";
+                // Hiện nút đăng bài
+                createBtn.style.display = 'block';
+            } else {
+                currentUser = null;
+                // Trở lại icon Google
+                loginBtn.innerHTML = `<i class="fab fa-google"></i>`;
+                loginBtn.title = "Đăng nhập Google";
+                // Ẩn nút đăng bài
+                createBtn.style.display = 'none';
+            }
         });
 
-        /* === 5. CHỨC NĂNG ĐĂNG BÀI (THÊM MODEL MỚI VÀO WEB) === */
-        function publishPost() {
+        // Xử lý nút Đăng nhập / Đăng xuất
+        loginBtn.addEventListener('click', () => {
+            if (currentUser) {
+                if(confirm("Bạn muốn đăng xuất?")) signOut(auth);
+            } else {
+                signInWithPopup(auth, provider).catch(err => alert("Lỗi đăng nhập: " + err.message));
+            }
+        });
+
+        // 3. Realtime Database: Đọc dữ liệu (Lắng nghe thời gian thực)
+        const feedContainer = document.getElementById('feed-container');
+        const postsRef = ref(db, 'addons'); // Bảng 'addons' trong Firebase
+
+        onValue(postsRef, (snapshot) => {
+            feedContainer.innerHTML = ''; // Xóa chữ "Đang tải..."
+            
+            const data = snapshot.val();
+            if (data) {
+                // Đảo ngược mảng để bài mới nhất lên đầu
+                const posts = Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse();
+                
+                posts.forEach(post => {
+                    // Logic Huy hiệu DEV màu đỏ
+                    let devBadge = '';
+                    if (post.email === 'hminhgalaxy@gmail.com') {
+                        devBadge = `<span class="dev-badge">DEV</span>`;
+                    }
+
+                    // Render thẻ UI
+                    const card = document.createElement('article');
+                    card.className = 'addon-card';
+                    card.innerHTML = `
+                        <div class="card-img-wrapper">
+                            <img src="${post.image}" alt="Img">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">${post.title}</h3>
+                            <div class="author-line">
+                                <span>Bởi: ${post.author}</span>
+                                ${devBadge}
+                            </div>
+                        </div>
+                    `;
+                    feedContainer.appendChild(card);
+                });
+            } else {
+                feedContainer.innerHTML = '<p style="color:var(--text-sub); width:100%; text-align:center;">Chưa có bài viết nào.</p>';
+            }
+        });
+
+        // 4. Modal logic (Đăng bài)
+        const modal = document.getElementById('postModal');
+        createBtn.addEventListener('click', () => modal.classList.add('show'));
+        document.getElementById('close-modal-btn').addEventListener('click', () => modal.classList.remove('show'));
+
+        // Đẩy dữ liệu lên Firebase
+        document.getElementById('submit-post-btn').addEventListener('click', () => {
             const title = document.getElementById('titleInput').value.trim();
-            const author = document.getElementById('authorInput').value.trim() || 'Ẩn danh';
             let img = document.getElementById('imgInput').value.trim();
+            
+            if (!title) return alert("Vui lòng nhập tiêu đề!");
+            if (!img) img = "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?w=600";
 
-            if (!title) {
-                alert("Vui lòng nhập tên Addon!");
-                return;
-            }
+            // Push dữ liệu
+            const newPostRef = push(postsRef);
+            set(newPostRef, {
+                title: title,
+                image: img,
+                author: currentUser.displayName,
+                email: currentUser.email, // Lưu email để check DEV
+                createdAt: serverTimestamp()
+            }).then(() => {
+                // Thành công: Đóng form và reset
+                modal.classList.remove('show');
+                document.getElementById('titleInput').value = '';
+                document.getElementById('imgInput').value = '';
+            }).catch(err => {
+                alert("Lỗi khi đăng: " + err.message);
+            });
+        });
 
-            if (!img) { // Ảnh mặc định nếu không dán link
-                img = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600";
-            }
-
-            // Tạo thẻ HTML mới
-            const newArticle = document.createElement('article');
-            newArticle.className = 'addon-card';
-            newArticle.innerHTML = `
-                <div class="card-img-wrapper">
-                    <img src="${img}" alt="New Post">
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title">${title}</h3>
-                    <p class="card-author">Tác giả: ${author}</p>
-                </div>
-            `;
-
-            // Chèn vào đầu danh sách
-            const feedContainer = document.getElementById('feed-container');
-            feedContainer.prepend(newArticle);
-
-            // Kích hoạt hiệu ứng xuất hiện cho bài viết mới
-            setTimeout(() => {
-                observer.observe(newArticle);
-            }, 50);
-
-            // Xóa dữ liệu cũ và đóng popup
-            document.getElementById('titleInput').value = '';
-            document.getElementById('authorInput').value = '';
-            document.getElementById('imgInput').value = '';
-            closeModal();
-        }
+        // 5. Đồng hồ mini nhẹ nhàng
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('clock').innerText = d.toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
+        }, 1000);
     </script>
 </body>
 </html>
