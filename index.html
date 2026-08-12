@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCPE Addon - Đỉnh Cao</title>
+    <!-- Font Awesome cho Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font chữ Inter hiện đại -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === BIẾN MÀU SẮC (THEME) === */
+        :root {
+            --bg-base: #030305;
+            --glass-panel: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --neon-accent: #00e5ff;
+            --neon-glow: rgba(0, 229, 255, 0.4);
+            --text-main: #f4f4f5;
+            --text-sub: #a1a1aa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-base); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        /* === BACKGROUND HIỆU ỨNG ĐỘNG === */
+        .ambient-glow {
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(20, 30, 80, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(0, 229, 255, 0.05) 0%, transparent 30%);
+            z-index: -1; animation: drift 20s infinite linear alternate;
+        }
+        @keyframes drift { 100% { transform: rotate(5deg) scale(1.1); } }
+
+        /* === MÀN HÌNH LOADING === */
+        #preloader {
+            position: fixed; inset: 0; background: var(--bg-base); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+        .loader-text {
+            font-size: 3rem; font-weight: 900; letter-spacing: -2px;
+            background: linear-gradient(to right, #fff, var(--neon-accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: pulse-glow 1.5s ease-in-out infinite alternate;
+        }
+        @keyframes pulse-glow { 
+            from { text-shadow: 0 0 10px transparent; transform: scale(1); } 
+            to { text-shadow: 0 0 30px var(--neon-glow); transform: scale(1.05); } 
+        }
+
+        /* === HEADER === */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 24px; position: sticky; top: 0; z-index: 100;
+            background: rgba(3, 3, 5, 0.8); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .header-left .google-btn {
+            background: var(--glass-panel); border: 1px solid var(--glass-border);
+            width: 40px; height: 40px; border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; cursor: pointer; transition: 0.3s;
+        }
+        .header-left .google-btn:hover { border-color: #ea4335; box-shadow: 0 0 15px rgba(234,67,53,0.3); }
+        .header-left .google-btn i { color: #ea4335; font-size: 1.1rem; }
+
+        .header-center h1 {
+            font-size: 1.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-main);
+        }
+
+        .header-right .clock {
+            font-size: 0.85rem; font-weight: 600; color: var(--neon-accent);
+            background: rgba(0, 229, 255, 0.1); padding: 6px 12px; border-radius: 20px;
+        }
+
+        /* === THANH TÌM KIẾM TỐI GIẢN === */
+        .search-area { padding: 20px 24px; }
+        .search-bar {
+            position: relative; max-width: 600px; margin: 0 auto;
+        }
+        .search-bar input {
+            width: 100%; background: var(--glass-panel); border: 1px solid var(--glass-border);
+            padding: 16px 20px 16px 50px; border-radius: 20px; color: white;
+            font-size: 1rem; outline: none; transition: 0.4s;
+        }
+        .search-bar input:focus { border-color: var(--neon-accent); box-shadow: 0 0 25px rgba(0,229,255,0.1); }
+        .search-bar i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+
+        /* === GRID LAYOUT & CARD === */
+        .addon-container {
+            padding: 10px 24px; max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;
+        }
+
+        .addon-card {
+            background: var(--glass-panel); border: 1px solid var(--glass-border);
+            border-radius: 20px; overflow: hidden; padding: 12px;
+            opacity: 0; transform: translateY(40px) scale(0.95); /* Setup cho scroll animation */
+            transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s, border-color 0.3s;
+        }
+        
+        .addon-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+        
+        .addon-card:hover { border-color: rgba(0, 229, 255, 0.3); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+
+        .card-img-wrapper { position: relative; width: 100%; padding-top: 100%; border-radius: 14px; overflow: hidden; }
+        .card-img-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .addon-card:hover .card-img-wrapper img { transform: scale(1.1); }
+
+        .card-content { padding: 16px 8px 4px; }
+        .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-author { font-size: 0.85rem; color: var(--text-sub); }
+
+        /* === FLOATING DOCK (CHỈ HOME VÀ TẢI LÊN) === */
+        .dock-container {
+            position: fixed; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 100;
+        }
+        .dock {
+            background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); padding: 8px; border-radius: 40px; display: flex; gap: 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .dock-btn {
+            background: transparent; border: none; color: var(--text-sub);
+            padding: 12px 24px; border-radius: 30px; font-size: 1rem; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .dock-btn.active, .dock-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        
+        /* Nút cộng nổi bật */
+        .dock-btn.upload {
+            background: var(--text-main); color: var(--bg-base); font-weight: 800; margin-left: 10px;
+        }
+        .dock-btn.upload:hover { background: var(--neon-accent); box-shadow: 0 0 20px var(--neon-glow); transform: scale(1.05); }
+
+        /* === MODAL POPUP === */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: 0.4s ease; z-index: 999;
+        }
+        .modal.show { opacity: 1; visibility: visible; }
+        
+        .modal-body {
+            background: #0d0d12; width: 90%; max-width: 400px; padding: 30px;
+            border-radius: 24px; border: 1px solid var(--glass-border);
+            transform: translateY(30px); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .modal.show .modal-body { transform: translateY(0); }
+        
+        .modal-header { font-size: 1.4rem; font-weight: 800; margin-bottom: 25px; text-align: center; }
+        .input-group { margin-bottom: 15px; }
+        .input-group input {
+            width: 100%; padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border); color: white; font-size: 0.95rem; outline: none; transition: 0.3s;
+        }
+        .input-group input:focus { border-color: var(--neon-accent); }
+        
+        .modal-actions { display: flex; gap: 12px; margin-top: 25px; }
+        .modal-actions button {
+            flex: 1; padding: 14px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s;
+        }
+        .btn-close { background: transparent; color: white; border: 1px solid var(--glass-border) !important; }
+        .btn-publish { background: white; color: black; }
+        .btn-publish:hover { background: var(--neon-accent); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Màn hình chờ siêu mượt -->
+    <div id="preloader">
+        <div class="loader-text">MCPE.</div>
+    </div>
+
+    <!-- Hiệu ứng nền tĩnh/động -->
+    <div class="ambient-glow"></div>
+
+    <header>
+        <div class="header-left">
+            <div class="google-btn" title="Đăng nhập Google">
+                <i class="fab fa-google"></i>
+            </div>
+        </div>
+        <div class="header-center">
+            <h1>MCPE Addon</h1>
+        </div>
+        <div class="header-right">
+            <div class="clock" id="real-clock">00:00</div>
+        </div>
+    </header>
+
+    <div class="search-area">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Khám phá Maps, Mods, Texture Packs...">
+        </div>
+    </div>
+
+    <!-- Lưới bài viết (Sử dụng IntersectionObserver để tạo hiệu ứng) -->
+    <main class="addon-container" id="feed-container">
+        <!-- Các thẻ bài viết mồi -->
+        <article class="addon-card">
+            <div class="card-img-wrapper"><img src="https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600" alt="Map"></div>
+            <div class="card-content">
+                <h3 class="card-title">Bonkritz Palace Pro</h3>
+                <p class="card-author">Tác giả: Yeggs</p>
+            </div>
+        </article>
+        
+        <article class="addon-card">
+            <div class="card-img-wrapper"><img src="https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=600" alt="Map"></div>
+            <div class="card-content">
+                <h3 class="card-title">Prison Escape V2</h3>
+                <p class="card-author">Tác giả: Impress</p>
+            </div>
+        </article>
+
+        <article class="addon-card">
+            <div class="card-img-wrapper"><img src="https://images.unsplash.com/photo-1614728853352-60298069504e?q=80&w=600" alt="Mod"></div>
+            <div class="card-content">
+                <h3 class="card-title">Cyber Vehicles Mod</h3>
+                <p class="card-author">Tác giả: Nova</p>
+            </div>
+        </article>
+
+        <article class="addon-card">
+            <div class="card-img-wrapper"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600" alt="Texture"></div>
+            <div class="card-content">
+                <h3 class="card-title">Ultra Realism Textures</h3>
+                <p class="card-author">Tác giả: Studio G</p>
+            </div>
+        </article>
+    </main>
+
+    <!-- Thanh công cụ (Tối giản tối đa) -->
+    <div class="dock-container">
+        <div class="dock">
+            <button class="dock-btn active"><i class="fas fa-compass"></i> Khám phá</button>
+            <button class="dock-btn upload" onclick="openModal()"><i class="fas fa-plus"></i> Tạo mới</button>
+        </div>
+    </div>
+
+    <!-- Popup Đăng bài -->
+    <div class="modal" id="postModal">
+        <div class="modal-body">
+            <div class="modal-header">Đóng góp Addon</div>
+            <div class="input-group">
+                <input type="text" id="titleInput" placeholder="Tên Addon / Map (Bắt buộc)">
+            </div>
+            <div class="input-group">
+                <input type="text" id="authorInput" placeholder="Tên của bạn">
+            </div>
+            <div class="input-group">
+                <input type="text" id="imgInput" placeholder="Link ảnh minh họa (Tùy chọn)">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-close" onclick="closeModal()">Hủy</button>
+                <button class="btn-publish" onclick="publishPost()">Đăng ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* === 1. XỬ LÝ MÀN HÌNH LOADING === */
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    // Kích hoạt scroll observer sau khi load xong để card đầu tiên bay lên
+                    observeCards();
+                }, 600);
+            }, 1200); // Thời gian delay giả lập loading
+        });
+
+        /* === 2. ĐỒNG HỒ THỜI GIAN THỰC === */
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('real-clock').textContent = timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        /* === 3. HIỆU ỨNG LƯỚT XUỐNG (SCROLL REVEAL) === */
+        // Sử dụng IntersectionObserver để bắt sự kiện khi cuộn tới thẻ
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Tắt theo dõi sau khi đã xuất hiện để tối ưu hiệu năng
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+        function observeCards() {
+            const cards = document.querySelectorAll('.addon-card:not(.visible)');
+            cards.forEach(card => observer.observe(card));
+        }
+
+        /* === 4. LOGIC POPUP (MODAL) === */
+        const modal = document.getElementById('postModal');
+        function openModal() { modal.classList.add('show'); }
+        function closeModal() { modal.classList.remove('show'); }
+        
+        // Đóng modal khi bấm ra ngoài vùng xám
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        /* === 5. CHỨC NĂNG ĐĂNG BÀI (THÊM MODEL MỚI VÀO WEB) === */
+        function publishPost() {
+            const title = document.getElementById('titleInput').value.trim();
+            const author = document.getElementById('authorInput').value.trim() || 'Ẩn danh';
+            let img = document.getElementById('imgInput').value.trim();
+
+            if (!title) {
+                alert("Vui lòng nhập tên Addon!");
+                return;
+            }
+
+            if (!img) { // Ảnh mặc định nếu không dán link
+                img = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600";
+            }
+
+            // Tạo thẻ HTML mới
+            const newArticle = document.createElement('article');
+            newArticle.className = 'addon-card';
+            newArticle.innerHTML = `
+                <div class="card-img-wrapper">
+                    <img src="${img}" alt="New Post">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">${title}</h3>
+                    <p class="card-author">Tác giả: ${author}</p>
+                </div>
+            `;
+
+            // Chèn vào đầu danh sách
+            const feedContainer = document.getElementById('feed-container');
+            feedContainer.prepend(newArticle);
+
+            // Kích hoạt hiệu ứng xuất hiện cho bài viết mới
+            setTimeout(() => {
+                observer.observe(newArticle);
+            }, 50);
+
+            // Xóa dữ liệu cũ và đóng popup
+            document.getElementById('titleInput').value = '';
+            document.getElementById('authorInput').value = '';
+            document.getElementById('imgInput').value = '';
+            closeModal();
+        }
+    </script>
+</body>
+</html>
