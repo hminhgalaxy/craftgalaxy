@@ -3,602 +3,507 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GalaxyCraft | Holographic Aurora V2</title>
+    <title>GalaxyCraft | Cosmic Zenith V3</title>
     
     <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
         /* ==========================================================================
-           1. HỆ THỐNG BIẾN CSS & TOKENS (HOLOGRAPHIC THEME)
+           1. CORE VARIABLES & TOKENS (V3 MAX LEVEL)
            ========================================================================== */
         :root {
-            --bg-space: #010104;
-            --bg-glass: rgba(10, 10, 15, 0.45);
-            --bg-glass-heavy: rgba(5, 5, 10, 0.85);
+            --bg-void: #050508;
+            --glass-1: rgba(15, 15, 25, 0.6);
+            --glass-2: rgba(20, 20, 35, 0.4);
+            --glass-solid: rgba(10, 10, 18, 0.95);
             
-            --aurora-1: #00f2fe;
-            --aurora-2: #4facfe;
-            --aurora-3: #f093fb;
-            --aurora-4: #f5576c;
+            --neon-cyan: #00f2fe;
+            --neon-pink: #f093fb;
+            --neon-purple: #8360c3;
+            --neon-red: #ff0844;
+            --neon-gold: #f6d365;
             
-            --primary: #00f2fe;
-            --secondary: #f093fb;
-            --accent: #f5576c;
-            --gold: #f6d365;
-            --danger: #ff0844;
+            --text-1: #ffffff;
+            --text-2: #94a3b8;
             
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(0, 242, 254, 0.5);
             
-            --radius-sm: 12px;
-            --radius-md: 20px;
-            --radius-lg: 30px;
-            --nav-height: 75px;
+            --shadow-float: 0 20px 40px -10px rgba(0,0,0,0.8);
+            --shadow-glow: 0 0 20px rgba(0, 242, 254, 0.3);
             
-            --border-glass: rgba(255, 255, 255, 0.1);
-            --border-glow: rgba(0, 242, 254, 0.3);
-            --shadow-holo: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --shadow-neon: 0 0 15px rgba(0, 242, 254, 0.4);
-            
-            --role-dev: #ff0844; --role-admin: #f6d365; --role-glx: #00f2fe; --role-guest: #64748b;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { font-size: 16px; scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-space); color: var(--text-main); min-height: 100vh; overflow-x: hidden; padding-bottom: 100px; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: 'Outfit', sans-serif; background-color: var(--bg-void); color: var(--text-1); min-height: 100vh; overflow-x: hidden; padding-bottom: 120px; }
         
         button, input, select, textarea { font-family: inherit; outline: none; border: none; background: none; color: inherit; }
-        button { cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        img { max-width: 100%; display: block; object-fit: cover; }
+        button { cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+        img { max-width: 100%; object-fit: cover; display: block; }
         
+        /* Custom Scrollbar Premium */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(var(--primary), var(--secondary)); }
+        ::-webkit-scrollbar-track { background: var(--bg-void); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(var(--neon-cyan), var(--neon-purple)); }
 
-        /* Typography & Utilities */
+        /* Typography Utilities */
         .font-space { font-family: 'Space Grotesk', sans-serif; }
-        .text-gradient { background: linear-gradient(to right, var(--aurora-1), var(--aurora-3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .title-glow { text-shadow: 0 0 20px rgba(0, 242, 254, 0.5); }
+        .text-gradient { background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .title-glow { text-shadow: 0 0 30px rgba(0, 242, 254, 0.6); }
         
-        /* Glassmorphism */
-        .glass-panel { background: var(--bg-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); }
-        
-        /* ANIMATIONS (Hiệu ứng mượt mà) */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translate3d(0, 40px, 0); }
-            to { opacity: 1; transform: translate3d(0, 0, 0); }
-        }
-        .animate-up { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 10px rgba(245, 87, 108, 0.4); transform: scale(1); }
-            50% { box-shadow: 0 0 20px rgba(245, 87, 108, 0.8); transform: scale(1.05); }
-            100% { box-shadow: 0 0 10px rgba(245, 87, 108, 0.4); transform: scale(1); }
-        }
-        .hot-badge { animation: pulseGlow 2s infinite; background: linear-gradient(45deg, #ff0844, #ffb199); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 900; letter-spacing: 1px; }
+        /* Global Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 10px rgba(255,8,68,0.4); } 50% { box-shadow: 0 0 25px rgba(255,8,68,0.8); transform: scale(1.05); } 100% { box-shadow: 0 0 10px rgba(255,8,68,0.4); } }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         /* ==========================================================================
-           2. AURORA BACKGROUND ENGINE (Tối ưu GPU)
+           2. DYNAMIC BACKGROUND (STARFIELD + NEBULA V3)
            ========================================================================== */
-        .aurora-container { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; background: var(--bg-space); }
-        .aurora-blob { position: absolute; filter: blur(80px); opacity: 0.4; border-radius: 50%; animation: auroraFloat 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; }
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--aurora-1); animation-delay: 0s; }
-        .blob-2 { top: 40%; right: -20%; width: 40vw; height: 40vw; background: var(--aurora-2); animation-delay: -5s; }
-        .blob-3 { bottom: -20%; left: 20%; width: 60vw; height: 60vw; background: var(--aurora-3); animation-delay: -10s; }
-        
-        @keyframes auroraFloat {
-            0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
-            50% { transform: translate3d(10%, 15%, 0) scale(1.2) rotate(90deg); }
-            100% { transform: translate3d(-10%, -10%, 0) scale(0.9) rotate(180deg); }
-        }
-
-        #star-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.8; }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; pointer-events: none; }
+        .nebula-orb { position: fixed; border-radius: 50%; filter: blur(100px); opacity: 0.35; z-index: -2; pointer-events: none; animation: floatOrb 20s infinite alternate ease-in-out; will-change: transform; }
+        .orb-1 { top: -20%; left: -10%; width: 60vw; height: 60vw; background: var(--neon-purple); }
+        .orb-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: var(--neon-cyan); animation-delay: -10s; }
+        @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(15%, 15%) scale(1.2); } }
 
         /* ==========================================================================
-           3. PRELOADER & TOAST
+           3. PREMIUM HEADER
            ========================================================================== */
-        #preloader { position: fixed; inset: 0; background: var(--bg-space); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s, visibility 0.6s; }
-        .pl-logo { font-size: 4rem; letter-spacing: 4px; animation: plPulse 1.5s infinite alternate; }
-        @keyframes plPulse { 0% { filter: drop-shadow(0 0 10px var(--aurora-1)); transform: scale(1); } 100% { filter: drop-shadow(0 0 30px var(--aurora-3)); transform: scale(1.05); } }
-
-        #toast-zone { position: fixed; top: 24px; right: 24px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast-card { background: rgba(5,5,10,0.95); backdrop-filter: blur(15px); border: 1px solid var(--border-glass); border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: var(--radius-sm); display: flex; align-items: flex-start; gap: 16px; min-width: 320px; transform: translateX(120%); opacity: 0; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: var(--shadow-holo); pointer-events: auto; }
-        .toast-card.show { transform: translateX(0); opacity: 1; }
-        .toast-card.success { border-left-color: #00e676; } .toast-card.error { border-left-color: var(--danger); }
-        .t-icon { font-size: 1.5rem; margin-top: 2px; }
-        .t-body h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;}
-        .t-body p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
-
-        /* ==========================================================================
-           4. GLOBAL HEADER & HERO
-           ========================================================================== */
-        header { position: sticky; top: 0; height: var(--nav-height); z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; background: rgba(2, 2, 5, 0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border-glass); transition: all 0.3s; }
+        header { position: fixed; top: 0; width: 100%; height: 80px; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; background: rgba(5, 5, 8, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-glass); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        header.hide { transform: translateY(-100%); }
         
-        .header-left { display: flex; align-items: center; gap: 16px; }
-        .btn-menu { width: 44px; height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); display: flex; justify-content: center; align-items: center; font-size: 1.2rem; background: rgba(255,255,255,0.03); }
-        .btn-menu:hover { background: rgba(0,242,254,0.1); border-color: var(--primary); color: var(--primary); box-shadow: var(--shadow-neon); transform: translateY(-2px); }
-        .brand { font-size: 1.6rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s;}
+        .hdr-left { display: flex; align-items: center; gap: 20px; }
+        .btn-menu { width: 45px; height: 45px; border-radius: 12px; background: var(--border-glass); display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
+        .btn-menu:hover { background: rgba(0, 242, 254, 0.15); color: var(--neon-cyan); box-shadow: var(--shadow-glow); }
+        .brand { font-size: 1.8rem; font-weight: 900; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
         .brand:hover { transform: scale(1.05); }
-        .brand i { color: var(--primary); }
 
-        .header-search { flex: 1; max-width: 400px; margin: 0 24px; position: relative; display: none; }
-        @media (min-width: 768px) { .header-search { display: block; } }
-        .header-search input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); padding: 12px 16px 12px 45px; border-radius: 30px; font-size: 0.9rem; transition: 0.3s; color: white;}
-        .header-search input:focus { border-color: var(--primary); box-shadow: inset 0 0 15px rgba(0,242,254,0.15); background: rgba(0,0,0,0.5); }
-        .header-search i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .hdr-center { flex: 1; max-width: 500px; margin: 0 30px; position: relative; display: none; }
+        @media (min-width: 768px) { .hdr-center { display: block; } }
+        .hdr-center input { width: 100%; background: var(--glass-2); border: 1px solid var(--border-glass); padding: 12px 20px 12px 50px; border-radius: 30px; font-size: 1rem; color: white; transition: 0.3s; }
+        .hdr-center input:focus { border-color: var(--neon-cyan); background: rgba(0,0,0,0.6); box-shadow: inset 0 0 20px rgba(0,242,254,0.1); }
+        .hdr-center i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-2); font-size: 1.1rem; }
 
-        .header-right { display: flex; align-items: center; gap: 12px; }
-        .btn-icon-top { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-glass); display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.03); font-size: 1.1rem; transition: 0.3s; }
-        .btn-icon-top:hover { border-color: var(--secondary); color: var(--secondary); box-shadow: 0 0 15px rgba(240,147,251,0.3); transform: rotate(15deg);}
-        .user-avatar-top { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; cursor: pointer; display: none; transition: 0.3s;}
-        .user-avatar-top:hover { border-color: var(--primary); box-shadow: 0 0 15px var(--primary); transform: scale(1.1); }
-
-        /* Hero Section */
-        .hero { padding: 80px 24px 40px; text-align: center; max-width: 900px; margin: 0 auto; position: relative; z-index: 1;}
-        .hero h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.1; margin-bottom: 20px; }
-        .typewriter-wrap { display: inline-block; color: var(--primary); border-right: 3px solid var(--primary); padding-right: 5px; animation: blinkCursor 0.75s step-end infinite; }
-        @keyframes blinkCursor { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
-        .hero p { font-size: 1.1rem; color: var(--text-muted); line-height: 1.6; max-width: 600px; margin: 0 auto; }
+        .hdr-right { display: flex; align-items: center; gap: 15px; }
+        .hdr-avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; display: none; transition: 0.3s; }
+        .hdr-avatar:hover { border-color: var(--neon-cyan); box-shadow: var(--shadow-glow); transform: scale(1.1); }
+        .btn-admin { display: none; width: 45px; height: 45px; border-radius: 50%; background: rgba(246, 211, 101, 0.1); border: 1px solid var(--neon-gold); color: var(--neon-gold); justify-content: center; align-items: center; font-size: 1.2rem; }
+        .btn-admin:hover { background: var(--neon-gold); color: black; box-shadow: 0 0 20px var(--neon-gold); }
 
         /* ==========================================================================
-           5. FILTERS & CONTENT GRID
+           4. HERO & CONTROLS
            ========================================================================== */
-        .controls { padding: 0 24px 20px; max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 1;}
-        .mobile-search { display: block; position: relative; width: 100%; }
+        .hero { padding: 120px 20px 40px; text-align: center; max-width: 1000px; margin: 0 auto; }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.1; margin-bottom: 20px; animation: fadeUp 0.6s forwards; }
+        .hero p { font-size: 1.1rem; color: var(--text-2); max-width: 600px; margin: 0 auto; animation: fadeUp 0.6s 0.2s forwards; opacity: 0; }
+
+        .controls { max-width: 1300px; margin: 0 auto; padding: 0 20px 30px; animation: fadeUp 0.6s 0.3s forwards; opacity: 0; }
+        .mobile-search { display: block; position: relative; margin-bottom: 20px; }
         @media (min-width: 768px) { .mobile-search { display: none; } }
-        .mobile-search input { width: 100%; background: var(--bg-glass); border: 1px solid var(--border-glass); padding: 14px 16px 14px 45px; border-radius: var(--radius-md); font-size: 0.95rem; color: white; transition: 0.3s;}
-        .mobile-search input:focus { border-color: var(--primary); }
-        .mobile-search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .mobile-search input { width: 100%; background: var(--glass-1); padding: 16px 20px 16px 50px; border-radius: var(--radius-md); border: 1px solid var(--border-glass); color: white; font-size: 1rem; }
+        .mobile-search i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-2); }
 
-        .filter-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-        .pills { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; flex: 1; }
+        .filter-nav { display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .pills { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; flex: 1; }
         .pills::-webkit-scrollbar { display: none; }
-        .pill-btn { flex-shrink: 0; padding: 12px 28px; border-radius: 30px; font-weight: 700; color: var(--text-muted); font-size: 0.95rem; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02); position: relative; overflow: hidden;}
-        .pill-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
-        .pill-btn:hover::before { left: 100%; }
-        .pill-btn.active, .pill-btn:hover { background: linear-gradient(135deg, rgba(0,242,254,0.2), rgba(240,147,251,0.2)); color: var(--text-main); border-color: var(--primary); box-shadow: var(--shadow-neon); }
-        
-        .sort-btn { padding: 12px 20px; border-radius: var(--radius-md); background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-main); font-weight: 600; cursor: pointer; outline: none; transition: 0.3s; }
-        .sort-btn:hover { border-color: var(--secondary); }
-        .sort-btn option { background: var(--bg-space); }
+        .pill { padding: 12px 24px; border-radius: 30px; background: var(--glass-1); border: 1px solid var(--border-glass); font-weight: 700; color: var(--text-2); white-space: nowrap; transition: 0.3s; position: relative; overflow: hidden; }
+        .pill::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
+        .pill:hover::before { left: 100%; }
+        .pill.active { background: linear-gradient(135deg, rgba(0,242,254,0.2), rgba(131,96,195,0.2)); color: white; border-color: var(--neon-cyan); box-shadow: var(--shadow-glow); }
 
-        /* Feed Grid */
-        .feed-grid { padding: 10px 24px 60px; max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; min-height: 400px; perspective: 1000px; position: relative; z-index: 1;}
-        
-        .holo-card { background: var(--bg-glass); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; position: relative; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; border: 1px solid var(--border-glass); transform-style: preserve-3d; }
-        .holo-card::before { content:''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent); opacity: 0; transition: 0.4s; z-index: 5; pointer-events: none; }
-        .holo-card:hover { transform: translateY(-12px) scale(1.02); border-color: var(--aurora-2); box-shadow: 0 20px 40px rgba(79, 172, 254, 0.3); }
-        .holo-card:hover::before { opacity: 1; }
-
-        .hc-cover { width: 100%; padding-top: 56.25%; position: relative; overflow: hidden; }
-        .hc-cover img { position: absolute; inset: 0; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .holo-card:hover .hc-cover img { transform: scale(1.15) rotate(2deg); filter: brightness(1.1); }
-        
-        .hc-badges { position: absolute; top: 16px; left: 16px; display: flex; gap: 8px; z-index: 10; }
-        .hc-cat { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); border: 1px solid var(--border-glass); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; color: var(--primary); }
-        
-        .hc-admin { position: absolute; top: 16px; right: 16px; z-index: 10; display: none; }
-        .btn-trash { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,8,68,0.9); display: flex; justify-content: center; align-items: center; font-size: 1rem; color: white; transition: 0.3s; }
-        .btn-trash:hover { transform: scale(1.2) rotate(15deg); box-shadow: 0 0 20px var(--danger); }
-
-        .hc-body { padding: 20px; flex: 1; display: flex; flex-direction: column; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); }
-        .hc-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.3s;}
-        .holo-card:hover .hc-title { color: var(--primary); text-shadow: 0 0 10px rgba(0,242,254,0.3); }
-        
-        .hc-author { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; }
-        .hc-author img { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-glass); }
-        
-        .hc-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto; }
-        .hc-stats { display: flex; gap: 16px; font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
-        .hc-stats span { display: flex; align-items: center; gap: 6px; }
-        
-        .hc-actions { display: flex; gap: 8px; }
-        .btn-action { padding: 8px; border-radius: 50%; background: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 700; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative;}
-        .btn-action:hover { transform: scale(1.15); }
-        .btn-action.like:hover { background: rgba(245,87,108,0.1); color: var(--accent); }
-        .btn-action.like.active { color: var(--accent); background: rgba(245,87,108,0.15); box-shadow: 0 0 15px rgba(245,87,108,0.4); }
-        .btn-action.bookmark:hover { background: rgba(246,211,101,0.1); color: var(--gold); }
-        .btn-action.bookmark.active { color: var(--gold); background: rgba(246,211,101,0.15); box-shadow: 0 0 15px rgba(246,211,101,0.4);}
-
-        /* Skeletons */
-        .sk-card { border-radius: var(--radius-lg); border: 1px solid var(--border-glass); overflow: hidden; }
-        .sk-img { width: 100%; padding-top: 56.25%; background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-        .sk-line { height: 16px; background: #222; margin: 20px; border-radius: 4px; animation: shimmer 1.5s infinite; }
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .sort-sel { padding: 12px 20px; border-radius: var(--radius-md); background: var(--glass-1); border: 1px solid var(--border-glass); color: white; font-weight: 600; font-family: inherit; cursor: pointer; }
+        .sort-sel option { background: var(--bg-void); }
 
         /* ==========================================================================
-           6. FULLSCREEN DETAIL VIEW
+           5. 3D FEED GRID (TỐI ĐA TRẢI NGHIỆM THỊ GIÁC)
            ========================================================================== */
-        .view-fullscreen { position: fixed; inset: 0; background: var(--bg-space); z-index: 2000; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; overflow: hidden; }
-        .view-fullscreen.active { transform: translateY(0); }
+        .feed-grid { max-width: 1300px; margin: 0 auto; padding: 10px 20px 60px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; perspective: 1200px; }
         
-        .vf-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px 24px; display: flex; justify-content: space-between; z-index: 10; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
-        .btn-close-view { width: 48px; height: 48px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; transition: 0.3s;}
-        .btn-close-view:hover { background: var(--danger); border-color: var(--danger); transform: rotate(90deg) scale(1.1); }
+        .post-card { background: var(--glass-1); border-radius: var(--radius-lg); border: 1px solid var(--border-glass); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; position: relative; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s, border-color 0.4s; transform-style: preserve-3d; opacity: 0; animation: fadeUp 0.6s forwards; }
+        .post-card:hover { transform: translateY(-10px) rotateX(2deg) rotateY(-2deg); box-shadow: var(--shadow-float), var(--shadow-glow); border-color: var(--neon-cyan); }
+        
+        .pc-cover { width: 100%; padding-top: 56.25%; position: relative; overflow: hidden; }
+        .pc-cover img { position: absolute; inset: 0; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .post-card:hover .pc-cover img { transform: scale(1.15); filter: brightness(1.1); }
+        
+        .pc-badges { position: absolute; top: 16px; left: 16px; display: flex; gap: 8px; z-index: 10; }
+        .badge-cat { background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); border: 1px solid var(--border-glass); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; color: var(--neon-cyan); }
+        .badge-hot { animation: pulseGlow 2s infinite; background: linear-gradient(45deg, var(--neon-red), #ffb199); color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 900; }
+        
+        .pc-admin { position: absolute; top: 16px; right: 16px; z-index: 10; }
+        .btn-del { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,8,68,0.9); display: flex; justify-content: center; align-items: center; color: white; transition: 0.3s; }
+        .btn-del:hover { transform: scale(1.2) rotate(15deg); box-shadow: 0 0 15px var(--neon-red); }
 
-        .vf-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;}
-        .vf-cover { width: 100%; height: 50vh; min-height: 350px; position: relative; }
-        .vf-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .vf-cover::after { content:''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-space) 5%, transparent 60%); }
+        .pc-body { padding: 24px; display: flex; flex-direction: column; flex: 1; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+        .pc-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: 0.3s; }
+        .post-card:hover .pc-title { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0,242,254,0.4); }
         
-        .vf-container { padding: 0 24px 60px; max-width: 900px; margin: -80px auto 0; position: relative; z-index: 2; display: flex; flex-direction: column; gap: 30px;}
-        
-        .vf-main-info { background: var(--bg-glass-heavy); padding: 35px; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); box-shadow: var(--shadow-holo); backdrop-filter: blur(20px); }
-        .vf-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; line-height: 1.2; margin-bottom: 16px; }
-        .vf-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 1rem; color: var(--text-muted); margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border-glass); }
-        .vf-meta-item { display: flex; align-items: center; gap: 8px; }
-        
-        .vf-action-bar { display: flex; gap: 15px; margin-bottom: 30px; }
-        .btn-primary { flex: 1; padding: 14px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 800; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
-        .btn-primary:hover { box-shadow: 0 10px 20px rgba(0,242,254,0.3); transform: translateY(-3px); filter: brightness(1.1);}
-        .btn-secondary { padding: 14px 24px; border-radius: var(--radius-md); background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: white; font-weight: 700; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
-        .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+        .pc-author { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--text-2); margin-bottom: 20px; }
+        .pc-author img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border-glass); }
 
-        .vf-desc { font-size: 1.1rem; line-height: 1.8; color: #e2e8f0; white-space: pre-wrap; }
-
-        .vf-comments { background: var(--bg-glass-heavy); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 30px; }
-        .cmt-header { font-size: 1.4rem; font-weight: 900; color: var(--aurora-1); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;}
-        .cmt-list { display: flex; flex-direction: column; gap: 16px; max-height: 500px; overflow-y: auto; margin-bottom: 24px; padding-right: 8px;}
-        .cmt-card { background: rgba(255,255,255,0.03); padding: 16px; border-radius: 16px; border-left: 3px solid transparent; transition: 0.3s;}
-        .cmt-card:hover { background: rgba(255,255,255,0.06); transform: translateX(5px); }
-        .cmt-user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .cmt-user-info img { width: 32px; height: 32px; border-radius: 50%; }
-        .cmt-name { font-weight: 800; font-size: 0.95rem; }
-        .cmt-text { font-size: 1rem; line-height: 1.6; color: #cbd5e1; word-wrap: break-word;}
+        .pc-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 16px; margin-top: auto; }
+        .pc-stats { display: flex; gap: 15px; color: var(--text-2); font-weight: 600; font-size: 0.9rem; }
+        .pc-stats span { display: flex; align-items: center; gap: 6px; }
         
-        .cmt-input-row { display: flex; gap: 12px; }
-        .cmt-input-row input { flex: 1; padding: 16px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); border-radius: var(--radius-md); font-size: 1rem; color: white;}
-        .cmt-input-row input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,242,254,0.2);}
-        .cmt-input-row button { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 0 24px; border-radius: var(--radius-md); font-size: 1.2rem; transition: 0.3s;}
-        .cmt-input-row button:hover { transform: scale(1.05); box-shadow: var(--shadow-neon); }
+        .pc-actions { display: flex; gap: 10px; }
+        .btn-act { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; font-size: 1.1rem; transition: 0.3s; }
+        .btn-act:hover { transform: scale(1.15); background: rgba(255,255,255,0.1); }
+        .btn-act.like.active { color: var(--neon-red); background: rgba(255,8,68,0.15); box-shadow: 0 0 15px rgba(255,8,68,0.4); }
+        .btn-act.bm.active { color: var(--neon-gold); background: rgba(246,211,101,0.15); box-shadow: 0 0 15px rgba(246,211,101,0.4); }
+
+        /* Skeleton System */
+        .sk-card { background: var(--glass-1); border-radius: var(--radius-lg); border: 1px solid var(--border-glass); overflow: hidden; }
+        .sk-img { width: 100%; padding-top: 56.25%; background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%); background-size: 200% 100%; animation: skAnim 1.5s infinite; }
+        .sk-line { height: 16px; background: #222; margin: 20px; border-radius: 8px; animation: skAnim 1.5s infinite; }
+        @keyframes skAnim { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* ==========================================================================
-           7. MODALS, DRAWERS & PROFILE
+           6. DETAIL VIEW FULLSCREEN (PARALLAX & DOWNLOAD)
            ========================================================================== */
-        .drawer-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2999; opacity: 0; visibility: hidden; transition: 0.3s; }
-        .drawer-bg.active { opacity: 1; visibility: visible; }
-        .drawer { position: fixed; top: 0; left: 0; width: 100%; max-width: 420px; height: 100vh; background: rgba(5,5,10,0.98); border-right: 1px solid var(--border-glass); z-index: 3000; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; box-shadow: 20px 0 50px rgba(0,0,0,0.5);}
+        .detail-view { position: fixed; inset: 0; background: var(--bg-void); z-index: 2000; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; overflow: hidden; }
+        .detail-view.active { transform: translateY(0); }
+        
+        .dv-hdr { position: absolute; top: 0; left: 0; width: 100%; padding: 20px 30px; display: flex; justify-content: space-between; z-index: 10; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
+        .btn-close { width: 50px; height: 50px; border-radius: 50%; background: var(--glass-2); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); font-size: 1.2rem; transition: 0.3s; }
+        .btn-close:hover { background: var(--neon-red); border-color: var(--neon-red); transform: rotate(90deg); }
+
+        .dv-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+        .dv-cover { width: 100%; height: 50vh; position: relative; }
+        .dv-cover img { width: 100%; height: 100%; object-fit: cover; transform: translateZ(0); /* Parallax handle via JS */ }
+        .dv-cover::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-void) 5%, transparent 70%); }
+        
+        .dv-content { max-width: 900px; margin: -100px auto 0; position: relative; z-index: 2; padding: 0 20px 80px; display: flex; flex-direction: column; gap: 30px; }
+        
+        .dv-main { background: var(--glass-solid); backdrop-filter: blur(30px); border: 1px solid var(--border-glass); border-radius: var(--radius-xl); padding: 40px; box-shadow: var(--shadow-float); }
+        .dv-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.2; margin-bottom: 20px; }
+        .dv-meta { display: flex; flex-wrap: wrap; gap: 24px; font-size: 1.05rem; color: var(--text-2); margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid var(--border-glass); }
+        
+        /* Action Buttons (Download & Share) */
+        .dv-actions { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .btn-dl { flex: 2; min-width: 200px; padding: 18px; border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple)); color: white; font-weight: 800; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; gap: 12px; transition: 0.3s; text-shadow: 0 2px 5px rgba(0,0,0,0.3); position: relative; overflow: hidden;}
+        .btn-dl:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,242,254,0.4); }
+        .dl-progress { position: absolute; top: 0; left: 0; height: 100%; background: rgba(255,255,255,0.2); width: 0%; transition: width 0.1s linear; }
+        
+        .btn-share { flex: 1; min-width: 120px; padding: 18px; border-radius: var(--radius-lg); background: var(--glass-2); border: 1px solid var(--border-glass); font-weight: 700; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s;}
+        .btn-share:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+
+        .dv-desc { font-size: 1.15rem; line-height: 1.8; color: #e2e8f0; white-space: pre-wrap; }
+
+        /* Comments */
+        .dv-comments { background: var(--glass-solid); border: 1px solid var(--border-glass); border-radius: var(--radius-xl); padding: 40px; }
+        .cmt-head { font-size: 1.5rem; font-weight: 900; margin-bottom: 30px; color: var(--neon-cyan); }
+        .cmt-list { display: flex; flex-direction: column; gap: 20px; max-height: 600px; overflow-y: auto; margin-bottom: 30px; padding-right: 10px; }
+        .cmt-item { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; border-left: 4px solid transparent; transition: 0.3s; animation: slideInRight 0.4s ease-out forwards;}
+        .cmt-item:hover { background: rgba(255,255,255,0.06); transform: translateX(5px); }
+        .cmt-user { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .cmt-user img { width: 36px; height: 36px; border-radius: 50%; }
+        .cmt-name { font-weight: 800; font-size: 1rem; }
+        .cmt-role { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-right: 8px;}
+        .cmt-text { font-size: 1.05rem; line-height: 1.6; color: #cbd5e1; }
+        
+        .cmt-input { display: flex; gap: 15px; }
+        .cmt-input input { flex: 1; padding: 18px 24px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); font-size: 1.05rem; color: white; transition: 0.3s;}
+        .cmt-input input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,242,254,0.2); }
+        .cmt-input button { background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple)); color: white; padding: 0 30px; border-radius: var(--radius-lg); font-size: 1.3rem; transition: 0.3s; }
+        .cmt-input button:hover { transform: scale(1.05); box-shadow: var(--shadow-glow); }
+
+        /* ==========================================================================
+           7. DRAWERS, MODALS & BOTTOM DOCK
+           ========================================================================== */
+        /* Bottom Dock Mobile */
+        .dock-nav { position: fixed; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 90; pointer-events: none; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .dock-nav.hide { transform: translateY(150%); }
+        .dock-container { background: var(--glass-solid); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); padding: 10px; border-radius: 40px; display: flex; gap: 10px; box-shadow: var(--shadow-float); pointer-events: auto; }
+        .dock-btn { padding: 12px 24px; border-radius: 30px; font-weight: 700; color: var(--text-2); display: flex; align-items: center; gap: 8px; font-size: 1rem; transition: 0.3s; }
+        .dock-btn.active, .dock-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+        .dock-btn.upload { background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink)); color: white; display: none; }
+        .dock-btn.upload:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(240,147,251,0.4); }
+
+        /* Side Drawer (Menu/Chat) */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2999; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .overlay.active { opacity: 1; visibility: visible; }
+        
+        .drawer { position: fixed; top: 0; left: 0; width: 100%; max-width: 450px; height: 100vh; background: rgba(5,5,10,0.98); border-right: 1px solid var(--border-glass); z-index: 3000; transform: translateX(-100%); transition: 0.5s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; box-shadow: 20px 0 50px rgba(0,0,0,0.8); }
         .drawer.open { transform: translateX(0); }
         
-        .dr-head { padding: 24px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
-        .dr-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+        .dr-hdr { padding: 25px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
+        .dr-body { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 30px; }
 
-        /* Auth Panel */
-        .auth-panel { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 24px; text-align: center; position: relative; overflow: hidden;}
-        .auth-panel::before { content:''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,242,254,0.1) 0%, transparent 70%); pointer-events: none;}
-        .btn-login { width: 100%; padding: 16px; border-radius: var(--radius-sm); font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 1rem; transition: 0.3s; }
-        .btn-login.gg { background: white; color: black; }
-        .btn-login.gg:hover { background: #f1f1f1; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.2);}
-        .btn-login.guest { background: #1a1a24; color: white; border: 1px solid #333; }
-        .btn-login.guest:hover { background: #2a2a35; border-color: var(--text-muted); }
+        /* Auth/Profile Section */
+        .auth-box { background: var(--glass-2); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 30px; text-align: center; position: relative; overflow: hidden; }
+        .auth-box::before { content:''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,242,254,0.1) 0%, transparent 60%); pointer-events: none; }
         
-        /* Profile Panel */
-        .pf-view { display: none; flex-direction: column; align-items: center; gap: 12px; position: relative; z-index: 1;}
-        .pf-avatar-big { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); padding: 3px; object-fit: cover; box-shadow: var(--shadow-neon);}
-        .pf-level-badge { background: linear-gradient(90deg, var(--gold), #ff9100); color: black; padding: 4px 12px; border-radius: 20px; font-weight: 900; font-size: 0.8rem; margin-top: -15px; z-index: 2; border: 2px solid var(--bg-space); box-shadow: 0 5px 10px rgba(246, 211, 101, 0.4);}
-        .pf-name { font-size: 1.3rem; font-weight: 900; }
-        .badge { padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
-        .role-dev { background: rgba(255,8,68,0.2); color: var(--role-dev); border: 1px solid var(--role-dev); }
-        .role-admin { background: rgba(246,211,101,0.2); color: var(--role-admin); border: 1px solid var(--role-admin); }
-        .role-glx { background: rgba(0,242,254,0.2); color: var(--role-glx); border: 1px solid var(--role-glx); }
-        
-        .exp-bar-wrap { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 10px;}
-        .exp-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 10px var(--primary);}
-        .exp-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; }
+        .btn-login { width: 100%; padding: 18px; border-radius: var(--radius-md); font-weight: 800; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 15px; transition: 0.3s; }
+        .btn-login.gg { background: white; color: #333; }
+        .btn-login.gg:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,255,255,0.2); }
+        .btn-login.anon { background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border-glass); }
+        .btn-login.anon:hover { background: rgba(255,255,255,0.1); }
 
-        .btn-logout { margin-top: 15px; color: var(--danger); font-size: 0.95rem; font-weight: 700; text-decoration: underline; transition: 0.3s;}
-        .btn-logout:hover { color: #ff4a75; }
+        .pf-view { display: none; flex-direction: column; align-items: center; gap: 15px; position: relative; z-index: 1; }
+        .pf-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--neon-cyan); padding: 4px; object-fit: cover; box-shadow: var(--shadow-glow); }
+        .pf-level { background: linear-gradient(90deg, var(--neon-gold), #ff9100); color: black; padding: 4px 15px; border-radius: 20px; font-weight: 900; font-size: 0.9rem; margin-top: -20px; z-index: 2; box-shadow: 0 5px 15px rgba(246, 211, 101, 0.4); }
+        .pf-name { font-size: 1.5rem; font-weight: 900; }
+        
+        /* Role Colors */
+        .role-dev { background: rgba(255,8,68,0.2); color: var(--neon-red); border: 1px solid var(--neon-red); }
+        .role-admin { background: rgba(246,211,101,0.2); color: var(--neon-gold); border: 1px solid var(--neon-gold); }
+        .role-glx { background: rgba(0,242,254,0.2); color: var(--neon-cyan); border: 1px solid var(--neon-cyan); }
+        .role-guest { background: rgba(148,163,184,0.2); color: var(--text-2); border: 1px solid var(--text-2); }
+
+        .exp-container { width: 100%; text-align: left; margin-top: 10px; }
+        .exp-track { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; margin-top: 8px; }
+        .exp-fill { height: 100%; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); width: 0%; transition: width 1s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 0 10px var(--neon-cyan); }
 
         /* Global Chat */
-        .chat-box { flex: 1; display: flex; flex-direction: column; background: #010103; border-radius: var(--radius-md); border: 1px solid var(--border-glass); overflow: hidden; position: relative; min-height: 450px;}
-        .chat-head { padding: 16px; background: rgba(255,255,255,0.03); font-weight: 900; color: var(--secondary); text-align: center; border-bottom: 1px solid var(--border-glass);}
-        .chat-list { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth;}
-        .gc-msg { background: rgba(255,255,255,0.03); padding: 14px; border-radius: 12px; border-left: 3px solid transparent; animation: fadeUp 0.3s ease forwards;}
-        .chat-input-row { display: flex; padding: 12px; background: rgba(255,255,255,0.03); border-top: 1px solid var(--border-glass); }
-        .chat-input-row input { flex: 1; font-size: 0.95rem; padding: 10px; color: white;}
-        .chat-input-row button { color: var(--primary); font-size: 1.3rem; padding: 0 12px; transition: 0.3s;}
-        .chat-input-row button:hover { transform: scale(1.2); }
-        .chat-lock { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 12px; font-weight: bold; color: var(--text-muted); z-index: 10;}
-
-        /* Modals */
-        .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 4000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s; }
-        .modal-wrap.active { opacity: 1; visibility: visible; }
-        .modal-content { background: #0a0b12; width: 95%; max-width: 550px; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); padding: 32px; transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: var(--shadow-holo); max-height: 90vh; overflow-y: auto;}
-        .modal-wrap.active .modal-content { transform: translateY(0) scale(1); }
+        .chat-wrap { flex: 1; display: flex; flex-direction: column; background: #030305; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); overflow: hidden; position: relative; min-height: 400px; }
+        .chat-hdr { padding: 16px; background: rgba(255,255,255,0.02); font-weight: 900; color: var(--neon-pink); text-align: center; border-bottom: 1px solid var(--border-glass); }
+        .chat-msgs { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+        .msg-item { background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 12px; border-left: 3px solid transparent; animation: slideInRight 0.3s ease forwards; }
+        .chat-inp { display: flex; padding: 12px; background: rgba(255,255,255,0.02); border-top: 1px solid var(--border-glass); }
+        .chat-inp input { flex: 1; font-size: 1rem; padding: 10px; color: white; }
+        .chat-inp button { color: var(--neon-cyan); font-size: 1.4rem; padding: 0 12px; transition: 0.3s; }
+        .chat-inp button:hover { transform: scale(1.2); }
         
-        .mc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .mc-head h3 { font-size: 1.5rem; font-weight: 900; color: var(--primary); }
+        .auth-lock { position: absolute; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 15px; font-weight: bold; color: var(--text-2); z-index: 10; }
+
+        /* Modals Chung */
+        .modal { position: fixed; inset: 0; z-index: 4000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.4s; padding: 20px; }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-box { background: var(--glass-solid); width: 100%; max-width: 600px; border-radius: var(--radius-xl); border: 1px solid var(--border-glass); padding: 40px; transform: scale(0.9) translateY(20px); transition: 0.5s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: var(--shadow-float); max-height: 90vh; overflow-y: auto; }
+        .modal.active .modal-box { transform: scale(1) translateY(0); }
         
-        .fm-group { margin-bottom: 20px; }
-        .fm-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-muted); font-size: 0.95rem; }
-        .fm-input { width: 100%; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); font-size: 1rem; transition: 0.3s; color: white;}
-        .fm-input:focus { border-color: var(--primary); box-shadow: inset 0 0 15px rgba(0,242,254,0.15); }
-        .btn-submit-main { width: 100%; padding: 16px; border-radius: var(--radius-sm); background: linear-gradient(90deg, var(--primary), var(--secondary)); font-weight: 900; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; color: white; margin-top: 10px; transition: 0.3s;}
-        .btn-submit-main:hover { box-shadow: 0 10px 20px rgba(240,147,251,0.4); transform: translateY(-2px);}
+        .fm-grp { margin-bottom: 25px; }
+        .fm-lbl { display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-2); font-size: 1rem; }
+        .fm-inp { width: 100%; padding: 18px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-md); font-size: 1.05rem; color: white; transition: 0.3s; }
+        .fm-inp:focus { border-color: var(--neon-cyan); box-shadow: inset 0 0 15px rgba(0,242,254,0.1); background: rgba(0,0,0,0.5); }
+        
+        .btn-submit { width: 100%; padding: 18px; border-radius: var(--radius-md); background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); font-weight: 900; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; color: white; transition: 0.3s; margin-top: 10px; }
+        .btn-submit:hover { box-shadow: 0 10px 25px rgba(131,96,195,0.5); transform: translateY(-3px); }
 
-        /* Profile Modal Tabs */
-        .pf-tabs { display: flex; gap: 10px; margin: 20px 0; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;}
-        .pf-tab-btn { flex: 1; padding: 10px; text-align: center; color: var(--text-muted); font-weight: 700; border-radius: 8px; transition: 0.3s;}
-        .pf-tab-btn.active { background: rgba(255,255,255,0.05); color: var(--primary); }
-        .pf-tab-content { display: none; max-height: 400px; overflow-y: auto; }
-        .pf-tab-content.active { display: flex; flex-direction: column; gap: 12px; animation: fadeUp 0.3s forwards;}
-        .mini-card { display: flex; align-items: center; gap: 15px; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); cursor: pointer; transition: 0.3s;}
-        .mini-card:hover { background: rgba(255,255,255,0.08); border-color: var(--primary); transform: translateX(5px);}
-        .mini-card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover;}
-        .mini-card-info h4 { font-size: 1rem; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;}
-        .mini-card-info p { font-size: 0.8rem; color: var(--text-muted); }
+        /* Toast V3 */
+        #toast-box { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: var(--glass-solid); border: 1px solid var(--border-glass); padding: 14px 24px; border-radius: 30px; display: flex; align-items: center; gap: 12px; font-weight: 700; box-shadow: var(--shadow-float); transform: translateY(50px) scale(0.9); opacity: 0; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .toast.show { transform: translateY(0) scale(1); opacity: 1; }
+        .toast i { font-size: 1.2rem; }
 
-        /* ==========================================================================
-           8. MOBILE BOTTOM DOCK
-           ========================================================================== */
-        .bottom-dock { position: fixed; bottom: 24px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 90; pointer-events: none; transition: transform 0.3s;}
-        .dock-bar { background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); padding: 8px; border-radius: 40px; display: flex; gap: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); pointer-events: auto; }
-        .dock-item { padding: 12px 24px; border-radius: 30px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; font-size: 0.95rem; transition: 0.3s;}
-        .dock-item.active, .dock-item:hover { color: white; background: rgba(255,255,255,0.08); }
-        .dock-action { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; display: none; box-shadow: 0 5px 15px rgba(240,147,251,0.3);}
-        .dock-action:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-    <!-- LỚP 1: AURORA & STAR BACKGROUND -->
-    <div class="aurora-container">
-        <div class="aurora-blob blob-1"></div>
-        <div class="aurora-blob blob-2"></div>
-        <div class="aurora-blob blob-3"></div>
-    </div>
-    <canvas id="star-canvas"></canvas>
+    <!-- LỚP 1: V3 COSMIC BACKGROUND ENGINE -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="nebula-orb orb-1"></div>
+    <div class="nebula-orb orb-2"></div>
 
     <!-- LỚP 2: PRELOADER & TOAST -->
-    <div id="preloader">
-        <div class="font-space text-gradient pl-logo">GALAXY</div>
-        <div class="spinner"></div>
-    </div>
-    <div id="toast-zone"></div>
+    <div id="toast-box"></div>
 
-    <!-- LỚP 3: HEADER -->
-    <header id="main-header">
-        <div class="header-left">
-            <button class="btn-icon btn-menu" onclick="App.UI.toggleMenu(true)"><i class="fas fa-bars"></i></button>
-            <div class="brand font-space title-glow" onclick="window.scrollTo(0,0)"><i class="fas fa-meteor"></i> GALAXY</div>
+    <!-- LỚP 3: GALAXY HEADER -->
+    <header id="hdr-main">
+        <div class="hdr-left">
+            <button class="btn-menu" onclick="App.UI.toggleDrawer(true)"><i class="fas fa-bars"></i></button>
+            <div class="brand title-glow" onclick="window.scrollTo(0,0)"><i class="fas fa-meteor"></i> GALAXY</div>
         </div>
         
-        <div class="header-search">
+        <div class="hdr-center">
             <i class="fas fa-search"></i>
-            <input type="text" id="header-search" placeholder="Khám phá vũ trụ...">
+            <input type="text" id="hdr-search" placeholder="Khám phá bản đồ, addon, shader...">
         </div>
 
-        <div class="header-right">
-            <button class="btn-icon-top" id="btn-admin" style="display: none; color: var(--gold); border-color: var(--gold);" onclick="App.UI.toggleModal('modal-admin', true)" title="Trạm Chỉ Huy"><i class="fas fa-shield-alt"></i></button>
-            <img id="header-avatar" class="user-avatar-top" src="" onclick="App.UI.openProfile()" title="Trang Cá Nhân">
+        <div class="hdr-right">
+            <button class="btn-admin" id="btn-admin" onclick="App.UI.toggleModal('mdl-admin', true)"><i class="fas fa-terminal"></i></button>
+            <img id="hdr-avatar" class="hdr-avatar" src="" onclick="App.UI.toggleModal('mdl-profile', true)">
         </div>
     </header>
 
-    <!-- LỚP 4: HERO SECTION (TYPEWRITER) -->
+    <!-- LỚP 4: HERO SECTION -->
     <section class="hero">
-        <h1 class="animate-up" style="animation-delay: 0.1s">Chia sẻ & Khám phá <br><span class="title-glow typewriter-wrap" id="typewriter">Addons</span></h1>
-        <p class="animate-up" style="animation-delay: 0.2s">Hệ sinh thái thời gian thực dành cho Minecraft PE. Đóng góp tác phẩm, trò chuyện toàn cầu và thăng cấp thẻ tác giả của bạn.</p>
+        <h1 class="title-glow">Cosmic <span class="text-gradient">Ecosystem</span></h1>
+        <p>Phiên bản tối thượng (V3). Nền tảng chia sẻ và thảo luận thời gian thực cao cấp nhất dành cho cộng đồng Minecraft PE.</p>
     </section>
 
-    <!-- LỚP 5: BỘ LỌC & TÌM KIẾM MOBILE -->
-    <section class="controls animate-up" style="animation-delay: 0.3s">
+    <!-- LỚP 5: BỘ LỌC TÌM KIẾM -->
+    <section class="controls">
         <div class="mobile-search">
             <i class="fas fa-search"></i>
-            <input type="text" id="mobile-search" placeholder="Tìm tên tác phẩm, tác giả...">
+            <input type="text" id="mb-search" placeholder="Tìm kiếm siêu tốc...">
         </div>
-        <div class="filter-bar">
+        <div class="filter-nav">
             <div class="pills">
-                <button class="pill-btn filter-btn active" data-filter="all">Tất cả</button>
-                <button class="pill-btn filter-btn" data-filter="Addon">Addon / Mod</button>
-                <button class="pill-btn filter-btn" data-filter="Map">Bản đồ (Map)</button>
-                <button class="pill-btn filter-btn" data-filter="Shader">Shader / Texture</button>
+                <button class="pill filter-btn active" data-filter="all">Tất cả</button>
+                <button class="pill filter-btn" data-filter="Addon">Addon & Mod</button>
+                <button class="pill filter-btn" data-filter="Map">Bản đồ (Map)</button>
+                <button class="pill filter-btn" data-filter="Shader">Shader / Texture</button>
             </div>
-            <select class="sort-select sort-btn" id="feed-sort">
-                <option value="new">Mới nhất</option>
-                <option value="views">Xem nhiều</option>
-                <option value="likes">Yêu thích</option>
+            <select class="sort-sel" id="feed-sort">
+                <option value="new">Mới nhất (Realtime)</option>
+                <option value="views">Lượt xem khủng</option>
+                <option value="likes">Yêu thích nhất</option>
             </select>
         </div>
     </section>
 
-    <!-- LỚP 6: LƯỚI BÀI VIẾT CHÍNH -->
-    <main class="feed-grid" id="feed-container">
-        <!-- Skeleton Loading -->
-        <div class="sk-card glass-panel"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:60%"></div></div>
-        <div class="sk-card glass-panel"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:60%"></div></div>
-        <div class="sk-card glass-panel"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:60%"></div></div>
+    <!-- LỚP 6: LƯỚI NỘI DUNG 3D -->
+    <main class="feed-grid" id="feed-box">
+        <!-- Skeleton Loading V3 -->
+        <div class="sk-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:70%"></div></div>
+        <div class="sk-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:70%"></div></div>
+        <div class="sk-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:70%"></div></div>
     </main>
 
-    <!-- LỚP 7: BOTTOM DOCK NAV -->
-    <div class="bottom-dock" id="bottom-dock">
-        <div class="dock-bar">
-            <button class="dock-item active" onclick="window.scrollTo(0,0)"><i class="fas fa-compass"></i> Khám phá</button>
-            <button class="dock-item dock-action" id="btn-dock-up" onclick="App.UI.toggleModal('modal-upload', true)"><i class="fas fa-cloud-upload-alt"></i> Phát Hành</button>
+    <!-- LỚP 7: BOTTOM DOCK -->
+    <div class="dock-nav" id="dock-nav">
+        <div class="dock-container">
+            <button class="dock-btn active" onclick="window.scrollTo(0,0)"><i class="fas fa-compass"></i> Khám phá</button>
+            <button class="dock-btn upload" id="btn-dock-up" onclick="App.UI.toggleModal('mdl-upload', true)"><i class="fas fa-rocket"></i> Phóng Vệ Tinh</button>
         </div>
     </div>
 
 
     <!-- ==========================================================================
-         OVERLAYS, DRAWERS & MODALS
+         OVERLAYS & MODALS & DRAWERS
          ========================================================================== -->
 
-    <!-- DRAWER: MENU & CHAT -->
-    <div class="drawer-bg" id="menu-overlay" onclick="App.UI.toggleMenu(false)"></div>
-    <aside class="drawer" id="side-menu">
-        <div class="dr-head">
-            <h2 class="title-glow" style="font-size: 1.4rem;">Trạm Kết Nối</h2>
-            <button class="btn-icon" style="background:transparent; border:none; color: white;" onclick="App.UI.toggleMenu(false)"><i class="fas fa-times"></i></button>
+    <!-- DRAWER: MENU TRÁI -->
+    <div class="overlay" id="drawer-overlay" onclick="App.UI.toggleDrawer(false)"></div>
+    <aside class="drawer" id="side-drawer">
+        <div class="dr-hdr">
+            <h2 class="title-glow" style="font-size: 1.5rem;">Trạm Điều Khiển</h2>
+            <button class="btn-menu" style="background:transparent; border:none; color: white;" onclick="App.UI.toggleDrawer(false)"><i class="fas fa-times"></i></button>
         </div>
         <div class="dr-body">
-            <!-- Auth Station -->
-            <div class="auth-panel">
-                <div id="auth-unlogged">
-                    <h3 style="margin-bottom: 16px; font-size: 1.1rem; color: var(--primary);">Xác thực danh tính</h3>
-                    <button class="btn-login gg" id="btn-log-gg"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20"> Tiếp tục với Google</button>
-                    <button class="btn-login guest" id="btn-log-guest"><i class="fas fa-user-secret"></i> Dùng thử Ẩn Danh</button>
+            
+            <!-- Auth / User Info -->
+            <div class="auth-box">
+                <div id="auth-out">
+                    <h3 style="margin-bottom: 20px; color: var(--neon-cyan);">Định danh Không Gian</h3>
+                    <button class="btn-login gg" id="btn-gg"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="22"> Google Connect</button>
+                    <button class="btn-login anon" id="btn-anon"><i class="fas fa-user-astronaut"></i> Duyệt Ẩn Danh</button>
                 </div>
-                <div class="pf-view" id="auth-logged">
-                    <img id="dr-avatar" class="pf-avatar-big" src="">
-                    <div id="dr-level" class="pf-level-badge">LV 1</div>
-                    <div id="dr-name" class="pf-name">Name</div>
-                    <div id="dr-role" class="badge">ROLE</div>
+                
+                <div class="pf-view" id="auth-in">
+                    <img id="dr-ava" class="pf-avatar" src="">
+                    <div id="dr-lvl" class="pf-level">LV 1</div>
+                    <div id="dr-name" class="pf-name">Người Dùng</div>
+                    <div id="dr-role" class="cmt-role role-guest">GUEST</div>
                     
-                    <div style="width: 100%; text-align: left; margin-top: 10px;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:700;">
-                            <span>EXP</span><span id="dr-exp-txt">0 / 100</span>
+                    <div class="exp-container">
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700;">
+                            <span>EXP Năng Lượng</span><span id="dr-exp-txt">0/100</span>
                         </div>
-                        <div class="exp-bar-wrap"><div class="exp-bar" id="dr-exp-bar"></div></div>
-                        <div class="exp-text">Nhận EXP khi đăng bài (+50) và Chat (+5)</div>
+                        <div class="exp-track"><div class="exp-fill" id="dr-exp-bar"></div></div>
                     </div>
                     
-                    <button id="btn-logout" class="btn-logout">Đăng xuất an toàn</button>
+                    <button id="btn-logout" style="margin-top:20px; color:var(--neon-red); font-weight:700; text-decoration:underline;">Ngắt Kết Nối</button>
                 </div>
             </div>
 
-            <!-- Global Chat -->
-            <div class="chat-box">
-                <div class="chat-head"><i class="fas fa-globe-americas"></i> Kênh Tán Gẫu Toàn Cầu</div>
-                <div class="chat-list" id="chat-list"></div>
-                <div class="chat-input-row">
-                    <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off">
-                    <button id="btn-send-chat"><i class="fas fa-paper-plane"></i></button>
+            <!-- Global Chat V3 -->
+            <div class="chat-wrap">
+                <div class="chat-hdr"><i class="fas fa-satellite-dish"></i> Tần Số Không Gian</div>
+                <div class="chat-msgs" id="chat-list"></div>
+                <div class="chat-inp">
+                    <input type="text" id="chat-inp" placeholder="Truyền tin nhắn..." autocomplete="off">
+                    <button id="btn-chat-send"><i class="fas fa-paper-plane"></i></button>
                 </div>
-                <div class="chat-lock" id="chat-lock">
-                    <i class="fas fa-lock" style="font-size: 2.5rem;"></i>
-                    <p>Yêu cầu xác thực danh tính</p>
+                <div class="auth-lock" id="chat-lock">
+                    <i class="fas fa-lock" style="font-size: 3rem;"></i>
+                    <p>Yêu cầu định danh Google</p>
                 </div>
             </div>
         </div>
     </aside>
 
-    <!-- FULLSCREEN: VIEW DETAIL -->
-    <div class="view-fullscreen" id="view-detail">
-        <div class="vf-header">
-            <button class="btn-close-view" onclick="App.UI.closeDetail()"><i class="fas fa-arrow-down"></i></button>
+    <!-- FULLSCREEN: CHI TIẾT BÀI VIẾT V3 -->
+    <div class="detail-view" id="dt-view">
+        <div class="dv-hdr">
+            <button class="btn-close" onclick="App.UI.closeDetail()"><i class="fas fa-chevron-down"></i></button>
         </div>
-        <div class="vf-scroll" id="vf-scroll-area">
-            <div class="vf-cover"><img id="dt-img" src=""></div>
-            <div class="vf-container">
-                <div class="vf-main-info">
-                    <h1 class="vf-title title-glow" id="dt-title">Tiêu đề</h1>
-                    <div class="vf-meta">
-                        <div class="vf-meta-item"><i class="fas fa-user-circle"></i> <span id="dt-author">Tác giả</span></div>
-                        <div class="vf-meta-item" style="color: var(--primary); font-weight: 700;"><i class="fas fa-tag"></i> <span id="dt-cat">Thể loại</span></div>
-                        <div class="vf-meta-item"><i class="fas fa-eye"></i> <span id="dt-views">0</span> lượt xem</div>
+        <div class="dv-scroll" id="dv-scroll">
+            <div class="dv-cover"><img id="dt-img" src=""></div>
+            <div class="dv-content">
+                <div class="dv-main">
+                    <h1 class="dv-title title-glow" id="dt-title">Tiêu Đề</h1>
+                    <div class="dv-meta">
+                        <span><i class="fas fa-user-astronaut"></i> <span id="dt-author">Tác giả</span></span>
+                        <span style="color: var(--neon-cyan); font-weight: 700;"><i class="fas fa-tag"></i> <span id="dt-cat">Thể loại</span></span>
+                        <span><i class="fas fa-eye"></i> <span id="dt-views">0</span> lượt quét</span>
                     </div>
                     
-                    <!-- Action Bar Mới -->
-                    <div class="vf-action-bar">
-                        <button class="btn-primary" onclick="App.UI.toast('Đang bắt đầu tải xuống...', 'success')"><i class="fas fa-download"></i> Tải Ngay</button>
-                        <button class="btn-secondary" id="btn-share-post"><i class="fas fa-share-alt"></i> Chia sẻ</button>
+                    <div class="dv-actions">
+                        <button class="btn-dl" id="btn-dl">
+                            <span style="position:relative; z-index:2; display:flex; align-items:center; gap:10px;" id="dl-text"><i class="fas fa-download"></i> Kích hoạt tải xuống</span>
+                            <div class="dl-progress" id="dl-prog"></div>
+                        </button>
+                        <button class="btn-share" id="btn-share"><i class="fas fa-share-alt"></i> Share</button>
                     </div>
 
-                    <h3 style="margin-bottom: 12px; color: var(--secondary); font-weight: 900;">Tài liệu kỹ thuật</h3>
-                    <div class="vf-desc" id="dt-desc">Nội dung...</div>
+                    <h3 style="margin-bottom: 15px; color: var(--neon-pink); font-weight: 900;">Báo Cáo Kỹ Thuật</h3>
+                    <div class="dv-desc" id="dt-desc">Nội dung...</div>
                 </div>
                 
-                <div class="vf-comments">
-                    <div class="cmt-header"><i class="fas fa-comments"></i> Thảo luận (<span id="dt-cmt-count">0</span>)</div>
+                <div class="dv-comments">
+                    <div class="cmt-head"><i class="fas fa-comments"></i> Log Phân Tích (<span id="dt-cmt-cnt">0</span>)</div>
                     <div class="cmt-list" id="dt-cmt-list"></div>
-                    <div class="cmt-input-row">
-                        <input type="text" id="cmt-input" placeholder="Thêm bình luận của bạn (Hỗ trợ Markdown)...">
-                        <button id="btn-send-cmt"><i class="fas fa-paper-plane"></i></button>
+                    <div class="cmt-input">
+                        <input type="text" id="cmt-inp" placeholder="Để lại nhận định của bạn...">
+                        <button id="btn-cmt-send"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: TẢI LÊN TÁC PHẨM -->
-    <div class="modal-wrap" id="modal-upload">
-        <div class="modal-content">
-            <div class="mc-head">
-                <h3>Phát Hành Addon</h3>
-                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;color:white;" onclick="App.UI.toggleModal('modal-upload', false)"><i class="fas fa-times"></i></button>
+    <!-- MODAL: PHÁT HÀNH (UPLOAD) -->
+    <div class="overlay modal" id="mdl-upload">
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between; margin-bottom: 30px;">
+                <h2 style="color:var(--neon-cyan); font-weight:900; font-size:1.8rem;">Phát Hành Vệ Tinh</h2>
+                <button style="color:white; font-size:1.5rem;" onclick="App.UI.toggleModal('mdl-upload', false)"><i class="fas fa-times"></i></button>
             </div>
-            <div class="fm-group">
-                <label class="fm-label">Lĩnh vực</label>
-                <select class="fm-input" id="up-cat">
+            <div class="fm-grp">
+                <label class="fm-lbl">Chủng loại</label>
+                <select class="fm-inp" id="up-cat">
                     <option value="Addon">Addon / Mod</option>
                     <option value="Map">Bản đồ (Map)</option>
                     <option value="Shader">Shader / Texture</option>
                 </select>
             </div>
-            <div class="fm-group">
-                <label class="fm-label">Tên Tác Phẩm *</label>
-                <input type="text" class="fm-input" id="up-title" placeholder="VD: Cyberpunk Vehicles...">
+            <div class="fm-grp">
+                <label class="fm-lbl">Định danh Vệ Tinh (Tên) *</label>
+                <input type="text" class="fm-inp" id="up-title" placeholder="VD: Cyberpunk 2077 Map...">
             </div>
-            <div class="fm-group">
-                <label class="fm-label">Ảnh Bìa (URL)</label>
-                <input type="text" class="fm-input" id="up-img" placeholder="Nếu để trống sẽ dùng ảnh ngẫu nhiên">
+            <div class="fm-grp">
+                <label class="fm-lbl">Holo-Image (URL Ảnh)</label>
+                <input type="text" class="fm-inp" id="up-img" placeholder="Để trống hệ thống sẽ cấp ảnh AI">
             </div>
-            <div class="fm-group">
-                <label class="fm-label">Tài liệu / Mô tả chi tiết</label>
-                <textarea class="fm-input" id="up-desc" rows="5" placeholder="Viết giới thiệu..."></textarea>
+            <div class="fm-grp">
+                <label class="fm-lbl">Dữ liệu mã hóa (Mô tả & Link tải)</label>
+                <textarea class="fm-inp" id="up-desc" rows="6" placeholder="Hỗ trợ Markdown cơ bản..."></textarea>
             </div>
-            <button class="btn-submit-main" id="btn-submit-post">Khởi Tạo Dữ Liệu</button>
+            <button class="btn-submit" id="btn-submit-post">Khởi Động Trình Biên Dịch</button>
         </div>
     </div>
-
-    <!-- MODAL: HỒ SƠ & BOOKMARK -->
-    <div class="modal-wrap" id="modal-profile">
-        <div class="modal-content">
-            <div class="mc-head">
-                <h3>Kho Lưu Trữ Cá Nhân</h3>
-                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;color:white;" onclick="App.UI.toggleModal('modal-profile', false)"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="pf-tabs">
-                <button class="pf-tab-btn active" data-tab="tab-myposts">Tác phẩm của tôi (<span id="my-posts-count">0</span>)</button>
-                <button class="pf-tab-btn" data-tab="tab-bookmarks">Đã lưu</button>
-            </div>
-            <div class="pf-tab-content active" id="tab-myposts">
-                <!-- JS Render My Posts -->
-            </div>
-            <div class="pf-tab-content" id="tab-bookmarks">
-                <!-- JS Render Bookmarks -->
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: ADMIN CONSOLE -->
-    <div class="modal-wrap" id="modal-admin">
-        <div class="modal-content">
-            <div class="mc-head">
-                <h3><i class="fas fa-shield-alt"></i> Console Quản Trị</h3>
-                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;color:white;" onclick="App.UI.toggleModal('modal-admin', false)"><i class="fas fa-times"></i></button>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; text-align: center;">
-                    <div style="font-size: 2rem; font-weight: 900; color: var(--primary);" id="ad-post-count">0</div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">Tổng Bài Viết</div>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; text-align: center;">
-                    <div style="font-size: 2rem; font-weight: 900; color: var(--secondary);" id="ad-chat-count">0</div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">Log Tin Nhắn</div>
-                </div>
-            </div>
-            <p style="color: var(--danger); font-size: 0.85rem; text-align: center;">Bạn đang có quyền lực tối cao. Hãy thận trọng với nút [Thùng Rác] và [Phong Admin].</p>
-        </div>
-    </div>
-
 
     <!-- ==========================================================================
-         JAVASCRIPT ENGINE (MVC, AUDIO, STARS, TYPEWRITER, FIREBASE)
+         JAVASCRIPT ENGINE (FIREBASE V10 + CANVAS + MVC)
          ========================================================================== -->
     <script type="module">
-        // --- 1. FIREBASE SETUP ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, signInAnonymously, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, push, set, remove, serverTimestamp, runTransaction, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // Cấu hình chuẩn theo yêu cầu của bạn (Bao gồm measurementId)
+        // CẤU HÌNH DATABASE REALTIME THEO YÊU CẦU
         const firebaseConfig = {
             apiKey: "AIzaSyDBlMGmdcdxzJQ-dYBzw2zzfRTu2vh6GG0",
             authDomain: "goggle-login-39224.firebaseapp.com",
-            databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com", 
+            databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com",
             projectId: "goggle-login-39224",
             storageBucket: "goggle-login-39224.firebasestorage.app",
             messagingSenderId: "479026449758",
@@ -609,18 +514,19 @@
         const fApp = initializeApp(firebaseConfig);
         const fAuth = getAuth(fApp);
         const fDb = getDatabase(fApp);
+        
+        // CẤU HÌNH GOOGLE CLIENT ID THEO YÊU CẦU
         const googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({
+            client_id: "829757105077-9pe97kktuhejoa51fcebugq0f1rae3le.apps.googleusercontent.com"
+        });
 
         const DEV_EMAIL = "hminhgalaxy@gmail.com";
 
-        // --- 2. STATE (TRẠNG THÁI) ---
-        const State = {
-            user: null, // {uid, name, avatar, role, exp, level, bookmarks}
-            posts: [],
-            filter: 'all', search: '', sort: 'new'
-        };
+        // --- CORE STATE ---
+        const State = { user: null, posts: [], filter: 'all', search: '', sort: 'new' };
 
-        // --- 3. UTILS & ENGINE ---
+        // --- UTILITIES & AUDIO ---
         const Utils = {
             parseMD: (txt) => {
                 let h = txt.replace(/[&<>'"]/g, t => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t]));
@@ -628,183 +534,114 @@
                 h = h.replace(/\*(.*?)\*/g, '<em>$1</em>');
                 return h;
             },
-            calcLevel: (exp) => Math.floor((exp || 0) / 100) + 1,
-            expForNext: (lvl) => lvl * 100
+            calcLevel: exp => Math.floor((exp || 0) / 100) + 1,
+            expForNext: lvl => lvl * 100
         };
 
-        // Audio Engine V2 (Đã sửa lỗi gọi hàm)
-        const AudioSys = {
+        const SFX = {
             ctx: null,
             init() { if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
             play(type) {
                 if(!this.ctx || this.ctx.state === 'suspended') return;
                 const o = this.ctx.createOscillator(), g = this.ctx.createGain(), n = this.ctx.currentTime;
                 o.connect(g); g.connect(this.ctx.destination);
-                if(type==='click') { o.type='sine'; o.frequency.setValueAtTime(800,n); o.frequency.exponentialRampToValueAtTime(400,n+0.05); g.gain.setValueAtTime(0.05,n); g.gain.exponentialRampToValueAtTime(0.01,n+0.05); o.start(n); o.stop(n+0.05); }
+                if(type==='click') { o.type='sine'; o.frequency.setValueAtTime(900,n); o.frequency.exponentialRampToValueAtTime(300,n+0.05); g.gain.setValueAtTime(0.1,n); g.gain.exponentialRampToValueAtTime(0.01,n+0.05); o.start(n); o.stop(n+0.05); }
                 else if(type==='success') { o.type='triangle'; o.frequency.setValueAtTime(400,n); o.frequency.setValueAtTime(800,n+0.1); g.gain.setValueAtTime(0.1,n); g.gain.linearRampToValueAtTime(0,n+0.3); o.start(n); o.stop(n+0.3); }
             }
         };
-        // Kích hoạt audio khi user chạm màn hình lần đầu
-        document.body.addEventListener('click', () => { AudioSys.init(); if(AudioSys.ctx.state === 'suspended') AudioSys.ctx.resume(); }, {once:true});
+        document.body.addEventListener('pointerdown', () => { SFX.init(); if(SFX.ctx.state === 'suspended') SFX.ctx.resume(); }, {once:true});
 
-        // Typewriter Effect
-        const initTypewriter = () => {
-            const words = ["Addons", "Maps 3D", "Shaders", "Mods", "Texture Packs"];
-            let i=0, j=0, isDel=false, el=document.getElementById('typewriter');
-            function type() {
-                const current = words[i];
-                if(isDel) { el.textContent = current.substring(0, j-1); j--; }
-                else { el.textContent = current.substring(0, j+1); j++; }
-                
-                let speed = isDel ? 30 : 120; // Nhanh và mượt hơn
-                if(!isDel && j===current.length) { speed=2000; isDel=true; }
-                else if(isDel && j===0) { isDel=false; i=(i+1)%words.length; speed=500; }
-                setTimeout(type, speed);
-            }
-            type();
-        };
-        initTypewriter();
-
-        // Parallax Star Background (Tối ưu requestAnimationFrame)
-        class Starfield {
+        // --- ADVANCED BACKGROUND CANVAS V3 ---
+        class StarfieldV3 {
             constructor() {
-                this.c = document.getElementById('star-canvas'); this.ctx = this.c.getContext('2d');
+                this.c = document.getElementById('bg-canvas'); this.ctx = this.c.getContext('2d');
                 this.stars = []; this.resize();
                 window.addEventListener('resize', ()=>this.resize());
-                for(let i=0; i<150; i++) this.stars.push({ x:Math.random()*this.w, y:Math.random()*this.h, s:Math.random()*1.5, v:Math.random()*0.3+0.1 });
+                for(let i=0; i<200; i++) this.stars.push({ x:Math.random()*this.w, y:Math.random()*this.h, s:Math.random()*1.5, v:Math.random()*0.5+0.1, a:Math.random() });
                 this.anim();
             }
             resize() { this.w = this.c.width = window.innerWidth; this.h = this.c.height = window.innerHeight; }
             anim() {
                 this.ctx.clearRect(0,0,this.w,this.h);
-                this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
                 this.stars.forEach(s => {
                     s.y -= s.v; if(s.y < 0) { s.y = this.h; s.x = Math.random()*this.w; }
-                    this.ctx.beginPath(); this.ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
-                    this.ctx.fill();
+                    s.a += 0.02; // Twinkle math
+                    this.ctx.fillStyle = `rgba(255,255,255,${Math.abs(Math.sin(s.a)) * 0.8})`;
+                    this.ctx.beginPath(); this.ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); this.ctx.fill();
                 });
                 requestAnimationFrame(()=>this.anim());
             }
         }
-        new Starfield();
+        new StarfieldV3();
 
-        // Ẩn hiện header khi scroll (Tăng độ mượt UI)
-        let lastScroll = 0;
+        // Parallax Scroll Effect for Header/Dock/Detail
+        let lastSc = 0;
         window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            const header = document.getElementById('main-header');
-            const dock = document.getElementById('bottom-dock');
-            if (currentScroll > 100 && currentScroll > lastScroll) {
-                header.style.transform = 'translateY(-100%)';
-                dock.style.transform = 'translateY(150%)';
-            } else {
-                header.style.transform = 'translateY(0)';
-                dock.style.transform = 'translateY(0)';
-            }
-            lastScroll = currentScroll;
+            let sc = window.pageYOffset;
+            document.getElementById('hdr-main').classList.toggle('hide', sc > 100 && sc > lastSc);
+            document.getElementById('dock-nav').classList.toggle('hide', sc > 100 && sc > lastSc);
+            lastSc = sc;
+        });
+        document.getElementById('dv-scroll').addEventListener('scroll', (e) => {
+            const y = e.target.scrollTop;
+            document.querySelector('.dv-cover img').style.transform = `translateY(${y * 0.4}px)`;
         });
 
-        // --- 4. VIEW CONTROLLER (UI) ---
+        // --- UI CONTROLLER ---
         const UI = {
-            toast: (msg, type='info') => {
-                const c = document.getElementById('toast-zone'); const t = document.createElement('div');
-                t.className = `toast-card ${type}`;
-                let icon = type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-triangle':'fa-info-circle';
-                let color = type==='success'?'#00e676':type==='error'?'var(--danger)':'var(--primary)';
-                t.innerHTML = `<i class="fas ${icon} t-icon" style="color:${color};"></i><div class="t-body"><h4>${type}</h4><p>${msg}</p></div>`;
-                c.appendChild(t);
-                setTimeout(()=>t.classList.add('show'),10);
-                setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),400);}, 3500);
+            toast: (msg, color='var(--neon-cyan)', icon='fa-info-circle') => {
+                const b = document.getElementById('toast-box'), t = document.createElement('div');
+                t.className = 'toast'; t.style.borderColor = color; t.style.color = color;
+                t.innerHTML = `<i class="fas ${icon}"></i> ${msg}`;
+                b.appendChild(t); SFX.play('click');
+                setTimeout(()=>t.classList.add('show'), 10);
+                setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),400); }, 3000);
             },
-            toggleMenu: (s) => { AudioSys.play('click'); document.getElementById('side-menu').classList.toggle('open', s); document.getElementById('menu-overlay').classList.toggle('active', s); },
-            toggleModal: (id, s) => { AudioSys.play('click'); document.getElementById(id).classList.toggle('active', s); },
-            openDetail: () => { AudioSys.play('click'); document.getElementById('view-detail').classList.add('active'); document.body.style.overflow='hidden'; document.getElementById('vf-scroll-area').scrollTop=0;},
-            closeDetail: () => { AudioSys.play('click'); document.getElementById('view-detail').classList.remove('active'); document.body.style.overflow='auto'; DB.currentPostId=null; },
+            toggleDrawer: (s) => { SFX.play('click'); document.getElementById('side-drawer').classList.toggle('open', s); document.getElementById('drawer-overlay').classList.toggle('active', s); },
+            toggleModal: (id, s) => { SFX.play('click'); document.getElementById(id).classList.toggle('active', s); },
+            openDetail: () => { SFX.play('click'); document.getElementById('dt-view').classList.add('active'); document.body.style.overflow='hidden'; document.getElementById('dv-scroll').scrollTop=0;},
+            closeDetail: () => { SFX.play('click'); document.getElementById('dt-view').classList.remove('active'); document.body.style.overflow='auto'; DB.currentId=null; },
             
-            updateAuthDOM: (isLog) => {
-                document.getElementById('auth-unlogged').style.display = isLog ? 'none' : 'block';
-                document.getElementById('auth-logged').style.display = isLog ? 'flex' : 'none';
+            updateAuth: (isLog) => {
+                document.getElementById('auth-out').style.display = isLog ? 'none' : 'block';
+                document.getElementById('auth-in').style.display = isLog ? 'flex' : 'none';
                 document.getElementById('btn-dock-up').style.display = isLog ? 'flex' : 'none';
                 document.getElementById('chat-lock').style.display = isLog ? 'none' : 'flex';
-                document.getElementById('header-avatar').style.display = isLog ? 'block' : 'none';
+                document.getElementById('hdr-avatar').style.display = isLog ? 'block' : 'none';
                 
-                const isPriv = isLog && (State.user.role==='dev' || State.user.role==='admin');
-                document.getElementById('btn-admin').style.display = isPriv ? 'flex' : 'none';
-
                 if(isLog) {
-                    document.getElementById('header-avatar').src = State.user.avatar;
-                    document.getElementById('dr-avatar').src = State.user.avatar;
+                    const isPriv = (State.user.role==='dev' || State.user.role==='admin');
+                    document.getElementById('btn-admin').style.display = isPriv ? 'flex' : 'none';
+                    
+                    document.getElementById('hdr-avatar').src = State.user.avatar;
+                    document.getElementById('dr-ava').src = State.user.avatar;
                     document.getElementById('dr-name').innerText = State.user.name;
-                    document.getElementById('dr-role').className = `badge role-${State.user.role}`;
-                    document.getElementById('dr-role').innerText = State.user.role;
                     
-                    // EXP Render
+                    let roleStr = State.user.role;
+                    let rc = `role-${roleStr}`;
+                    document.getElementById('dr-role').className = `cmt-role ${rc}`;
+                    document.getElementById('dr-role').innerText = roleStr;
+                    
                     const lvl = Utils.calcLevel(State.user.exp);
-                    const currentExp = State.user.exp || 0;
+                    const curExp = State.user.exp || 0;
                     const nextExp = Utils.expForNext(lvl);
-                    const expBase = Utils.expForNext(lvl-1);
-                    const pct = ((currentExp - expBase) / (nextExp - expBase)) * 100;
+                    const baseExp = Utils.expForNext(lvl-1);
+                    const pct = ((curExp - baseExp) / (nextExp - baseExp)) * 100;
                     
-                    document.getElementById('dr-level').innerText = `LVL ${lvl}`;
-                    document.getElementById('dr-exp-txt').innerText = `${currentExp} / ${nextExp}`;
-                    document.getElementById('dr-exp-bar').style.width = `${Math.min(100, Math.max(0, pct))}%`;
+                    document.getElementById('dr-lvl').innerText = `LVL ${lvl}`;
+                    document.getElementById('dr-exp-txt').innerText = `${curExp}/${nextExp}`;
+                    document.getElementById('dr-exp-bar').style.width = `${Math.max(0,Math.min(100,pct))}%`;
                 }
                 DB.renderFeed();
-            },
-            openProfile: () => {
-                if(!State.user) return;
-                
-                // Render My Posts
-                const myPosts = State.posts.filter(p => p.authorUid === State.user.uid);
-                document.getElementById('my-posts-count').innerText = myPosts.length;
-                let cMy = document.getElementById('tab-myposts'); cMy.innerHTML='';
-                myPosts.forEach(p => cMy.insertAdjacentHTML('beforeend', `<div class="mini-card" onclick="App.UI.toggleModal('modal-profile',false); App.DB.viewDetail('${p.id}')"><img src="${p.image}"><div class="mini-card-info"><h4>${p.title}</h4><p><i class="fas fa-eye"></i> ${p.views||0} • <i class="fas fa-heart"></i> ${p.likes?Object.keys(p.likes).length:0}</p></div></div>`));
-                if(myPosts.length===0) cMy.innerHTML='<p style="color:#777; text-align:center; padding: 20px;">Bạn chưa đăng tác phẩm nào.</p>';
-
-                // Render Bookmarks
-                const bms = State.user.bookmarks || {};
-                let cBm = document.getElementById('tab-bookmarks'); cBm.innerHTML='';
-                let bmCount = 0;
-                Object.keys(bms).forEach(pid => {
-                    const p = State.posts.find(x=>x.id===pid);
-                    if(p) {
-                        bmCount++;
-                        cBm.insertAdjacentHTML('beforeend', `<div class="mini-card" onclick="App.UI.toggleModal('modal-profile',false); App.DB.viewDetail('${p.id}')"><img src="${p.image}"><div class="mini-card-info"><h4>${p.title}</h4><p>${p.authorName}</p></div></div>`);
-                    }
-                });
-                if(bmCount===0) cBm.innerHTML='<p style="color:#777; text-align:center; padding: 20px;">Kho lưu trữ trống.</p>';
-
-                document.querySelectorAll('.pf-tab-btn').forEach(b=>b.classList.remove('active'));
-                document.querySelectorAll('.pf-tab-content').forEach(c=>c.classList.remove('active'));
-                document.querySelector('.pf-tab-btn[data-tab="tab-myposts"]').classList.add('active');
-                document.getElementById('tab-myposts').classList.add('active');
-
-                UI.toggleModal('modal-profile', true);
             }
         };
         window.App = { UI };
 
-        // Profile Tabs Logic
-        document.querySelectorAll('.pf-tab-btn').forEach(btn => {
-            btn.onclick = (e) => {
-                AudioSys.play('click');
-                document.querySelectorAll('.pf-tab-btn').forEach(b=>b.classList.remove('active'));
-                document.querySelectorAll('.pf-tab-content').forEach(c=>c.classList.remove('active'));
-                e.target.classList.add('active');
-                document.getElementById(e.target.dataset.tab).classList.add('active');
-            }
-        });
-
-        window.addEventListener('load', () => setTimeout(()=>{
-            document.getElementById('preloader').style.opacity = '0';
-            setTimeout(()=>document.getElementById('preloader').style.display='none',600);
-        }, 800));
-
-        // --- 5. AUTHENTICATION ---
+        // --- AUTH LOGIC ---
         onAuthStateChanged(fAuth, async (u) => {
             if(u) {
-                let role = 'guest'; if(!u.isAnonymous) role = (u.email === DEV_EMAIL) ? 'dev' : 'glx';
-                let exp = 0; let bookmarks = {};
+                let role = u.isAnonymous ? 'guest' : (u.email === DEV_EMAIL ? 'dev' : 'glx');
+                let exp = 0;
                 
                 try {
                     const s = await get(ref(fDb, `users/${u.uid}`));
@@ -812,106 +649,92 @@
                         const d = s.val();
                         if(role !== 'dev') role = d.role || role;
                         exp = d.exp || 0;
-                        bookmarks = d.bookmarks || {};
-                    } else {
-                        set(ref(fDb, `users/${u.uid}`), { role: role, exp: 0, createdAt: serverTimestamp() });
-                    }
+                    } else { set(ref(fDb, `users/${u.uid}`), { role, exp: 0, createdAt: serverTimestamp() }); }
                 } catch(e){}
 
-                State.user = { uid: u.uid, role: role, exp: exp, bookmarks: bookmarks, name: u.isAnonymous?`Khách_${u.uid.substring(0,4)}`:u.displayName, avatar: u.isAnonymous?"https://cdn-icons-png.flaticon.com/512/149/149071.png":u.photoURL };
-                UI.updateAuthDOM(true);
+                State.user = { uid: u.uid, role, exp, name: u.isAnonymous?`Guest_${u.uid.substring(0,4)}`:u.displayName, avatar: u.isAnonymous?"https://cdn-icons-png.flaticon.com/512/149/149071.png":u.photoURL };
+                UI.updateAuth(true);
                 
-                // Realtime Data Listener
-                onValue(ref(fDb, `users/${u.uid}`), snap => {
-                    if(snap.exists() && State.user) {
-                        const d = snap.val();
-                        State.user.exp = d.exp || 0;
-                        State.user.bookmarks = d.bookmarks || {};
-                        UI.updateAuthDOM(true);
+                onValue(ref(fDb, `users/${u.uid}`), sn => {
+                    if(sn.exists() && State.user) {
+                        State.user.exp = sn.val().exp || 0;
+                        UI.updateAuth(true);
                     }
                 });
-
-            } else {
-                State.user = null; UI.updateAuthDOM(false);
-            }
+            } else { State.user = null; UI.updateAuth(false); }
         });
 
-        document.getElementById('btn-log-gg').onclick = async () => {
-            try { UI.toast("Đang kết nối Google...", "info"); await signInWithPopup(fAuth, googleProvider); UI.toast("Xác thực thành công!", "success"); } 
-            catch(e) { alert("LỖI:\n" + e.message + "\n\nVào Firebase Console -> Authentication -> Settings -> Authorized domains -> Thêm tên miền của bạn"); }
-        };
-        document.getElementById('btn-log-guest').onclick = () => signInAnonymously(fAuth).catch(e=>alert(e.message));
-        document.getElementById('btn-logout').onclick = () => { if(confirm("Rời khỏi hệ thống?")) signOut(fAuth); };
+        document.getElementById('btn-gg').onclick = async () => { try { UI.toast("Kích hoạt Google Core..."); await signInWithPopup(fAuth, googleProvider); UI.toast("Đồng bộ dữ liệu thành công!", "var(--neon-cyan)", "fa-check"); } catch(e) { UI.toast("Lỗi xác thực", "var(--neon-red)", "fa-times"); console.error(e); } };
+        document.getElementById('btn-anon').onclick = () => signInAnonymously(fAuth).catch(e=>console.log(e));
+        document.getElementById('btn-logout').onclick = () => { if(confirm("Ngắt kết nối dữ liệu?")) signOut(fAuth); };
 
-        // --- 6. DATABASE CONTROLLER ---
+        // --- DB CONTROLLER ---
         const DB = {
-            currentPostId: null,
+            currentId: null,
             init: () => {
-                onValue(ref(fDb, 'addons'), (s) => {
+                onValue(ref(fDb, 'addons'), s => {
                     const d = s.val(); State.posts = d ? Object.keys(d).map(k => ({id:k, ...d[k]})) : [];
-                    document.getElementById('ad-post-count').innerText = State.posts.length;
                     DB.renderFeed();
                 });
                 
-                onValue(ref(fDb, 'chat'), (s) => {
-                    const l = document.getElementById('chat-list'); l.innerHTML='';
+                onValue(ref(fDb, 'chat'), s => {
+                    const cl = document.getElementById('chat-list'); cl.innerHTML='';
                     if(s.exists()) {
-                        const msgs = s.val(); document.getElementById('ad-chat-count').innerText = Object.keys(msgs).length;
-                        Object.keys(msgs).forEach(k => {
-                            const m = msgs[k]; const isDev = State.user && State.user.role==='dev';
-                            const btnAd = isDev ? `<button onclick="App.DB.makeAdmin('${m.uid}')" style="font-size:0.6rem; background:var(--role-admin); color:black; padding:2px 6px; border-radius:4px; font-weight:800;">Phong Admin</button>`:'';
-                            let bdr = m.role==='dev'?'border-left-color:var(--role-dev);':m.role==='admin'?'border-left-color:var(--role-admin);':'';
-                            l.insertAdjacentHTML('beforeend', `<div class="gc-msg" style="${bdr}"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><div style="font-size:0.85rem;font-weight:800;"><span class="badge role-${m.role}" style="font-size:0.5rem;">${m.role}</span> <span style="color:${m.role==='dev'?'var(--role-dev)':'white'}">${m.name}</span></div>${btnAd}</div><div style="font-size:0.95rem;color:#cbd5e1;word-break:break-word;">${Utils.parseMD(m.text)}</div></div>`);
+                        const m = s.val();
+                        Object.keys(m).forEach(k => {
+                            const v = m[k];
+                            const rc = `role-${v.role}`;
+                            cl.insertAdjacentHTML('beforeend', `
+                                <div class="msg-item" style="border-left-color: var(--neon-${v.role==='dev'?'red':v.role==='admin'?'gold':'cyan'})">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                        <div style="font-size:0.9rem; font-weight:800;"><span class="cmt-role ${rc}" style="font-size:0.6rem;">${v.role}</span> ${v.name}</div>
+                                    </div>
+                                    <div style="font-size:1rem; color:#e2e8f0;">${Utils.parseMD(v.text)}</div>
+                                </div>
+                            `);
                         });
-                        l.scrollTop = l.scrollHeight;
+                        cl.scrollTop = cl.scrollHeight;
                     }
                 });
             },
-
-            addExp: (amount) => {
-                if(!State.user) return;
-                runTransaction(ref(fDb, `users/${State.user.uid}/exp`), exp => (exp||0)+amount);
-            },
-
+            
+            addExp: (amt) => { if(State.user) runTransaction(ref(fDb, `users/${State.user.uid}/exp`), e => (e||0)+amt); },
+            
             renderFeed: () => {
-                const c = document.getElementById('feed-container'); c.innerHTML='';
-                let arr = [...State.posts];
+                const c = document.getElementById('feed-box'); c.innerHTML='';
+                let a = [...State.posts];
                 
-                if(State.filter !== 'all') arr = arr.filter(p => p.category === State.filter);
-                if(State.search) { const q = State.search.toLowerCase(); arr = arr.filter(p => p.title.toLowerCase().includes(q) || p.authorName.toLowerCase().includes(q)); }
+                if(State.filter !== 'all') a = a.filter(p => p.category === State.filter);
+                if(State.search) { const q = State.search.toLowerCase(); a = a.filter(p => p.title.toLowerCase().includes(q) || p.authorName.toLowerCase().includes(q)); }
                 
-                if(State.sort === 'new') arr.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
-                if(State.sort === 'views') arr.sort((a,b) => (b.views||0) - (a.views||0));
-                if(State.sort === 'likes') arr.sort((a,b) => (b.likes?Object.keys(b.likes).length:0) - (a.likes?Object.keys(a.likes).length:0));
+                if(State.sort === 'new') a.sort((x,y) => (y.timestamp||0) - (x.timestamp||0));
+                if(State.sort === 'views') a.sort((x,y) => (y.views||0) - (x.views||0));
+                if(State.sort === 'likes') a.sort((x,y) => (y.likes?Object.keys(y.likes).length:0) - (x.likes?Object.keys(x.likes).length:0));
 
-                if(arr.length===0) return c.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:50px;font-size:1.1rem;"><i class="fas fa-satellite-dish" style="font-size:3rem; margin-bottom:15px; opacity:0.5;"></i><br>Không tìm thấy tín hiệu nào trong vũ trụ.</div>';
+                if(a.length===0) return c.innerHTML='<div style="grid-column:1/-1; text-align:center; padding:100px 20px; color:var(--text-2); font-size:1.2rem;"><i class="fas fa-space-shuttle" style="font-size:4rem; margin-bottom:20px; opacity:0.5;"></i><br>Không quét thấy tín hiệu phù hợp trong Sector này.</div>';
 
-                arr.forEach((p, index) => {
+                a.forEach((p, i) => {
                     const lc = p.likes ? Object.keys(p.likes).length : 0;
-                    const isLiked = State.user && p.likes && p.likes[State.user.uid];
-                    const isBM = State.user && State.user.bookmarks && State.user.bookmarks[p.id];
+                    const isL = State.user && p.likes && p.likes[State.user.uid];
                     const isPriv = State.user && (State.user.role==='dev'||State.user.role==='admin');
+                    const isHot = p.views > 100 || lc > 10;
+                    const dly = (i * 0.05).toFixed(2);
                     
-                    // Logic Huy hiệu HOT (Nhiều views hoặc likes)
-                    const isHot = (p.views > 50) || (lc > 5);
-                    let delay = (index * 0.05).toFixed(2); // Staggered Animation Delay
-
                     c.insertAdjacentHTML('beforeend', `
-                        <article class="holo-card animate-up" style="animation-delay: ${delay}s" onclick="App.DB.viewDetail('${p.id}')">
-                            ${isPriv ? `<div class="hc-admin" style="display:flex;"><button class="btn-trash" onclick="event.stopPropagation(); App.DB.delPost('${p.id}')"><i class="fas fa-trash"></i></button></div>`:''}
-                            <div class="hc-badges">
-                                <span class="hc-cat cat-${p.category}">${p.category}</span>
-                                ${isHot ? '<span class="hot-badge"><i class="fas fa-fire"></i> HOT</span>' : ''}
+                        <article class="post-card" style="animation-delay: ${dly}s" onclick="App.DB.openDt('${p.id}')">
+                            ${isPriv ? `<div class="pc-admin"><button class="btn-del" onclick="event.stopPropagation(); App.DB.del('${p.id}')"><i class="fas fa-trash"></i></button></div>`:''}
+                            <div class="pc-badges">
+                                <span class="badge-cat">${p.category}</span>
+                                ${isHot ? '<span class="badge-hot"><i class="fas fa-fire"></i> HOT</span>' : ''}
                             </div>
-                            <div class="hc-cover"><img src="${p.image}" loading="lazy"></div>
-                            <div class="hc-body">
-                                <h3 class="hc-title">${p.title}</h3>
-                                <div class="hc-author"><img src="https://via.placeholder.com/24"> ${p.authorName}</div>
-                                <div class="hc-footer">
-                                    <div class="hc-stats"><span><i class="fas fa-eye"></i> ${p.views||0}</span><span><i class="fas fa-comment"></i> ${p.comments?Object.keys(p.comments).length:0}</span></div>
-                                    <div class="hc-actions">
-                                        <button class="btn-action bookmark ${isBM?'active':''}" onclick="event.stopPropagation(); App.DB.toggleBM('${p.id}')"><i class="${isBM?'fas':'far'} fa-bookmark"></i></button>
-                                        <button class="btn-action like ${isLiked?'active':''}" onclick="event.stopPropagation(); App.DB.toggleLike('${p.id}')"><i class="${isLiked?'fas':'far'} fa-heart"></i> <span style="font-size:0.8rem; margin-left:3px;">${lc}</span></button>
+                            <div class="pc-cover"><img src="${p.image}" loading="lazy"></div>
+                            <div class="pc-body">
+                                <h3 class="pc-title">${p.title}</h3>
+                                <div class="pc-author"><img src="https://via.placeholder.com/28"> ${p.authorName}</div>
+                                <div class="pc-footer">
+                                    <div class="pc-stats"><span><i class="fas fa-eye"></i> ${p.views||0}</span><span><i class="fas fa-comment"></i> ${p.comments?Object.keys(p.comments).length:0}</span></div>
+                                    <div class="pc-actions">
+                                        <button class="btn-act like ${isL?'active':''}" onclick="event.stopPropagation(); App.DB.like('${p.id}')"><i class="${isL?'fas':'far'} fa-heart"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -919,96 +742,93 @@
                     `);
                 });
             },
-
-            viewDetail: (id) => {
+            
+            openDt: (id) => {
                 const p = State.posts.find(x=>x.id===id); if(!p) return;
-                DB.currentPostId = id; UI.openDetail();
+                DB.currentId = id; UI.openDetail();
                 runTransaction(ref(fDb, `addons/${id}/views`), v => (v||0)+1);
-
-                document.getElementById('dt-img').src=p.image;
-                document.getElementById('dt-title').innerText=p.title;
-                document.getElementById('dt-author').innerText=`${p.authorName}`;
-                document.getElementById('dt-cat').innerText=`${p.category}`;
-                document.getElementById('dt-views').innerText=`${p.views?p.views+1:1}`;
-                document.getElementById('dt-desc').innerHTML=Utils.parseMD(p.desc || "Không có tài liệu kỹ thuật.");
                 
-                // Tính năng Share
-                document.getElementById('btn-share-post').onclick = () => {
-                    AudioSys.play('click');
-                    const link = window.location.href.split('?')[0] + '?post=' + id;
-                    navigator.clipboard.writeText(link).then(() => UI.toast("Đã copy link bài viết!", "success"));
+                document.getElementById('dt-img').src = p.image;
+                document.getElementById('dt-title').innerText = p.title;
+                document.getElementById('dt-author').innerText = p.authorName;
+                document.getElementById('dt-cat').innerText = p.category;
+                document.getElementById('dt-views').innerText = (p.views||0)+1;
+                document.getElementById('dt-desc').innerHTML = Utils.parseMD(p.desc || "Trống");
+                
+                // Nút Download giả lập
+                const btnDl = document.getElementById('btn-dl');
+                const prog = document.getElementById('dl-prog');
+                const dlTxt = document.getElementById('dl-text');
+                btnDl.onclick = () => {
+                    SFX.play('click');
+                    if(prog.style.width === '100%') return;
+                    btnDl.style.pointerEvents = 'none';
+                    dlTxt.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...';
+                    let w = 0;
+                    const inv = setInterval(() => {
+                        w += Math.random() * 15;
+                        if(w >= 100) { w = 100; clearInterval(inv); dlTxt.innerHTML = '<i class="fas fa-check"></i> Đã tải xong'; btnDl.style.background = 'var(--neon-cyan)'; SFX.play('success'); btnDl.style.pointerEvents = 'auto'; }
+                        prog.style.width = w + '%';
+                    }, 200);
+                };
+                // Reset nút khi mở bài khác
+                prog.style.width = '0%'; btnDl.style.background = ''; btnDl.style.pointerEvents = 'auto'; dlTxt.innerHTML = '<i class="fas fa-download"></i> Kích hoạt tải xuống';
+
+                // Nút Share
+                document.getElementById('btn-share').onclick = () => {
+                    SFX.play('click');
+                    navigator.clipboard.writeText(window.location.href.split('?')[0] + '?p=' + id);
+                    UI.toast("Đã copy Link Hệ Thống!", "var(--neon-pink)", "fa-link");
                 };
 
                 onValue(ref(fDb, `addons/${id}/comments`), s => {
                     const cl = document.getElementById('dt-cmt-list'); cl.innerHTML='';
                     if(s.exists()) {
-                        const cmts = s.val(); document.getElementById('dt-cmt-count').innerText = Object.keys(cmts).length;
+                        const cmts = s.val(); document.getElementById('dt-cmt-cnt').innerText = Object.keys(cmts).length;
                         Object.keys(cmts).forEach(k => {
                             const c = cmts[k];
                             cl.insertAdjacentHTML('beforeend', `
-                                <div class="cmt-card" style="border-left-color:var(--role-${c.role})">
-                                    <div class="cmt-user-info"><img src="https://via.placeholder.com/32"><div class="cmt-name"><span class="badge role-${c.role}" style="font-size:0.5rem;margin-right:5px;">${c.role}</span> <span style="color:${c.role==='dev'?'var(--role-dev)':'white'}">${c.name}</span></div></div>
+                                <div class="cmt-item" style="border-left-color: var(--neon-${c.role==='dev'?'red':c.role==='admin'?'gold':'cyan'})">
+                                    <div class="cmt-user"><img src="https://via.placeholder.com/36"><span class="cmt-role role-${c.role}">${c.role}</span> <span class="cmt-name">${c.name}</span></div>
                                     <div class="cmt-text">${Utils.parseMD(c.text)}</div>
                                 </div>
                             `);
                         });
                         cl.scrollTop = cl.scrollHeight;
-                    } else { cl.innerHTML = '<div style="color:#777; text-align:center; padding:20px;">Hãy là người đầu tiên phân tích!</div>'; document.getElementById('dt-cmt-count').innerText = 0;}
+                    } else { cl.innerHTML='<div style="color:var(--text-2); padding:20px;">Chưa có log phân tích nào.</div>'; document.getElementById('dt-cmt-cnt').innerText=0; }
                 });
             },
 
-            submit: () => {
-                if(!State.user) return UI.toast("Chưa đăng nhập", "error");
+            sub: () => {
+                if(!State.user) return UI.toast("Yêu cầu định danh (Đăng nhập)!", "var(--neon-red)", "fa-lock");
                 const t=document.getElementById('up-title').value.trim(), c=document.getElementById('up-cat').value, d=document.getElementById('up-desc').value.trim();
                 let i=document.getElementById('up-img').value.trim();
-                if(!t) return UI.toast("Thiếu tên tác phẩm!", "error");
+                if(!t) return UI.toast("Thiếu tên Vệ Tinh", "var(--neon-red)");
                 if(!i) i = c==='Map'?'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?w=800':c==='Shader'?'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800':'https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=800';
                 
-                const btn=document.getElementById('btn-submit-post'); btn.innerText="ĐANG XỬ LÝ..."; btn.disabled=true;
+                const btn=document.getElementById('btn-submit-post'); btn.innerText="ĐANG GỬI DỮ LIỆU..."; btn.disabled=true;
                 push(ref(fDb, 'addons'), { title:t, category:c, image:i, desc:d, authorName:State.user.name, authorUid:State.user.uid, views:0, timestamp:serverTimestamp() })
-                .then(()=>{ 
-                    AudioSys.play('success'); UI.toast("Phát hành thành công! +50 EXP", "success"); 
-                    DB.addExp(50); // Cộng EXP
-                    UI.toggleModal('modal-upload',false); 
-                    document.getElementById('up-title').value=''; document.getElementById('up-img').value=''; document.getElementById('up-desc').value=''; 
-                })
-                .catch(e=>UI.toast(e.message, "error")).finally(()=>{ btn.innerText="Khởi Tạo Dữ Liệu"; btn.disabled=false; });
+                .then(()=>{ SFX.play('success'); UI.toast("Phát hành thành công! (+50 EXP)", "var(--neon-cyan)", "fa-rocket"); DB.addExp(50); UI.toggleModal('mdl-upload',false); document.getElementById('up-title').value=''; document.getElementById('up-desc').value=''; document.getElementById('up-img').value=''; })
+                .finally(()=>{ btn.innerText="Khởi Động Trình Biên Dịch"; btn.disabled=false; });
             },
 
-            chat: () => { const i=document.getElementById('chat-input'); if(i.value.trim()&&State.user){ push(ref(fDb, 'chat'), {uid:State.user.uid, name:State.user.name, role:State.user.role, text:i.value.trim(), ts:serverTimestamp()}); DB.addExp(5); i.value=''; } },
-            cmt: () => { const i=document.getElementById('cmt-input'); if(i.value.trim()&&State.user&&DB.currentPostId){ push(ref(fDb, `addons/${DB.currentPostId}/comments`), {uid:State.user.uid, name:State.user.name, role:State.user.role, text:i.value.trim(), ts:serverTimestamp()}); DB.addExp(10); i.value=''; } },
+            chat: () => { const i=document.getElementById('chat-inp'); if(i.value.trim()&&State.user){ push(ref(fDb, 'chat'), {uid:State.user.uid, name:State.user.name, role:State.user.role, text:i.value.trim(), ts:serverTimestamp()}); DB.addExp(5); i.value=''; } },
+            cmt: () => { const i=document.getElementById('cmt-inp'); if(i.value.trim()&&State.user&&DB.currentId){ push(ref(fDb, `addons/${DB.currentId}/comments`), {uid:State.user.uid, name:State.user.name, role:State.user.role, text:i.value.trim(), ts:serverTimestamp()}); DB.addExp(10); i.value=''; } },
             
-            delPost: (id) => { if(confirm("Xóa vĩnh viễn?")) remove(ref(fDb, `addons/${id}`)).then(()=>UI.toast("Đã xóa!", "success")); },
-            toggleLike: (id) => { if(!State.user) return UI.toast("Đăng nhập để thả tim!", "error"); AudioSys.play('click'); const r=ref(fDb, `addons/${id}/likes/${State.user.uid}`); get(r).then(s=>s.exists()?remove(r):set(r,true)); },
-            toggleBM: (id) => { 
-                if(!State.user) return UI.toast("Đăng nhập để lưu!", "error"); AudioSys.play('click');
-                const r=ref(fDb, `users/${State.user.uid}/bookmarks/${id}`); 
-                get(r).then(s=>{ s.exists()?remove(r):set(r,true); UI.toast(s.exists()?"Đã bỏ lưu":"Đã lưu vào Kho", "info"); }); 
-            },
-            makeAdmin: (uid) => { if(confirm("Phong cấp Admin?")) set(ref(fDb, `users/${uid}/role`), 'admin'); }
+            del: (id) => { if(confirm("Hủy diệt dữ liệu vĩnh viễn?")) remove(ref(fDb, `addons/${id}`)).then(()=>UI.toast("Đã tiêu hủy", "var(--neon-red)", "fa-trash")); },
+            like: (id) => { if(!State.user) return UI.toast("Cần đăng nhập", "var(--neon-red)"); SFX.play('click'); const r=ref(fDb, `addons/${id}/likes/${State.user.uid}`); get(r).then(s=>s.exists()?remove(r):set(r,true)); }
         };
         App.DB = DB; DB.init();
 
-        // 7. GẮN SỰ KIỆN DOM (Fix bugs thanh tìm kiếm)
-        document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', e => { AudioSys.play('click'); document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); e.target.classList.add('active'); State.filter=e.target.dataset.filter; DB.renderFeed(); }));
-        
-        // Fix đồng bộ search Header và Mobile
-        const bindInput = (id1, id2) => { 
-            const el = document.getElementById(id1); 
-            if(el) el.addEventListener('input', e => { 
-                State.search=e.target.value; 
-                DB.renderFeed(); 
-                if(id2 && document.getElementById(id2)) document.getElementById(id2).value = e.target.value; 
-            }); 
-        };
-        bindInput('header-search', 'mobile-search'); 
-        bindInput('mobile-search', 'header-search');
-        
+        // --- EVENTS ---
+        document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', e => { SFX.play('click'); document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); e.target.classList.add('active'); State.filter=e.target.dataset.filter; DB.renderFeed(); }));
+        const syncInp = (id1, id2) => { const el = document.getElementById(id1); if(el) el.addEventListener('input', e => { State.search=e.target.value; DB.renderFeed(); if(document.getElementById(id2)) document.getElementById(id2).value = e.target.value; }); };
+        syncInp('hdr-search', 'mb-search'); syncInp('mb-search', 'hdr-search');
         document.getElementById('feed-sort').addEventListener('change', e => { State.sort=e.target.value; DB.renderFeed(); });
         
-        document.getElementById('btn-submit-post').addEventListener('click', DB.submit);
-        document.getElementById('btn-send-chat').addEventListener('click', DB.chat); document.getElementById('chat-input').addEventListener('keypress', e => {if(e.key==='Enter') DB.chat();});
-        document.getElementById('btn-send-cmt').addEventListener('click', DB.cmt); document.getElementById('cmt-input').addEventListener('keypress', e => {if(e.key==='Enter') DB.cmt();});
+        document.getElementById('btn-submit-post').addEventListener('click', DB.sub);
+        document.getElementById('btn-chat-send').addEventListener('click', DB.chat); document.getElementById('chat-inp').addEventListener('keypress', e => {if(e.key==='Enter') DB.chat();});
+        document.getElementById('btn-cmt-send').addEventListener('click', DB.cmt); document.getElementById('cmt-inp').addEventListener('keypress', e => {if(e.key==='Enter') DB.cmt();});
     </script>
 </body>
 </html>
