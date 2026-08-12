@@ -5,326 +5,273 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GalaxyCraft - Đa Vũ Trụ Addons</title>
     
-    <!-- Thư viện ngoài -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
         /* ==========================================================================
-           1. HỆ THỐNG BIẾN CSS (DESIGN TOKENS)
+           1. HỆ THỐNG BIẾN CSS
            ========================================================================== */
         :root {
-            --bg-deep: #020205; --bg-surface: #0a0a12; --bg-glass: rgba(15, 15, 25, 0.65);
-            --bg-glass-hover: rgba(25, 25, 40, 0.85);
-            --border-glass: rgba(0, 229, 255, 0.15); --border-highlight: rgba(255, 0, 122, 0.3);
+            --bg-deep: #050508; 
+            --bg-glass: rgba(20, 20, 30, 0.75);
+            --border-glass: rgba(0, 229, 255, 0.2); 
             
-            --neon-cyan: #00e5ff; --neon-pink: #ff007a; --neon-purple: #8a2be2; --neon-gold: #ffd700;
-            --neon-green: #00ff88; --neon-red: #ff1744;
+            --neon-cyan: #00e5ff; 
+            --neon-pink: #ff007a; 
+            --neon-purple: #8a2be2; 
+            --neon-gold: #ffd700;
             
-            --text-primary: #ffffff; --text-secondary: #a1a1aa; --text-muted: #52525b;
+            --text-primary: #ffffff; 
+            --text-secondary: #a1a1aa;
             
             --role-dev: #ff1744; --role-admin: #ff9100; --role-glx: #00e5ff; --role-guest: #71717a;
             
-            --shadow-neon: 0 0 15px rgba(0, 229, 255, 0.4);
-            --shadow-card: 0 15px 35px rgba(0, 0, 0, 0.6);
-            
-            --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px; --radius-round: 50%;
-            --z-back: -10; --z-normal: 1; --z-header: 100; --z-modal: 2000; --z-toast: 3000;
+            --shadow-neon: 0 0 15px rgba(0, 229, 255, 0.5);
+            --radius-md: 16px; --radius-lg: 24px;
         }
 
-        /* ==========================================================================
-           2. RESET & TYPOGRAPHY
-           ========================================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; font-size: 16px; }
         body { 
             font-family: 'Inter', sans-serif; background-color: var(--bg-deep); color: var(--text-primary); 
             min-height: 100vh; overflow-x: hidden; padding-bottom: 120px; 
-            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
         }
         button, input, select, textarea { font-family: inherit; outline: none; border: none; background: transparent;}
-        button { cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; transition: 0.3s; }
         img { max-width: 100%; display: block; }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
         /* ==========================================================================
-           3. BACKGROUND & PRELOADER (CANVAS & CSS)
+           2. BACKGROUND & TOAST
            ========================================================================== */
-        #particle-canvas { position: fixed; inset: 0; z-index: var(--z-back); pointer-events: none; }
+        #particle-canvas { position: fixed; inset: 0; z-index: -10; pointer-events: none; }
         .ambient-light { 
             position: fixed; inset: 0; z-index: -9; pointer-events: none; 
-            background: radial-gradient(circle at 10% 20%, rgba(138,43,226,0.1) 0%, transparent 40%), 
-                        radial-gradient(circle at 90% 80%, rgba(0,229,255,0.08) 0%, transparent 40%); 
+            background: radial-gradient(circle at 10% 20%, rgba(138,43,226,0.15) 0%, transparent 40%), 
+                        radial-gradient(circle at 90% 80%, rgba(0,229,255,0.12) 0%, transparent 40%); 
         }
 
-        #preloader { 
-            position: fixed; inset: 0; background: var(--bg-deep); z-index: 9999; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.6s ease-in-out; 
-        }
-        .loader-logo { 
-            font-family: 'Outfit', sans-serif; font-size: 3.5rem; font-weight: 900; 
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            animation: popPulse 1.5s infinite alternate; letter-spacing: 2px;
-        }
-        .progress-bar-container { width: 200px; height: 4px; background: rgba(255,255,255,0.1); margin-top: 20px; border-radius: 4px; overflow: hidden; }
-        .progress-bar { height: 100%; width: 0%; background: var(--neon-cyan); transition: 0.3s; box-shadow: 0 0 10px var(--neon-cyan); }
-        @keyframes popPulse { 100% { transform: scale(1.05); filter: drop-shadow(0 0 20px var(--neon-purple)); } }
+        #preloader { position: fixed; inset: 0; background: var(--bg-deep); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: 0.6s; }
+        .loader-logo { font-family: 'Outfit', sans-serif; font-size: 3rem; font-weight: 900; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: pop 1s infinite alternate;}
+        @keyframes pop { 100% { transform: scale(1.1); filter: drop-shadow(0 0 20px var(--neon-purple)); } }
 
-        /* ==========================================================================
-           4. GLOBAL COMPONENTS (TOAST, BUTTONS, BADGES)
-           ========================================================================== */
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: var(--z-toast); display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { 
-            background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); 
-            border-left: 4px solid var(--neon-cyan); padding: 15px 20px; border-radius: 8px; min-width: 300px; 
-            display: flex; align-items: flex-start; gap: 15px; box-shadow: var(--shadow-card); 
-            transform: translateX(120%); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: auto; 
-        }
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 5000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: rgba(20,20,30,0.95); border: 1px solid var(--border-glass); border-left: 4px solid var(--neon-cyan); padding: 15px; border-radius: 8px; display: flex; gap: 12px; transform: translateX(120%); transition: 0.4s; pointer-events: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
         .toast.show { transform: translateX(0); }
-        .toast-icon { font-size: 1.4rem; margin-top: 2px; }
-        .toast.success { border-left-color: var(--neon-green); } .toast.success .toast-icon { color: var(--neon-green); }
-        .toast.error { border-left-color: var(--neon-red); } .toast.error .toast-icon { color: var(--neon-red); }
-        .toast-content h4 { font-size: 0.95rem; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;}
-        .toast-content p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;}
 
-        .btn-icon { 
-            width: 42px; height: 42px; border-radius: var(--radius-round); background: var(--bg-glass); 
-            border: 1px solid var(--border-glass); color: var(--text-primary); display: flex; justify-content: center; align-items: center; 
-        }
-        .btn-icon:hover { background: rgba(0, 229, 255, 0.1); color: var(--neon-cyan); box-shadow: var(--shadow-neon); transform: translateY(-2px); }
-        
-        .badge { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;}
-        .badge.role-dev { background: var(--role-dev); color: white; box-shadow: 0 0 10px var(--role-dev); }
-        .badge.role-admin { background: var(--role-admin); color: black; }
-        .badge.role-glx { background: var(--role-glx); color: black; }
-        .badge.role-guest { background: var(--role-guest); color: white; }
+        /* Nút chung */
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;}
+        .role-dev { background: var(--role-dev); color: white; box-shadow: 0 0 10px var(--role-dev); }
+        .role-admin { background: var(--role-admin); color: black; }
+        .role-glx { background: var(--role-glx); color: black; }
+        .role-guest { background: var(--role-guest); color: white; }
 
         /* ==========================================================================
-           5. LAYOUT: HEADER & HERO
+           3. HEADER & HERO (ĐÃ TỐI ƯU MOBILE)
            ========================================================================== */
         header { 
-            position: sticky; top: 0; height: 75px; z-index: var(--z-header); display: flex; justify-content: space-between; align-items: center; 
-            padding: 0 24px; background: rgba(5, 5, 10, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-glass); 
+            position: sticky; top: 0; height: 75px; z-index: 100; display: flex; justify-content: space-between; align-items: center; 
+            padding: 0 20px; background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-glass); 
         }
-        .brand { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 900; display: flex; align-items: center; gap: 10px; }
-        .brand i { color: var(--neon-cyan); animation: spinSlow 10s linear infinite;}
-        @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+        
+        /* FIX: Làm sáng nút 3 gạch */
+        .btn-menu-toggle { 
+            width: 45px; height: 45px; border-radius: 12px; background: rgba(0, 229, 255, 0.1); 
+            border: 1px solid var(--neon-cyan); color: var(--neon-cyan); font-size: 1.4rem; 
+            display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow-neon);
+        }
+        .btn-menu-toggle:active { transform: scale(0.9); }
 
-        .hero { padding: 60px 20px 40px; text-align: center; position: relative; }
-        .hero h2 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 900; line-height: 1.2; word-break: keep-all; margin-bottom: 20px;}
-        .hero h2 span { color: var(--neon-cyan); text-shadow: 0 0 25px rgba(0,229,255,0.5); }
-        .hero p { color: var(--text-secondary); max-width: 650px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6; }
+        .brand { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .brand i { color: var(--neon-cyan); }
+        
+        .btn-profile-top { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--neon-purple); object-fit: cover; display: none; cursor: pointer; }
+
+        /* FIX: Tối ưu Hero Mobile */
+        .hero { padding: 40px 20px 30px; text-align: center; }
+        .hero h2 { font-size: 2.2rem; font-weight: 900; line-height: 1.3; margin-bottom: 15px; }
+        .hero h2 span { color: var(--neon-cyan); display: block; font-size: 2.8rem; text-shadow: var(--shadow-neon); }
+        .hero p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; max-width: 500px; margin: 0 auto; }
+
+        @media (min-width: 768px) {
+            .hero h2 { font-size: 3.5rem; }
+            .hero h2 span { display: inline; font-size: 3.5rem; }
+            .hero p { font-size: 1.1rem; }
+        }
 
         /* ==========================================================================
-           6. TOOLBAR (SEARCH, SORT, FILTER)
+           4. TOOLBAR (TÌM KIẾM, BỘ LỌC)
            ========================================================================== */
-        .toolbar { padding: 0 24px 20px; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-        .search-group { display: flex; gap: 15px; width: 100%; }
+        .toolbar { padding: 0 20px 20px; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
+        .search-group { display: flex; gap: 10px; width: 100%; }
         .search-box { position: relative; flex: 1; }
-        .search-box input { 
-            width: 100%; padding: 16px 20px 16px 50px; background: var(--bg-glass); border: 1px solid var(--border-glass); 
-            border-radius: var(--radius-md); color: white; font-size: 1rem; transition: 0.3s; 
-        }
-        .search-box input:focus { border-color: var(--neon-cyan); box-shadow: inset 0 0 15px rgba(0,229,255,0.2); }
-        .search-box i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 1.2rem;}
+        .search-box input { width: 100%; padding: 14px 14px 14px 45px; background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: 12px; color: white; font-size: 0.95rem; }
+        .search-box input:focus { border-color: var(--neon-cyan); }
+        .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
         
-        .select-box { background: var(--bg-glass); border: 1px solid var(--border-glass); color: white; padding: 0 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
-        .select-box option { background: var(--bg-deep); color: white; }
+        .sort-select { background: var(--bg-glass); border: 1px solid var(--border-glass); color: white; padding: 0 10px; border-radius: 12px; font-weight: 600; }
+        .sort-select option { background: var(--bg-deep); }
 
-        .filters { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .filters { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px;}
         .filters::-webkit-scrollbar { display: none; }
-        .filter-btn { 
-            flex-shrink: 0; padding: 12px 30px; background: var(--bg-glass); border: 1px solid var(--border-glass); 
-            border-radius: 30px; color: var(--text-secondary); font-weight: 700; font-size: 0.95rem; transition: 0.4s; 
-        }
-        .filter-btn.active, .filter-btn:hover { 
-            background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(138,43,226,0.15)); 
-            color: white; border-color: var(--neon-cyan); box-shadow: var(--shadow-neon); 
-        }
+        .filter-btn { flex-shrink: 0; padding: 12px 24px; background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: 30px; color: var(--text-secondary); font-weight: 700; white-space: nowrap; }
+        .filter-btn.active { background: linear-gradient(90deg, rgba(0,229,255,0.2), rgba(138,43,226,0.2)); color: white; border-color: var(--neon-cyan); }
 
         /* ==========================================================================
-           7. FEED GRID & CARD DESIGN
+           5. LƯỚI BÀI VIẾT (FEED GRID)
            ========================================================================== */
-        .feed-container { padding: 10px 24px 40px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; min-height: 400px;}
+        .feed-container { padding: 10px 20px 40px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; min-height: 400px;}
         
-        .card { 
-            background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); 
-            overflow: hidden; display: flex; flex-direction: column; position: relative; transition: 0.4s; cursor: pointer;
-        }
-        .card:hover { transform: translateY(-8px); border-color: var(--neon-purple); box-shadow: 0 20px 40px rgba(138, 43, 226, 0.2); }
+        .card { background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; position: relative; transition: 0.3s; cursor: pointer;}
+        .card:hover { transform: translateY(-5px); border-color: var(--neon-purple); box-shadow: 0 15px 30px rgba(138, 43, 226, 0.2); }
         
-        .card-cover { position: relative; width: 100%; padding-top: 60%; overflow: hidden; }
-        .card-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        .card:hover .card-cover img { transform: scale(1.1) rotate(1deg); }
-        
-        .card-badges { position: absolute; top: 15px; left: 15px; display: flex; gap: 8px; z-index: 2;}
-        .card-cat { background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; border: 1px solid var(--border-glass); }
-        
-        .card-admin { position: absolute; top: 15px; right: 15px; z-index: 10; display: none; gap: 5px; }
-        .btn-del-post { width: 35px; height: 35px; border-radius: 50%; background: rgba(255,23,68,0.9); color: white; display: flex; justify-content: center; align-items: center; transition: 0.2s;}
-        .btn-del-post:hover { transform: scale(1.15); box-shadow: 0 0 15px var(--neon-red); }
+        .card-cover { position: relative; width: 100%; padding-top: 60%; }
+        .card-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .card-badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; z-index: 2;}
+        .card-cat { background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; color: var(--neon-cyan); border: 1px solid var(--border-glass); }
+        .card-admin { position: absolute; top: 12px; right: 12px; z-index: 10; display: none; }
+        .btn-del-post { width: 35px; height: 35px; border-radius: 50%; background: rgba(255,23,68,0.9); color: white; display: flex; justify-content: center; align-items: center; }
 
-        .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-        .card-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-author { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px; }
-        .card-author img { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-glass); }
+        .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;}
+        .card-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-author { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px; }
         
-        .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid var(--border-glass); margin-top: auto;}
+        .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-glass); }
         .card-stats { display: flex; gap: 15px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;}
-        .card-stats span { display: flex; align-items: center; gap: 6px; }
-        .btn-like { background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 20px; color: white; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .btn-like:hover { background: rgba(255,0,122,0.1); color: var(--neon-pink); }
-        .btn-like.liked { color: var(--neon-pink); box-shadow: inset 0 0 10px rgba(255,0,122,0.2); }
-
-        /* Skeleton Loading */
-        .skeleton { background: var(--bg-glass); border-radius: var(--radius-lg); border: 1px solid var(--border-glass); overflow: hidden; }
-        .sk-img { width: 100%; padding-top: 60%; background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%); background-size: 200% 100%; animation: load 1.5s infinite; }
-        .sk-text { height: 20px; background: #222; margin: 20px; border-radius: 5px; animation: load 1.5s infinite; }
-        @keyframes load { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .btn-like { background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 20px; color: white; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .btn-like.liked { color: var(--neon-pink); background: rgba(255,0,122,0.1); }
 
         /* ==========================================================================
-           8. MODALS (UPLOAD, DETAIL, PROFILE, LEADERBOARD)
+           6. MENU BÊN TRÁI & CHAT (SIDE MENU ĐƯỢC LÀM SÁNG)
            ========================================================================== */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: var(--z-modal); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.4s ease; }
-        .overlay.active { opacity: 1; visibility: visible; }
-        .modal { background: #0a0b12; width: 95%; max-width: 550px; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); padding: 30px; transform: translateY(40px); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-card);}
-        .overlay.active .modal { transform: translateY(0); }
-        
-        .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .modal-head h3 { font-size: 1.5rem; font-weight: 900; color: var(--neon-cyan); }
-        .btn-close-modal { font-size: 1.8rem; color: var(--text-secondary); transition: 0.3s; }
-        .btn-close-modal:hover { color: var(--neon-red); transform: rotate(90deg); }
-
-        /* Form Controls */
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-secondary); font-size: 0.95rem; }
-        .form-input { width: 100%; padding: 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: var(--radius-md); color: white; font-size: 1rem; transition: 0.3s; }
-        .form-input:focus { border-color: var(--neon-cyan); box-shadow: inset 0 0 15px rgba(0,229,255,0.15); }
-        .btn-submit { width: 100%; padding: 16px; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); color: white; font-weight: 800; font-size: 1.1rem; border-radius: var(--radius-md); text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3); }
-        .btn-submit:hover { transform: translateY(-3px); box-shadow: var(--shadow-neon); }
-
-        /* Detail Modal (Full Size) */
-        #modal-detail .modal { max-width: 900px; padding: 0; display: flex; flex-direction: column; overflow: hidden; height: 95vh; background: #050508;}
-        .dt-cover { width: 100%; height: 350px; position: relative; flex-shrink: 0; }
-        .dt-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .dt-close { position: absolute; top: 20px; right: 20px; width: 45px; height: 45px; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; z-index: 10; border: 1px solid rgba(255,255,255,0.1); }
-        .dt-close:hover { background: var(--neon-red); border-color: var(--neon-red); }
-        .dt-body { padding: 30px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-        .dt-title { font-size: 2.2rem; font-weight: 900; margin-bottom: 15px; line-height: 1.3;}
-        .dt-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-glass); }
-        .dt-desc { line-height: 1.8; font-size: 1.1rem; color: #d4d4d8; white-space: pre-wrap; margin-bottom: 40px; }
-        
-        /* Comments System */
-        .cmt-section { background: rgba(255,255,255,0.02); border-radius: var(--radius-lg); padding: 25px; border: 1px solid var(--border-glass); margin-top: auto; }
-        .cmt-head { font-weight: 900; font-size: 1.3rem; margin-bottom: 20px; color: var(--neon-cyan); display: flex; align-items: center; gap: 10px; }
-        .cmt-list { display: flex; flex-direction: column; gap: 15px; max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px; }
-        .cmt-item { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; border-left: 3px solid transparent; animation: slideIn 0.3s; }
-        @keyframes slideIn { from { opacity:0; transform: translateX(-20px);} to { opacity:1; transform: translateX(0);} }
-        .cmt-user { font-size: 0.9rem; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-        .cmt-user img { width: 28px; height: 28px; border-radius: 50%; }
-        .cmt-text { font-size: 1rem; color: #ccc; line-height: 1.5; word-break: break-word; }
-        .cmt-input-wrap { display: flex; gap: 15px; }
-        .cmt-input-wrap input { flex: 1; padding: 15px; background: rgba(0,0,0,0.6); border: 1px solid var(--border-glass); border-radius: var(--radius-md); color: white; }
-        .cmt-input-wrap button { background: var(--neon-cyan); color: black; font-weight: 900; padding: 0 25px; border-radius: var(--radius-md); font-size: 1.2rem; }
-
-        /* Profile & Leaderboard Modals */
-        .profile-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 20px; border-radius: var(--radius-md); text-align: center; }
-        .stat-num { font-size: 2.5rem; font-weight: 900; color: var(--neon-cyan); margin-bottom: 5px; }
-        
-        .lb-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: rgba(255,255,255,0.03); border-radius: var(--radius-md); margin-bottom: 10px; border: 1px solid var(--border-glass);}
-        .lb-rank { font-size: 1.5rem; font-weight: 900; color: var(--neon-gold); width: 40px; }
-        .lb-info { flex: 1; display: flex; align-items: center; gap: 15px; }
-        .lb-info img { width: 40px; height: 40px; border-radius: 50%; }
-
-        /* ==========================================================================
-           9. SIDE MENU (ACCOUNT & GLOBAL CHAT)
-           ========================================================================== */
-        .side-menu { position: fixed; top: 0; left: 0; width: 100%; max-width: 400px; height: 100vh; background: rgba(5,5,10,0.95); border-right: 1px solid var(--border-glass); z-index: 3000; transform: translateX(-100%); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; backdrop-filter: blur(20px); }
-        .side-menu.open { transform: translateX(0); }
-        .side-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2999; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .side-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2999; opacity: 0; visibility: hidden; transition: 0.3s; }
         .side-overlay.active { opacity: 1; visibility: visible; }
         
-        .sm-header { padding: 25px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
-        .sm-body { padding: 25px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 25px; }
+        /* FIX: Menu sáng hơn, có viền nổi bật */
+        .side-menu { 
+            position: fixed; top: 0; left: 0; width: 100%; max-width: 380px; height: 100vh; 
+            background: rgba(15, 15, 25, 0.98); border-right: 2px solid var(--neon-cyan); 
+            box-shadow: 10px 0 30px rgba(0, 229, 255, 0.1);
+            z-index: 3000; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            display: flex; flex-direction: column; 
+        }
+        .side-menu.open { transform: translateX(0); }
         
-        .auth-panel { background: var(--bg-glass); border: 1px solid var(--border-glass); padding: 25px; border-radius: var(--radius-lg); text-align: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
-        .btn-auth { padding: 16px; border-radius: var(--radius-md); font-weight: 800; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; font-size: 1.05rem; }
+        .sm-header { padding: 20px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
+        .btn-close-sm { font-size: 2rem; color: var(--text-secondary); background: none; }
+        .btn-close-sm:active { color: var(--neon-red); }
+        
+        .sm-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* Box Đăng nhập rõ ràng */
+        .auth-panel { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 20px; border-radius: var(--radius-md); text-align: center; }
+        .btn-auth { padding: 14px; border-radius: 12px; font-weight: 800; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; font-size: 1rem; }
         .btn-google { background: white; color: black; }
-        .btn-guest { background: #222; color: white; border: 1px solid #444; }
+        .btn-guest { background: #333; color: white; border: 1px solid #555; }
         
-        .profile-view { display: none; flex-direction: column; align-items: center; gap: 12px; }
-        .profile-view img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--neon-cyan); padding: 3px; object-fit: cover;}
-        .btn-logout { margin-top: 15px; color: var(--neon-red); font-weight: 700; text-decoration: underline; }
+        .profile-view { display: none; flex-direction: column; align-items: center; gap: 10px; }
+        .profile-view img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--neon-cyan); object-fit: cover;}
+        .btn-logout { margin-top: 10px; color: var(--neon-red); font-weight: 700; text-decoration: underline; padding: 5px; }
 
-        /* Global Chat */
-        .chat-widget { flex: 1; display: flex; flex-direction: column; background: #000; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); overflow: hidden; position: relative; min-height: 400px; }
-        .chat-head { padding: 18px; background: rgba(255,255,255,0.05); font-weight: 900; color: var(--neon-pink); border-bottom: 1px solid var(--border-glass); text-align: center; font-size: 1.1rem;}
-        .chat-list { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .chat-msg { background: rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 12px; border-left: 3px solid transparent; }
-        .chat-input-box { display: flex; padding: 12px; background: rgba(255,255,255,0.05); border-top: 1px solid var(--border-glass); }
+        /* Kênh Chat */
+        .chat-widget { flex: 1; display: flex; flex-direction: column; background: #000; border-radius: var(--radius-md); border: 1px solid var(--border-glass); overflow: hidden; position: relative; min-height: 400px; }
+        .chat-head { padding: 15px; background: rgba(255,255,255,0.05); font-weight: 800; color: var(--neon-pink); border-bottom: 1px solid var(--border-glass); text-align: center;}
+        .chat-list { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .chat-msg { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; border-left: 3px solid transparent; }
+        .chat-input-box { display: flex; padding: 10px; background: rgba(255,255,255,0.05); border-top: 1px solid var(--border-glass); }
         .chat-input-box input { flex: 1; color: white; padding: 10px; font-size: 1rem; }
-        .chat-input-box button { color: var(--neon-pink); font-size: 1.3rem; padding: 0 15px; }
-        .chat-lock { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 15px; font-weight: bold; color: var(--text-secondary); z-index: 10; font-size: 1.1rem;}
+        .chat-input-box button { color: var(--neon-pink); font-size: 1.3rem; padding: 0 10px; }
+        .chat-lock { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 10px; font-weight: bold; color: var(--text-secondary); z-index: 10; backdrop-filter: blur(3px);}
 
         /* ==========================================================================
-           10. MOBILE BOTTOM DOCK
+           7. CÁC MODAL (UPLOAD, DETAIL, PROFILE)
            ========================================================================== */
-        .dock-container { position: fixed; bottom: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 90; pointer-events: none; }
-        .dock { background: rgba(10,10,15,0.9); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); padding: 8px 10px; border-radius: 40px; display: flex; gap: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); pointer-events: auto; }
-        .dock-btn { padding: 12px 20px; border-radius: 30px; color: var(--text-secondary); font-weight: 800; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 0.95rem; }
-        .dock-btn:hover, .dock-btn.active { color: white; background: rgba(255,255,255,0.1); }
-        .dock-btn.primary { background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); color: white; display: none; }
-        .dock-btn.primary:hover { box-shadow: var(--shadow-neon); transform: scale(1.05); }
+        .overlay-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 4000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .overlay-modal.active { opacity: 1; visibility: visible; }
+        .modal { background: #0a0b12; width: 95%; max-width: 500px; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); padding: 25px; transform: translateY(30px); transition: 0.4s; max-height: 90vh; overflow-y: auto; }
+        .overlay-modal.active .modal { transform: translateY(0); }
+        
+        .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-head h3 { font-size: 1.3rem; font-weight: 800; color: var(--neon-cyan); }
+        .btn-close-modal { font-size: 1.8rem; color: var(--text-secondary); }
 
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-input { width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 12px; color: white; font-size: 1rem; }
+        .form-input:focus { border-color: var(--neon-cyan); }
+        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)); color: white; font-weight: 800; font-size: 1.1rem; border-radius: 12px; margin-top: 10px;}
+
+        /* Chi tiết bài viết (Toàn màn hình) */
+        #modal-detail .modal { max-width: 900px; padding: 0; display: flex; flex-direction: column; overflow: hidden; height: 95vh; background: #050508;}
+        .dt-cover { width: 100%; height: 250px; position: relative; flex-shrink: 0; }
+        .dt-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .dt-close { position: absolute; top: 15px; right: 15px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; z-index: 10; border: 1px solid rgba(255,255,255,0.2);}
+        .dt-body { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .dt-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; line-height: 1.3;}
+        .dt-meta { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-glass); }
+        .dt-desc { line-height: 1.6; font-size: 1rem; color: #d4d4d8; white-space: pre-wrap; margin-bottom: 30px; }
+        
+        .cmt-section { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 20px; border: 1px solid var(--border-glass); margin-top: auto; }
+        .cmt-head { font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; color: var(--neon-cyan);}
+        .cmt-list { display: flex; flex-direction: column; gap: 12px; max-height: 250px; overflow-y: auto; margin-bottom: 15px;}
+        .cmt-item { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 12px; border-left: 3px solid transparent;}
+        .cmt-input-wrap { display: flex; gap: 10px; }
+        .cmt-input-wrap input { flex: 1; padding: 12px; background: rgba(0,0,0,0.8); border: 1px solid var(--border-glass); border-radius: 10px; color: white; }
+        .cmt-input-wrap button { background: var(--neon-cyan); color: black; font-weight: 900; padding: 0 20px; border-radius: 10px; }
+
+        /* Profile Modal */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .stat-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 15px; border-radius: 15px; text-align: center;}
+
+        /* ==========================================================================
+           8. MOBILE DOCK (THANH CÔNG CỤ DƯỚI ĐÁY)
+           ========================================================================== */
+        .dock-wrap { position: fixed; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 90; pointer-events: none;}
+        .dock { background: rgba(10,10,15,0.9); backdrop-filter: blur(15px); border: 1px solid var(--border-glass); padding: 8px; border-radius: 40px; display: flex; gap: 5px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); pointer-events: auto;}
+        .dock-btn { padding: 12px 20px; border-radius: 30px; color: var(--text-secondary); font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .dock-btn.active { color: white; background: rgba(255,255,255,0.1); }
+        .dock-btn.upload { background: var(--neon-cyan); color: black; display: none; }
     </style>
 </head>
 <body>
 
-    <!-- LAYER 1: BACKGROUND ENGINE -->
+    <!-- 1. HÌNH NỀN HẠT CANVAS -->
     <canvas id="particle-canvas"></canvas>
     <div class="ambient-light"></div>
 
-    <!-- LAYER 2: PRELOADER & TOAST -->
-    <div id="preloader">
-        <div class="loader-logo">GALAXYCRAFT</div>
-        <div class="progress-bar-container"><div class="progress-bar" id="load-progress"></div></div>
-    </div>
+    <!-- 2. PRELOADER & TOAST -->
+    <div id="preloader"><div class="loader-logo">GALAXY</div></div>
     <div id="toast-container"></div>
 
-    <!-- LAYER 3: HEADER -->
+    <!-- 3. HEADER -->
     <header>
-        <button class="icon-btn" onclick="App.UI.toggleMenu(true)"><i class="fas fa-bars"></i></button>
+        <!-- FIX 1: Nút Menu 3 gạch phát sáng Xanh Neon -->
+        <button class="btn-menu-toggle" onclick="App.UI.toggleMenu(true)"><i class="fas fa-bars"></i></button>
         <div class="brand"><i class="fas fa-meteor"></i> GALAXY</div>
-        <div style="display: flex; gap: 10px;">
-            <button class="icon-btn" onclick="App.UI.toggleModal('modal-leaderboard', true)" title="Bảng xếp hạng"><i class="fas fa-trophy" style="color: var(--neon-gold);"></i></button>
-            <button class="icon-btn" id="btn-profile" style="display: none;" onclick="App.UI.openProfile()" title="Trang cá nhân"><i class="fas fa-user"></i></button>
-        </div>
+        <img id="btn-profile-top" class="btn-profile-top" src="" onclick="App.UI.openProfile()">
     </header>
 
-    <!-- LAYER 4: HERO & TOOLBAR -->
+    <!-- 4. HERO SECTION (TỐI ƯU MOBILE) -->
     <section class="hero">
-        <h2>Khám phá <span class="highlight">Đa Vũ Trụ</span> Addons</h2>
-        <p>Nền tảng chia sẻ Mods, Maps, Shaders thời gian thực lớn nhất dành cho Minecraft PE. Tương tác, tải xuống và kết nối cộng đồng.</p>
+        <h2>Khám phá <br><span>Đa Vũ Trụ</span> Addons</h2>
+        <p>Nơi chia sẻ và tải xuống hàng ngàn Maps, Mods, Shaders chất lượng nhất cho Minecraft PE.</p>
     </section>
 
+    <!-- 5. TOOLBAR (TÌM KIẾM & LỌC) -->
     <section class="toolbar">
         <div class="search-group">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="inp-search" placeholder="Tìm tên tác phẩm, tác giả...">
+                <input type="text" id="inp-search" placeholder="Tìm tên tác phẩm...">
             </div>
-            <select class="select-box" id="sel-sort">
+            <select class="sort-select" id="sel-sort">
                 <option value="new">Mới nhất</option>
-                <option value="old">Cũ nhất</option>
                 <option value="views">Xem nhiều</option>
-                <option value="likes">Yêu thích</option>
+                <option value="likes">Nhiều Tim</option>
             </select>
         </div>
         <div class="filters">
@@ -335,67 +282,69 @@
         </div>
     </section>
 
-    <!-- LAYER 5: FEED MAIN -->
+    <!-- 6. LƯỚI BÀI VIẾT (FEED) -->
     <main class="feed-container" id="feed-container">
-        <!-- Skeleton Loading -->
-        <div class="skeleton"><div class="sk-img"></div><div class="sk-text"></div><div class="sk-text" style="width:50%;"></div></div>
-        <div class="skeleton"><div class="sk-img"></div><div class="sk-text"></div><div class="sk-text" style="width:50%;"></div></div>
-        <div class="skeleton"><div class="sk-img"></div><div class="sk-text"></div><div class="sk-text" style="width:50%;"></div></div>
+        <!-- Chữ chờ tải -->
+        <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">Đang kết nối vào hệ thống...</div>
     </main>
 
-    <!-- LAYER 6: BOTTOM DOCK -->
-    <div class="dock-container">
+    <!-- 7. BOTTOM DOCK -->
+    <div class="dock-wrap">
         <div class="dock">
             <button class="dock-btn active" onclick="window.scrollTo(0,0)"><i class="fas fa-home"></i> Khám phá</button>
-            <button class="dock-btn primary" id="btn-dock-upload" onclick="App.UI.toggleModal('modal-upload', true)"><i class="fas fa-cloud-upload-alt"></i> Tải lên</button>
+            <button class="dock-btn upload" id="btn-dock-upload" onclick="App.UI.toggleModal('modal-upload', true)"><i class="fas fa-cloud-upload-alt"></i> Tải lên</button>
         </div>
     </div>
 
+
     <!-- ==========================================================================
-         LAYER 7: CÁC MODAL 
+         CÁC MODAL VÀ MENU OVERLAY 
          ========================================================================== -->
-    
-    <!-- 7.1. Side Menu (Auth & Chat) -->
+
+    <!-- SIDE MENU 3 GẠCH (MỞ RÕ RÀNG HƠN) -->
     <div class="side-overlay" id="menu-overlay" onclick="App.UI.toggleMenu(false)"></div>
     <aside class="side-menu" id="side-menu">
         <div class="sm-header">
-            <h2 style="font-weight: 900; color: var(--neon-cyan);">Hồ Sơ & Giao Tiếp</h2>
-            <button class="btn-close-modal" onclick="App.UI.toggleMenu(false)" style="border:none;background:none;"><i class="fas fa-times"></i></button>
+            <h2 style="font-weight: 900; color: var(--neon-cyan);">Cộng Đồng</h2>
+            <button class="btn-close-sm" onclick="App.UI.toggleMenu(false)"><i class="fas fa-times"></i></button>
         </div>
         <div class="sm-body">
+            <!-- Box Đăng Nhập -->
             <div class="auth-panel">
                 <div id="auth-unlogged">
-                    <button class="btn-auth btn-google" id="btn-login-google"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="22"> Đăng nhập Google</button>
-                    <button class="btn-auth btn-guest" id="btn-login-guest"><i class="fas fa-user-secret"></i> Dùng thử Ẩn danh</button>
+                    <!-- FIX 2: Gắn ID rõ ràng để bắt sự kiện JS -->
+                    <button class="btn-auth btn-google" id="btn-login-google"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20"> Đăng nhập Google</button>
+                    <button class="btn-auth btn-guest" id="btn-login-guest"><i class="fas fa-user-secret"></i> Khách Ẩn Danh</button>
                 </div>
                 <div class="profile-view" id="auth-logged">
                     <img id="pf-avatar" src="" alt="Avatar">
-                    <h3 id="pf-name" style="font-weight: 900; font-size: 1.3rem;">Name</h3>
+                    <h3 id="pf-name" style="font-weight: 900; font-size: 1.2rem;">Name</h3>
                     <span id="pf-role" class="badge">ROLE</span>
-                    <button id="btn-logout" class="btn-logout">Đăng xuất khỏi thiết bị</button>
+                    <button id="btn-logout" class="btn-logout">Đăng xuất</button>
                 </div>
             </div>
 
+            <!-- Kênh Chat -->
             <div class="chat-widget">
-                <div class="chat-head"><i class="fas fa-globe-americas"></i> Kênh Chat Vũ Trụ</div>
+                <div class="chat-head"><i class="fas fa-comments"></i> Kênh Chat Vũ Trụ</div>
                 <div class="chat-list" id="chat-list"></div>
                 <div class="chat-input-box">
-                    <input type="text" id="chat-input" placeholder="Giao tiếp với mọi người..." autocomplete="off">
+                    <input type="text" id="chat-input" placeholder="Nhắn tin..." autocomplete="off">
                     <button id="btn-send-chat"><i class="fas fa-paper-plane"></i></button>
                 </div>
                 <div class="chat-lock" id="chat-lock">
-                    <i class="fas fa-lock" style="font-size: 2.5rem;"></i>
-                    <p>Đăng nhập để tham gia trò chuyện</p>
+                    <i class="fas fa-lock" style="font-size: 2rem;"></i>
+                    <p>Đăng nhập để Chat</p>
                 </div>
             </div>
         </div>
     </aside>
 
-    <!-- 7.2. Modal Upload -->
-    <div class="overlay" id="modal-upload">
+    <!-- Modal Đăng Bài -->
+    <div class="overlay-modal" id="modal-upload">
         <div class="modal">
             <div class="modal-head">
-                <h3>Phát Hành Tác Phẩm</h3>
+                <h3>Phát Hành Bản Mod</h3>
                 <button class="btn-close-modal" onclick="App.UI.toggleModal('modal-upload', false)"><i class="fas fa-times"></i></button>
             </div>
             <div class="form-group">
@@ -407,27 +356,27 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Tên tác phẩm (Bắt buộc)</label>
+                <label class="form-label">Tên tác phẩm</label>
                 <input type="text" class="form-input" id="up-title" placeholder="VD: Dragon Mounts 3D">
             </div>
             <div class="form-group">
                 <label class="form-label">Link ảnh bìa URL</label>
-                <input type="text" class="form-input" id="up-img" placeholder="Để trống sẽ dùng ảnh mặc định">
+                <input type="text" class="form-input" id="up-img" placeholder="https://...">
             </div>
             <div class="form-group">
-                <label class="form-label">Mô tả (Hỗ trợ *in nghiêng*, **in đậm**)</label>
-                <textarea class="form-input" id="up-desc" rows="4" placeholder="Viết vài dòng giới thiệu về bản mod này..."></textarea>
+                <label class="form-label">Mô tả chi tiết</label>
+                <textarea class="form-input" id="up-desc" rows="4" placeholder="Viết giới thiệu..."></textarea>
             </div>
-            <button class="btn-submit" id="btn-submit-post">Xác Nhận Phát Hành</button>
+            <button class="btn-submit" id="btn-submit-post">Đăng Lên Hệ Thống</button>
         </div>
     </div>
 
-    <!-- 7.3. Modal Chi Tiết Bài Viết -->
-    <div class="overlay" id="modal-detail">
+    <!-- Modal Xem Chi Tiết -->
+    <div class="overlay-modal" id="modal-detail">
         <div class="modal">
             <div class="dt-cover">
                 <div class="dt-close" onclick="App.UI.toggleModal('modal-detail', false); App.DB.currentPostId = null;"><i class="fas fa-times"></i></div>
-                <img id="dt-img" src="" alt="Cover">
+                <img id="dt-img" src="">
             </div>
             <div class="dt-body">
                 <h1 class="dt-title" id="dt-title">Tiêu đề</h1>
@@ -436,14 +385,13 @@
                     <span id="dt-cat" style="color: var(--neon-cyan);"><i class="fas fa-folder"></i> Thể loại</span>
                     <span id="dt-views"><i class="fas fa-eye"></i> Lượt xem</span>
                 </div>
-                <h3 style="margin-bottom: 10px; color: var(--neon-purple); font-weight: 900;">Mô tả chi tiết</h3>
                 <div class="dt-desc" id="dt-desc">Nội dung...</div>
                 
                 <div class="cmt-section">
-                    <div class="cmt-head"><i class="fas fa-comments"></i> Bình luận cộng đồng</div>
+                    <div class="cmt-head"><i class="fas fa-comment-dots"></i> Bình luận cộng đồng</div>
                     <div class="cmt-list" id="dt-cmt-list"></div>
                     <div class="cmt-input-wrap">
-                        <input type="text" id="cmt-input" placeholder="Viết bình luận (*nghiêng*, **đậm**)...">
+                        <input type="text" id="cmt-input" placeholder="Viết bình luận...">
                         <button id="btn-send-cmt"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
@@ -451,65 +399,49 @@
         </div>
     </div>
 
-    <!-- 7.4. Modal User Profile (Trang Cá Nhân) -->
-    <div class="overlay" id="modal-profile">
+    <!-- Modal Trang Cá Nhân -->
+    <div class="overlay-modal" id="modal-profile">
         <div class="modal">
             <div class="modal-head">
                 <h3><i class="fas fa-id-card"></i> Hồ Sơ Của Bạn</h3>
                 <button class="btn-close-modal" onclick="App.UI.toggleModal('modal-profile', false)"><i class="fas fa-times"></i></button>
             </div>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img id="my-avatar" src="" style="width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--neon-cyan); margin: 0 auto 10px; object-fit: cover;">
-                <h2 id="my-name" style="font-weight: 900; font-size: 1.8rem;">Tên</h2>
+            <div style="text-align: center;">
+                <img id="my-avatar" src="" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--neon-cyan); margin: 0 auto 10px; object-fit: cover;">
+                <h2 id="my-name" style="font-weight: 800; font-size: 1.5rem;">Tên</h2>
             </div>
-            <div class="profile-stats">
-                <div class="stat-card">
-                    <div class="stat-num" id="my-posts-count">0</div>
-                    <div style="color: var(--text-secondary); font-weight: 600;">Tác phẩm</div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div style="font-size: 2rem; font-weight: 900; color: var(--neon-cyan);" id="my-posts-count">0</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Bài đã đăng</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-num" id="my-likes-count">0</div>
-                    <div style="color: var(--text-secondary); font-weight: 600;">Lượt Thích Nhận</div>
+                <div class="stat-box">
+                    <div style="font-size: 2rem; font-weight: 900; color: var(--neon-pink);" id="my-likes-count">0</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Lượt thả tim</div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 7.5. Modal Leaderboard (Bảng Xếp Hạng) -->
-    <div class="overlay" id="modal-leaderboard">
-        <div class="modal">
-            <div class="modal-head">
-                <h3><i class="fas fa-crown" style="color: var(--neon-gold);"></i> Bảng Phong Thần</h3>
-                <button class="btn-close-modal" onclick="App.UI.toggleModal('modal-leaderboard', false)"><i class="fas fa-times"></i></button>
-            </div>
-            <p style="color: var(--text-secondary); margin-bottom: 20px; text-align: center;">Tôn vinh những Nhà Sáng Tạo có tổng lượt Yêu Thích cao nhất vũ trụ.</p>
-            <div id="lb-list">
-                <!-- List renders here -->
             </div>
         </div>
     </div>
 
 
     <!-- ==========================================================================
-         KIẾN TRÚC JAVASCRIPT MVC (MODEL - VIEW - CONTROLLER)
+         JAVASCRIPT LOGIC
          ========================================================================== -->
     <script type="module">
-        // ---------------------------------------------------------
-        // 1. CONFIG & IMPORTS (DATABASE MỚI NHẤT)
-        // ---------------------------------------------------------
+        // 1. CẤU HÌNH FIREBASE MỚI NHẤT
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, signInAnonymously, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, push, set, remove, serverTimestamp, runTransaction, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBWekVu-l8qnCB_1V4xexFJtYRROE2wgBw",
-            authDomain: "galaxycraft-56301.firebaseapp.com",
-            databaseURL: "https://galaxycraft-56301-default-rtdb.firebaseio.com", 
-            projectId: "galaxycraft-56301",
-            storageBucket: "galaxycraft-56301.firebasestorage.app",
-            messagingSenderId: "746650778677",
-            appId: "1:746650778677:web:bd80178dcc39e06c07c57c",
-            measurementId: "G-J6BW82J078"
+            apiKey: "AIzaSyDBlMGmdcdxzJQ-dYBzw2zzfRTu2vh6GG0",
+            authDomain: "goggle-login-39224.firebaseapp.com",
+            databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com", 
+            projectId: "goggle-login-39224",
+            storageBucket: "goggle-login-39224.firebasestorage.app",
+            messagingSenderId: "479026449758",
+            appId: "1:479026449758:web:661543f85ebeb7621393cf",
+            measurementId: "G-11EF7RQKS3"
         };
         
         const fApp = initializeApp(firebaseConfig);
@@ -517,147 +449,24 @@
         const fDb = getDatabase(fApp);
         const googleProvider = new GoogleAuthProvider();
 
-        // ---------------------------------------------------------
-        // 2. MODEL (Quản lý trạng thái ứng dụng)
-        // ---------------------------------------------------------
-        const State = {
-            user: null, // {uid, name, avatar, role, email}
-            posts: [],
-            filter: 'all',
-            search: '',
-            sort: 'new'
-        };
         const DEV_EMAIL = "hminhgalaxy@gmail.com";
+        const State = { user: null, posts: [], filter: 'all', search: '', sort: 'new' };
 
-        // ---------------------------------------------------------
-        // 3. AUDIO ENGINE (Synthesizer Web Audio API)
-        // ---------------------------------------------------------
-        const AudioEngine = {
-            ctx: null,
-            init() { if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
-            play(type) {
-                if(!this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.connect(gain); gain.connect(this.ctx.destination);
-                
-                const now = this.ctx.currentTime;
-                if(type === 'click') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
-                    gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                    osc.start(now); osc.stop(now + 0.1);
-                } else if(type === 'success') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(600, now+0.1);
-                    gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 0.3);
-                    osc.start(now); osc.stop(now + 0.3);
-                }
-            }
-        };
-        // Kích hoạt Audio khi user tương tác lần đầu
-        document.body.addEventListener('click', () => AudioEngine.init(), {once:true});
-
-        // ---------------------------------------------------------
-        // 4. PARTICLE ENGINE (Hệ thống Hạt tương tác Chuột)
-        // ---------------------------------------------------------
-        class ParticleNetwork {
-            constructor() {
-                this.canvas = document.getElementById('particle-canvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.particles = [];
-                this.mouse = { x: null, y: null, radius: 150 };
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
-                window.addEventListener('mousemove', (e) => { this.mouse.x = e.x; this.mouse.y = e.y; });
-                window.addEventListener('mouseout', () => { this.mouse.x = null; this.mouse.y = null; });
-                this.init(); this.animate();
-            }
-            resize() { this.w = this.canvas.width = window.innerWidth; this.h = this.canvas.height = window.innerHeight; }
-            init() {
-                const count = Math.min(Math.floor(this.w / 15), 100); // Giới hạn tối đa 100 hạt để mượt
-                for(let i=0; i<count; i++) {
-                    this.particles.push({
-                        x: Math.random()*this.w, y: Math.random()*this.h,
-                        vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5,
-                        size: Math.random()*2, color: Math.random()>0.5?'#00e5ff':'#8a2be2'
-                    });
-                }
-            }
-            animate() {
-                this.ctx.clearRect(0,0,this.w,this.h);
-                for(let i=0; i<this.particles.length; i++) {
-                    let p = this.particles[i];
-                    p.x += p.vx; p.y += p.vy;
-                    if(p.x<0||p.x>this.w) p.vx*=-1; if(p.y<0||p.y>this.h) p.vy*=-1;
-                    
-                    // Tương tác chuột (Đẩy hạt ra xa)
-                    if(this.mouse.x != null) {
-                        let dx = this.mouse.x - p.x; let dy = this.mouse.y - p.y;
-                        let dist = Math.sqrt(dx*dx + dy*dy);
-                        if(dist < this.mouse.radius) {
-                            const forceDirectionX = dx / dist; const forceDirectionY = dy / dist;
-                            const force = (this.mouse.radius - dist) / this.mouse.radius;
-                            p.x -= forceDirectionX * force * 2; p.y -= forceDirectionY * force * 2;
-                        }
-                    }
-
-                    this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-                    this.ctx.fillStyle = p.color; this.ctx.fill();
-
-                    // Nối dây
-                    for(let j=i+1; j<this.particles.length; j++) {
-                        let p2 = this.particles[j];
-                        let d = Math.hypot(p.x-p2.x, p.y-p2.y);
-                        if(d < 100) {
-                            this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p2.x, p2.y);
-                            this.ctx.strokeStyle = `rgba(255,255,255,${0.2 - d/500})`;
-                            this.ctx.lineWidth = 0.5; this.ctx.stroke();
-                        }
-                    }
-                }
-                requestAnimationFrame(() => this.animate());
-            }
-        }
-        new ParticleNetwork();
-
-        // ---------------------------------------------------------
-        // 5. HELPER FUNCTIONS
-        // ---------------------------------------------------------
-        const Utils = {
-            parseMarkdown: (text) => {
-                let html = text.replace(/[&<>'"]/g, t => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[t]));
-                html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
-                html = html.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italic
-                return html;
-            },
-            timeAgo: (ts) => {
-                if(!ts) return 'Vừa xong';
-                const s = Math.floor((new Date() - new Date(ts)) / 1000);
-                if(s < 60) return s + ' giây trước';
-                if(s < 3600) return Math.floor(s/60) + ' phút trước';
-                if(s < 86400) return Math.floor(s/3600) + ' giờ trước';
-                return Math.floor(s/86400) + ' ngày trước';
-            }
-        };
-
-        // ---------------------------------------------------------
-        // 6. VIEW CONTROLLER (Giao diện)
-        // ---------------------------------------------------------
+        // 2. GIAO DIỆN (UI CONTROLLER)
         const UI = {
             toggleMenu: (show) => {
-                AudioEngine.play('click');
                 document.getElementById('side-menu').classList.toggle('open', show);
                 document.getElementById('menu-overlay').classList.toggle('active', show);
             },
             toggleModal: (id, show) => {
-                AudioEngine.play('click');
                 document.getElementById(id).classList.toggle('active', show);
             },
             toast: (msg, type='info') => {
                 const c = document.getElementById('toast-container');
                 const t = document.createElement('div');
-                let icon = type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-triangle':'fa-info-circle';
-                t.className = `toast ${type}`;
-                t.innerHTML = `<i class="fas ${icon} toast-icon"></i><div class="toast-content"><h4>${type}</h4><p>${msg}</p></div>`;
+                let color = type==='success'?'#00ff88':type==='error'?'#ff1744':'#00e5ff';
+                t.className = 'toast'; t.style.borderLeftColor = color;
+                t.innerHTML = `<div style="font-weight:600; color:${color}; margin-right:5px;">[${type.toUpperCase()}]</div><div style="font-size:0.9rem; color:#ccc;">${msg}</div>`;
                 c.appendChild(t);
                 setTimeout(()=>t.classList.add('show'),10);
                 setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.remove(),400);}, 3500);
@@ -667,76 +476,85 @@
                 document.getElementById('auth-logged').style.display = isLog ? 'flex' : 'none';
                 document.getElementById('btn-dock-upload').style.display = isLog ? 'flex' : 'none';
                 document.getElementById('chat-lock').style.display = isLog ? 'none' : 'flex';
-                document.getElementById('btn-profile').style.display = isLog ? 'flex' : 'none';
+                document.getElementById('btn-profile-top').style.display = isLog ? 'block' : 'none';
                 
                 if(isLog) {
                     document.getElementById('pf-avatar').src = State.user.avatar;
+                    document.getElementById('btn-profile-top').src = State.user.avatar;
                     document.getElementById('pf-name').innerText = State.user.name;
-                    const r = document.getElementById('pf-role');
-                    r.className = `badge role-${State.user.role}`;
-                    r.innerText = State.user.role;
+                    document.getElementById('pf-role').className = `badge role-${State.user.role}`;
+                    document.getElementById('pf-role').innerText = State.user.role;
                 }
-                DB.renderFeed(); // Re-render to show admin buttons / likes
+                DB.renderFeed();
             },
             openProfile: () => {
                 if(!State.user) return;
                 document.getElementById('my-avatar').src = State.user.avatar;
                 document.getElementById('my-name').innerText = State.user.name;
-                
                 let myPosts = State.posts.filter(p => p.authorUid === State.user.uid);
                 let totalLikes = 0;
                 myPosts.forEach(p => { if(p.likes) totalLikes += Object.keys(p.likes).length; });
-                
                 document.getElementById('my-posts-count').innerText = myPosts.length;
                 document.getElementById('my-likes-count').innerText = totalLikes;
                 UI.toggleModal('modal-profile', true);
             }
         };
+        window.App = { UI }; // Xuất ra global để gọi trong HTML
 
-        // Preloader Logic
-        window.addEventListener('load', () => {
-            let bar = document.getElementById('load-progress');
-            bar.style.width = '100%';
-            setTimeout(()=>{
-                document.getElementById('preloader').style.opacity = '0';
-                setTimeout(()=>document.getElementById('preloader').style.display='none', 600);
-            }, 800);
-        });
+        window.addEventListener('load', () => setTimeout(()=> {
+            document.getElementById('preloader').style.opacity = '0';
+            setTimeout(()=>document.getElementById('preloader').style.display='none', 500);
+        }, 800));
 
-        // ---------------------------------------------------------
-        // 7. AUTH CONTROLLER
-        // ---------------------------------------------------------
+        // 3. XÁC THỰC (AUTH) KÈM THÔNG BÁO LỖI NATIVE (ALERT)
         onAuthStateChanged(fAuth, async (u) => {
             if(u) {
                 let role = 'guest';
                 if(!u.isAnonymous) role = (u.email === DEV_EMAIL) ? 'dev' : 'glx';
-                
                 try {
                     const snap = await get(ref(fDb, `roles/${u.uid}`));
                     if(snap.exists() && role !== 'dev') role = snap.val();
                     else if(role !== 'guest') set(ref(fDb, `roles/${u.uid}`), role);
                 } catch(e) {}
 
-                State.user = {
-                    uid: u.uid, role: role, email: u.email,
-                    name: u.isAnonymous ? `Khách_${u.uid.substring(0,4)}` : u.displayName,
-                    avatar: u.isAnonymous ? "https://cdn-icons-png.flaticon.com/512/149/149071.png" : u.photoURL
-                };
+                State.user = { uid: u.uid, role: role, name: u.isAnonymous ? `Khách_${u.uid.substring(0,4)}` : u.displayName, avatar: u.isAnonymous ? "https://cdn-icons-png.flaticon.com/512/149/149071.png" : u.photoURL };
                 UI.updateAuth(true);
-                UI.toast(`Hệ thống đã kết nối danh tính của bạn.`, 'success');
             } else {
                 State.user = null;
                 UI.updateAuth(false);
             }
         });
 
-        document.getElementById('btn-login-google').onclick = () => signInWithPopup(fAuth, googleProvider).catch(e=>UI.toast("Lỗi cấu hình: " + e.message, 'error'));
-        document.getElementById('btn-login-guest').onclick = () => signInAnonymously(fAuth).catch(e=>UI.toast(e.message, 'error'));
-        document.getElementById('btn-logout').onclick = () => { if(confirm("Xác nhận đăng xuất?")) signOut(fAuth); };
+        // FIX 2: Bắt sự kiện Đăng nhập Google cực kỳ cẩn thận
+        document.getElementById('btn-login-google').addEventListener('click', async () => {
+            try {
+                UI.toast("Đang kết nối Google...", "info");
+                await signInWithPopup(fAuth, googleProvider);
+                UI.toast("Đăng nhập thành công!", "success");
+            } catch(error) {
+                console.error(error);
+                // Bật thẳng hộp thoại Alert to đùng nếu bị Firebase chặn
+                alert("LỖI ĐĂNG NHẬP GOOGLE:\n\n" + error.message + "\n\nCÁCH SỬA: Hãy vào Firebase Console -> Authentication -> Settings -> Authorized domains -> Thêm 'craftgalaxy.vercel.app' vào nhé!");
+            }
+        });
 
-        // ---------------------------------------------------------
-        // 8. DATABASE CONTROLLER
-        // ---------------------------------------------------------
+        // FIX 2: Bắt sự kiện Đăng nhập Khách
+        document.getElementById('btn-login-guest').addEventListener('click', async () => {
+            try {
+                UI.toast("Đang tạo định danh ẩn...", "info");
+                await signInAnonymously(fAuth);
+                UI.toast("Đã vào bằng tư cách Khách!", "success");
+            } catch(error) {
+                console.error(error);
+                alert("LỖI ĐĂNG NHẬP KHÁCH:\n\n" + error.message + "\n\nCÁCH SỬA: Vào Firebase Console -> Authentication -> Bật 'Anonymous' lên nhé!");
+            }
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            if(confirm("Đăng xuất khỏi thiết bị này?")) signOut(fAuth);
+        });
+
+        // 4. DATABASE & CRUD
         const DB = {
             currentPostId: null,
             init: () => {
@@ -746,10 +564,8 @@
                         State.posts = Object.keys(d).map(k => ({id: k, ...d[k]}));
                     } else State.posts = [];
                     DB.renderFeed();
-                    DB.updateLeaderboard();
                 });
                 
-                // Chat Realtime
                 onValue(ref(fDb, 'chat'), (snap) => {
                     const list = document.getElementById('chat-list');
                     list.innerHTML = '';
@@ -758,19 +574,16 @@
                         Object.keys(msgs).forEach(k => {
                             const m = msgs[k];
                             const isDev = State.user && State.user.role === 'dev';
-                            const adminBtn = isDev ? `<button onclick="App.DB.makeAdmin('${m.uid}')" style="font-size:0.7rem; background:var(--role-admin); color:black; padding:2px 6px; border-radius:4px; font-weight:bold;">Phong Admin</button>` : '';
+                            const adminBtn = isDev ? `<button onclick="App.DB.makeAdmin('${m.uid}')" style="font-size:0.65rem; background:var(--role-admin); padding:2px 5px; border-radius:4px; font-weight:bold;">Phong Admin</button>` : '';
                             
                             let border = m.role==='dev'?'border-left-color:var(--role-dev);':m.role==='admin'?'border-left-color:var(--role-admin);':'';
                             list.insertAdjacentHTML('beforeend', `
                                 <div class="chat-msg" style="${border}">
                                     <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                        <div style="font-size:0.85rem; font-weight:800; display:flex; align-items:center; gap:6px;">
-                                            <span class="badge role-${m.role}" style="font-size:0.5rem; padding: 2px 5px;">${m.role}</span>
-                                            <span style="color:${m.role==='dev'?'var(--role-dev)':'white'}">${m.name}</span>
-                                        </div>
+                                        <div style="font-size:0.85rem; font-weight:800;"><span class="badge role-${m.role}" style="padding:2px 6px; font-size:0.6rem;">${m.role.toUpperCase()}</span> <span style="color:${m.role==='dev'?'var(--role-dev)':'white'}">${m.name}</span></div>
                                         ${adminBtn}
                                     </div>
-                                    <div style="font-size:0.95rem; color:#d4d4d8; word-break:break-word; margin-top:5px;">${Utils.parseMarkdown(m.text)}</div>
+                                    <div style="font-size:0.95rem; color:#ccc; word-break:break-word;">${m.text}</div>
                                 </div>
                             `);
                         });
@@ -782,22 +595,17 @@
             renderFeed: () => {
                 const c = document.getElementById('feed-container');
                 c.innerHTML = '';
-                
                 let arr = [...State.posts];
-                // Filter
                 if(State.filter !== 'all') arr = arr.filter(p => p.category === State.filter);
-                // Search
                 if(State.search) {
                     const q = State.search.toLowerCase();
                     arr = arr.filter(p => p.title.toLowerCase().includes(q) || p.authorName.toLowerCase().includes(q));
                 }
-                // Sort
                 if(State.sort === 'new') arr.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
-                if(State.sort === 'old') arr.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
                 if(State.sort === 'views') arr.sort((a,b) => (b.views || 0) - (a.views || 0));
                 if(State.sort === 'likes') arr.sort((a,b) => (b.likes?Object.keys(b.likes).length:0) - (a.likes?Object.keys(a.likes).length:0));
 
-                if(arr.length===0) return c.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-secondary);padding:50px 0;font-size:1.1rem;">Không tìm thấy dữ liệu nào.</div>';
+                if(arr.length===0) return c.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-secondary);padding:50px 0;">Vũ trụ đang trống rỗng. Không có dữ liệu.</div>';
 
                 arr.forEach(p => {
                     const lCount = p.likes ? Object.keys(p.likes).length : 0;
@@ -807,11 +615,11 @@
                     c.insertAdjacentHTML('beforeend', `
                         <div class="card" onclick="App.DB.openDetail('${p.id}')">
                             ${isPriv ? `<div class="card-admin" style="display:flex;"><button class="btn-del-post" onclick="event.stopPropagation(); App.DB.deletePost('${p.id}')"><i class="fas fa-trash"></i></button></div>` : ''}
-                            <div class="card-badges"><span class="card-cat cat-${p.category}">${p.category}</span></div>
+                            <div class="card-badges"><span class="card-cat">${p.category}</span></div>
                             <div class="card-cover"><img src="${p.image}" loading="lazy"></div>
                             <div class="card-body">
                                 <h3 class="card-title">${p.title}</h3>
-                                <div class="card-author"><img src="https://via.placeholder.com/24"> ${p.authorName}</div>
+                                <div class="card-author"><i class="fas fa-user-circle"></i> ${p.authorName}</div>
                                 <div class="card-footer">
                                     <div class="card-stats"><span><i class="fas fa-eye"></i> ${p.views||0}</span><span><i class="fas fa-comment"></i> ${p.comments?Object.keys(p.comments).length:0}</span></div>
                                     <button class="btn-like ${isLiked?'liked':''}" onclick="event.stopPropagation(); App.DB.toggleLike('${p.id}')"><i class="${isLiked?'fas':'far'} fa-heart"></i> ${lCount}</button>
@@ -822,38 +630,10 @@
                 });
             },
 
-            updateLeaderboard: () => {
-                // Nhóm theo User UID
-                let usersMap = {};
-                State.posts.forEach(p => {
-                    if(!usersMap[p.authorUid]) usersMap[p.authorUid] = { name: p.authorName, likes: 0 };
-                    usersMap[p.authorUid].likes += (p.likes ? Object.keys(p.likes).length : 0);
-                });
-                
-                let sortedUsers = Object.values(usersMap).sort((a,b) => b.likes - a.likes).slice(0, 10);
-                const list = document.getElementById('lb-list');
-                list.innerHTML = '';
-                sortedUsers.forEach((u, idx) => {
-                    let color = idx===0?'var(--neon-gold)':idx===1?'silver':idx===2?'#cd7f32':'var(--text-secondary)';
-                    list.insertAdjacentHTML('beforeend', `
-                        <div class="lb-item">
-                            <div class="lb-rank" style="color:${color};">#${idx+1}</div>
-                            <div class="lb-info">
-                                <div style="font-weight:800; font-size:1.1rem;">${u.name}</div>
-                            </div>
-                            <div style="font-weight:900; color:var(--neon-pink);"><i class="fas fa-heart"></i> ${u.likes}</div>
-                        </div>
-                    `);
-                });
-            },
-
             openDetail: (id) => {
                 const p = State.posts.find(x => x.id === id);
                 if(!p) return;
                 DB.currentPostId = id;
-                AudioEngine.play('click');
-                
-                // Tăng View Server
                 runTransaction(ref(fDb, `addons/${id}/views`), (v) => (v||0)+1);
 
                 document.getElementById('dt-img').src = p.image;
@@ -861,9 +641,8 @@
                 document.getElementById('dt-author').innerHTML = `<i class="fas fa-user-circle"></i> ${p.authorName}`;
                 document.getElementById('dt-cat').innerHTML = `<i class="fas fa-folder"></i> ${p.category}`;
                 document.getElementById('dt-views').innerHTML = `<i class="fas fa-eye"></i> ${p.views?p.views+1:1}`;
-                document.getElementById('dt-desc').innerHTML = Utils.parseMarkdown(p.desc || "Không có mô tả.");
+                document.getElementById('dt-desc').innerText = p.desc || "Chưa có lời giới thiệu nào.";
                 
-                // Load Comments Realtime
                 onValue(ref(fDb, `addons/${id}/comments`), (snap) => {
                     const cl = document.getElementById('dt-cmt-list');
                     cl.innerHTML = '';
@@ -873,41 +652,36 @@
                             const c = cmts[k];
                             cl.insertAdjacentHTML('beforeend', `
                                 <div class="cmt-item" style="border-left-color: var(--role-${c.role});">
-                                    <div class="cmt-user"><span class="badge role-${c.role}" style="font-size:0.6rem;">${c.role}</span> <span style="color:${c.role==='dev'?'var(--role-dev)':'white'}">${c.name}</span></div>
-                                    <div class="cmt-text">${Utils.parseMarkdown(c.text)}</div>
+                                    <div style="font-size:0.85rem; font-weight:800; margin-bottom:5px;"><span class="badge role-${c.role}" style="font-size:0.55rem;">${c.role}</span> <span style="color:${c.role==='dev'?'var(--role-dev)':'white'}">${c.name}</span></div>
+                                    <div style="font-size:0.95rem; color:#ccc;">${c.text}</div>
                                 </div>
                             `);
                         });
                         cl.scrollTop = cl.scrollHeight;
-                    } else cl.innerHTML = '<div style="color:#777; text-align:center;">Chưa có bình luận.</div>';
+                    } else cl.innerHTML = '<div style="color:#777; text-align:center;">Hãy là người đầu tiên bình luận!</div>';
                 });
-
                 UI.toggleModal('modal-detail', true);
             },
 
             submitPost: () => {
-                if(!State.user) return UI.toast("Vui lòng đăng nhập", "error");
+                if(!State.user) return UI.toast("Chưa đăng nhập", "error");
                 const title = document.getElementById('up-title').value.trim();
                 const cat = document.getElementById('up-cat').value;
                 let img = document.getElementById('up-img').value.trim();
                 const desc = document.getElementById('up-desc').value.trim();
                 
-                if(!title) return UI.toast("Tên không được bỏ trống!", "error");
+                if(!title) return UI.toast("Phải có Tên Tác Phẩm!", "error");
                 if(!img) img = cat==='Map'?'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?w=800':cat==='Shader'?'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800':'https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?w=800';
                 
                 const btn = document.getElementById('btn-submit-post');
                 btn.innerText = "Đang xử lý..."; btn.disabled = true;
 
                 push(ref(fDb, 'addons'), {
-                    title, category: cat, image: img, desc,
-                    authorName: State.user.name, authorUid: State.user.uid,
-                    views: 0, timestamp: serverTimestamp()
+                    title, category: cat, image: img, desc, authorName: State.user.name, authorUid: State.user.uid, views: 0, timestamp: serverTimestamp()
                 }).then(() => {
-                    AudioEngine.play('success');
-                    UI.toast("Đã xuất bản thành công!", "success");
-                    UI.toggleModal('modal-upload', false);
+                    UI.toast("Đã phát hành!", "success"); UI.toggleModal('modal-upload', false);
                     document.getElementById('up-title').value=''; document.getElementById('up-img').value=''; document.getElementById('up-desc').value='';
-                }).catch(e => UI.toast(e.message, "error")).finally(() => { btn.innerText = "Xác Nhận Phát Hành"; btn.disabled = false; });
+                }).catch(e => UI.toast(e.message, "error")).finally(() => { btn.innerText = "Đăng Lên Hệ Thống"; btn.disabled = false; });
             },
 
             sendChat: () => {
@@ -919,7 +693,7 @@
 
             sendComment: () => {
                 const i = document.getElementById('cmt-input');
-                if(!i.value.trim() || !State.user || !DB.currentPostId) return UI.toast("Đăng nhập để chat!", "error");
+                if(!i.value.trim() || !State.user || !DB.currentPostId) return UI.toast("Lỗi", "error");
                 push(ref(fDb, `addons/${DB.currentPostId}/comments`), { uid: State.user.uid, name: State.user.name, role: State.user.role, text: i.value.trim(), ts: serverTimestamp() });
                 i.value = '';
             },
@@ -927,39 +701,50 @@
             deletePost: (id) => { if(confirm("Xóa vĩnh viễn dữ liệu này?")) remove(ref(fDb, `addons/${id}`)).then(()=>UI.toast("Đã xóa!", "success")); },
             toggleLike: (id) => {
                 if(!State.user) return UI.toast("Đăng nhập để thả tim!", "error");
-                AudioEngine.play('click');
                 const r = ref(fDb, `addons/${id}/likes/${State.user.uid}`);
                 get(r).then(s => s.exists() ? remove(r) : set(r, true));
             },
-            makeAdmin: (uid) => { if(confirm("Cấp quyền Admin?")) set(ref(fDb, `roles/${uid}`), 'admin').then(()=>UI.toast("Đã cấp quyền!", "success")); }
+            makeAdmin: (uid) => { if(confirm("Cấp quyền Admin?")) set(ref(fDb, `roles/${uid}`), 'admin'); }
         };
+        App.DB = DB;
+        DB.init();
 
-        // 9. EVENT LISTENERS GẮN VÀO DOM
+        // 5. GẮN SỰ KIỆN NÚT BẤM CƠ BẢN
         document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.onclick = (e) => {
-                AudioEngine.play('click');
+            btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 State.filter = e.target.getAttribute('data-filter');
                 DB.renderFeed();
-            }
+            });
         });
         
-        document.getElementById('inp-search').oninput = (e) => { State.search = e.target.value; DB.renderFeed(); };
-        document.getElementById('sel-sort').onchange = (e) => { State.sort = e.target.value; DB.renderFeed(); };
+        document.getElementById('inp-search').addEventListener('input', (e) => { State.search = e.target.value; DB.renderFeed(); });
+        document.getElementById('sel-sort').addEventListener('change', (e) => { State.sort = e.target.value; DB.renderFeed(); });
         
-        document.getElementById('btn-submit-post').onclick = DB.submitPost;
-        
-        document.getElementById('btn-send-chat').onclick = DB.sendChat;
-        document.getElementById('chat-input').onkeypress = (e) => { if(e.key==='Enter') DB.sendChat(); };
-        
-        document.getElementById('btn-send-cmt').onclick = DB.sendComment;
-        document.getElementById('cmt-input').onkeypress = (e) => { if(e.key==='Enter') DB.sendComment(); };
+        document.getElementById('btn-submit-post').addEventListener('click', DB.submitPost);
+        document.getElementById('btn-send-chat').addEventListener('click', DB.sendChat);
+        document.getElementById('chat-input').addEventListener('keypress', (e) => { if(e.key==='Enter') DB.sendChat(); });
+        document.getElementById('btn-send-cmt').addEventListener('click', DB.sendComment);
+        document.getElementById('cmt-input').addEventListener('keypress', (e) => { if(e.key==='Enter') DB.sendComment(); });
 
-        // 10. XUẤT RA GLOBAL ĐỂ HTML GỌI ĐƯỢC
-        window.App = { UI, DB };
-        DB.init();
-
+        // 6. CANVAS BACKGROUND ĐƠN GIẢN
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        for(let i=0; i<30; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5 });
+        function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            particles.forEach((p) => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 1.5, 0, Math.PI*2); ctx.fillStyle='rgba(0, 229, 255, 0.5)'; ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
