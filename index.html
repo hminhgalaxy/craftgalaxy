@@ -46,8 +46,8 @@
             display: flex; justify-content: center; align-items: center; flex-direction: column;
             color: var(--color-dev); opacity: 0; visibility: hidden; transition: opacity 1s;
         }
-        #dev-welcome h1 { font-size: 4rem; font-weight: 900; text-shadow: 0 0 30px var(--color-dev); letter-spacing: 5px;}
-        #dev-welcome p { color: white; margin-top: 10px; font-size: 1.2rem; }
+        #dev-welcome h1 { font-size: 4rem; font-weight: 900; text-shadow: 0 0 30px var(--color-dev); letter-spacing: 5px; text-align: center;}
+        #dev-welcome p { color: white; margin-top: 10px; font-size: 1.2rem; text-align: center; }
 
         /* === HEADER === */
         header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; position: sticky; top: 0; z-index: 100; background: rgba(3, 3, 5, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); }
@@ -55,9 +55,25 @@
         .menu-btn:hover { color: var(--neon-accent); }
         .header-center h1 { font-size: 1.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* === BỘ LỌC & DANH MỤC === */
-        .filter-area { padding: 20px 24px 0; display: flex; gap: 15px; overflow-x: auto; scrollbar-width: none; }
-        .filter-btn { background: var(--glass-panel); border: 1px solid var(--glass-border); color: var(--text-sub); padding: 8px 20px; border-radius: 20px; font-weight: 600; white-space: nowrap; transition: 0.3s; }
+        /* === BỘ LỌC CÂN BẰNG TỶ LỆ === */
+        .filter-area { 
+            padding: 20px 24px 0; 
+            display: flex; 
+            gap: 15px; 
+            justify-content: space-between; /* Dàn đều */
+        }
+        .filter-btn { 
+            flex: 1; /* Ép tất cả các nút có độ rộng bằng nhau */
+            background: var(--glass-panel); 
+            border: 1px solid var(--glass-border); 
+            color: var(--text-sub); 
+            padding: 10px 5px; 
+            border-radius: 15px; 
+            font-weight: 600; 
+            text-align: center;
+            font-size: 0.9rem;
+            transition: 0.3s; 
+        }
         .filter-btn.active, .filter-btn:hover { background: rgba(0, 229, 255, 0.1); color: var(--neon-accent); border-color: var(--neon-accent); }
 
         /* === GRID LAYOUT & CARD === */
@@ -71,7 +87,6 @@
         .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
         .card-author { font-size: 0.85rem; color: var(--text-sub); }
         
-        /* Nút xóa dành cho DEV/ADMIN */
         .delete-post-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.8); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 0.9rem; cursor: pointer; display: none; }
         .delete-post-btn:hover { background: red; transform: scale(1.1); }
 
@@ -83,7 +98,7 @@
         .dock-btn.upload { background: var(--text-main); color: var(--bg-base); font-weight: 800; margin-left: 10px; display: none; }
         .dock-btn.upload:hover { background: var(--neon-accent); box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); transform: scale(1.05); }
 
-        /* === FULL SCREEN MENU & CHAT (3 GẠCH) === */
+        /* === FULL SCREEN MENU & CHAT === */
         .full-menu { position: fixed; inset: 0; background: rgba(5,5,8,0.98); backdrop-filter: blur(15px); z-index: 2000; display: flex; flex-direction: column; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .full-menu.open { transform: translateX(0); }
         
@@ -92,7 +107,6 @@
         
         .menu-body { padding: 20px 24px; flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
         
-        /* Auth Area */
         .auth-area { display: flex; flex-direction: column; gap: 10px; background: var(--glass-panel); padding: 20px; border-radius: 20px; border: 1px solid var(--glass-border); }
         .auth-btn { padding: 12px; border-radius: 12px; border: none; font-weight: 800; font-size: 1rem; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-google { background: white; color: black; }
@@ -100,7 +114,6 @@
         .btn-google:hover, .btn-guest:hover { transform: translateY(-2px); }
         .btn-logout { background: rgba(255,0,0,0.2); color: #ff4d4d; border: 1px solid rgba(255,0,0,0.5); display: none; }
         
-        /* User Profile Info */
         .user-profile { display: none; align-items: center; gap: 15px; }
         .user-profile img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
         .badge { padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 900; }
@@ -109,14 +122,12 @@
         .badge.glx { background: var(--color-glx); color: black; }
         .badge.guest { background: var(--color-guest); color: white; }
 
-        /* Chat Area */
         .chat-area { flex: 1; background: #0a0a0f; border-radius: 20px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .chat-header { padding: 15px; background: rgba(255,255,255,0.05); font-weight: 800; border-bottom: 1px solid var(--glass-border); }
         .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .chat-msg { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; font-size: 0.9rem; position: relative; }
         .msg-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.8rem; }
         
-        /* Chat 3 dots cho DEV */
         .chat-options { background: transparent; border: none; color: var(--text-sub); cursor: pointer; display: none; }
         .chat-options:hover { color: white; }
         .grant-admin-btn { position: absolute; right: 10px; top: 30px; background: var(--color-admin); color: black; font-weight: bold; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.75rem; display: none; z-index: 10; }
@@ -124,7 +135,6 @@
         .chat-input-area { display: flex; padding: 10px; background: rgba(255,255,255,0.02); border-top: 1px solid var(--glass-border); }
         .chat-input-area input { flex: 1; background: transparent; border: none; color: white; padding: 10px; outline: none; }
         .chat-input-area button { background: var(--neon-accent); border: none; color: black; font-weight: 800; padding: 0 20px; border-radius: 10px; }
-        
         .chat-overlay-lock { position: absolute; inset: 0; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; font-weight: bold; color: var(--text-sub); backdrop-filter: blur(2px); z-index: 5; }
 
         /* === MODAL ĐĂNG BÀI === */
@@ -145,33 +155,28 @@
     <div id="preloader"><div class="loader-text">MCPE.</div></div>
     <div class="ambient-glow"></div>
 
-    <!-- Màn hình chào DEV -->
     <div id="dev-welcome">
         <h1>WELCOME DEV</h1>
         <p>Hệ thống đã cấp toàn quyền quản trị cho bạn.</p>
     </div>
 
-    <!-- Header -->
     <header>
         <button class="menu-btn" onclick="toggleMenu(true)"><i class="fas fa-bars"></i></button>
         <div class="header-center"><h1>MCPE Addon</h1></div>
         <div class="header-right"><i class="fas fa-search" style="font-size: 1.2rem; color: var(--text-sub);"></i></div>
     </header>
 
-    <!-- Bộ lọc danh mục -->
+    <!-- Bộ lọc (Đã bỏ Map và Cân bằng Flex: 1) -->
     <div class="filter-area">
-        <button class="filter-btn active" onclick="filterPosts('all')">Tất cả</button>
-        <button class="filter-btn" onclick="filterPosts('Addon')">Addon MC</button>
-        <button class="filter-btn" onclick="filterPosts('Map')">Bản đồ</button>
-        <button class="filter-btn" onclick="filterPosts('Shader')">Shader</button>
+        <button class="filter-btn active" onclick="filterPosts('all', this)">Tất cả</button>
+        <button class="filter-btn" onclick="filterPosts('Addon', this)">Addon MC</button>
+        <button class="filter-btn" onclick="filterPosts('Shader', this)">Shader</button>
     </div>
 
-    <!-- Grid Bài Viết -->
     <main class="addon-container" id="feed-container">
         <p style="text-align: center; color: var(--text-sub); width: 100%; grid-column: 1 / -1;">Đang tải dữ liệu...</p>
     </main>
 
-    <!-- Dock dưới cùng -->
     <div class="dock-container">
         <div class="dock">
             <button class="dock-btn active"><i class="fas fa-compass"></i> Home</button>
@@ -179,15 +184,12 @@
         </div>
     </div>
 
-    <!-- Menu Full Màn Hình (3 Gạch) -->
     <div class="full-menu" id="fullMenu">
         <div class="menu-header">
             <h2>Tài Khoản & Cộng Đồng</h2>
             <button class="close-menu-btn" onclick="toggleMenu(false)">&times;</button>
         </div>
         <div class="menu-body">
-            
-            <!-- Auth Area -->
             <div class="auth-area">
                 <div class="user-profile" id="user-profile">
                     <img id="user-avatar" src="https://via.placeholder.com/50" alt="Avatar">
@@ -196,7 +198,6 @@
                         <span class="badge" id="user-badge">ROLE</span>
                     </div>
                 </div>
-
                 <div id="login-buttons">
                     <button class="auth-btn btn-google" id="btn-google-login"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20"> Google</button>
                     <button class="auth-btn btn-guest" id="btn-guest-login"><i class="fas fa-user-secret"></i> Khách (Guest)</button>
@@ -204,12 +205,9 @@
                 <button class="auth-btn btn-logout" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
             </div>
 
-            <!-- Khung Chat -->
             <div class="chat-area">
                 <div class="chat-header">Kênh Chat Chung</div>
-                <div class="chat-messages" id="chat-messages">
-                    <!-- Messses render here -->
-                </div>
+                <div class="chat-messages" id="chat-messages"></div>
                 <div class="chat-input-area">
                     <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off">
                     <button id="btn-send-chat"><i class="fas fa-paper-plane"></i></button>
@@ -219,14 +217,13 @@
         </div>
     </div>
 
-    <!-- Modal Đăng bài -->
+    <!-- Modal Đăng bài (Đã bỏ Map) -->
     <div class="modal" id="postModal">
         <div class="modal-body">
             <h2>Đăng Addon / Shader</h2>
             <div class="input-group">
                 <select id="postCategory">
                     <option value="Addon">Addon MC</option>
-                    <option value="Map">Bản đồ (Map)</option>
                     <option value="Shader">Shader / Texture</option>
                 </select>
             </div>
@@ -245,26 +242,28 @@
         import { getAuth, signInWithPopup, signInAnonymously, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, push, set, remove, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // 1. CẤU HÌNH FIREBASE
+        // 1. CẤU HÌNH FIREBASE MỚI
         const firebaseConfig = {
-            apiKey: "AIzaSyDImqkipwn1Rm7BUS0Su9fpd9gnKXcN7jw",
-            authDomain: "addonshare-c1ffd.firebaseapp.com",
-            databaseURL: "https://addonshare-c1ffd-default-rtdb.firebaseio.com",
-            projectId: "addonshare-c1ffd",
-            storageBucket: "addonshare-c1ffd.firebasestorage.app",
-            messagingSenderId: "561066582050",
-            appId: "1:561066582050:web:bacecfc6610a8516066a7b"
+            apiKey: "AIzaSyBWekVu-l8qnCB_1V4xexFJtYRROE2wgBw",
+            authDomain: "galaxycraft-56301.firebaseapp.com",
+            databaseURL: "https://galaxycraft-56301-default-rtdb.firebaseio.com", // Đã bổ sung URL Database
+            projectId: "galaxycraft-56301",
+            storageBucket: "galaxycraft-56301.firebasestorage.app",
+            messagingSenderId: "746650778677",
+            appId: "1:746650778677:web:cb89b3e3cb86dce007c57c",
+            measurementId: "G-7HTCEEH21R"
         };
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
         const googleProvider = new GoogleAuthProvider();
 
         const DEV_EMAIL = "hminhgalaxy@gmail.com";
-        let currentUserInfo = null; // Chứa info + role
+        let currentUserInfo = null;
         let currentFilter = 'all';
+        let allPostsCache = null; // Cache dữ liệu để fix lỗi nhấn đúp
 
-        // Xử lý UI Menu
         window.toggleMenu = (show) => document.getElementById('fullMenu').classList.toggle('open', show);
         window.toggleUploadModal = (show) => document.getElementById('postModal').classList.toggle('show', show);
         
@@ -272,22 +271,19 @@
             setTimeout(() => { document.getElementById('preloader').style.opacity = '0'; setTimeout(() => document.getElementById('preloader').style.display = 'none', 600); }, 1000);
         });
 
-        // 2. LOGIC XÁC THỰC & PHÂN QUYỀN
+        // Xác thực
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Determine Role
                 let role = 'guest';
                 if (!user.isAnonymous) {
                     role = (user.email === DEV_EMAIL) ? 'dev' : 'glx';
                 }
 
-                // Kiểm tra database xem có bị DEV đổi thành admin không
                 const roleSnapshot = await get(ref(db, `roles/${user.uid}`));
                 if (roleSnapshot.exists()) {
                     const dbRole = roleSnapshot.val();
-                    if(role !== 'dev') role = dbRole; // Dev tối cao không bị đè quyền
+                    if(role !== 'dev') role = dbRole;
                 } else {
-                    // Lưu role mặc định lên DB
                     set(ref(db, `roles/${user.uid}`), role);
                 }
 
@@ -297,13 +293,8 @@
                     avatar: user.isAnonymous ? "https://cdn-icons-png.flaticon.com/512/149/149071.png" : user.photoURL,
                     role: role
                 };
-
                 updateAuthUI(true);
-                
-                if (role === 'dev') {
-                    showWelcomeDev();
-                }
-
+                if (role === 'dev') showWelcomeDev();
             } else {
                 currentUserInfo = null;
                 updateAuthUI(false);
@@ -320,7 +311,6 @@
             if (isLoggedIn) {
                 document.getElementById('user-avatar').src = currentUserInfo.avatar;
                 document.getElementById('user-name').innerText = currentUserInfo.name;
-                
                 const badge = document.getElementById('user-badge');
                 badge.className = `badge ${currentUserInfo.role}`;
                 badge.innerText = currentUserInfo.role.toUpperCase();
@@ -334,17 +324,18 @@
             setTimeout(() => { welcome.style.opacity = '0'; setTimeout(() => welcome.style.visibility = 'hidden', 1000); }, 2500);
         }
 
-        // Nút Đăng nhập / Đăng xuất
         document.getElementById('btn-google-login').onclick = () => signInWithPopup(auth, googleProvider).catch(e => alert("Lỗi: " + e.message));
-        document.getElementById('btn-guest-login').onclick = () => signInAnonymously(auth).catch(e => alert("Lỗi: " + e.message)); // Firebase tự handle nhớ guest theo trình duyệt
+        document.getElementById('btn-guest-login').onclick = () => signInAnonymously(auth).catch(e => alert("Lỗi: " + e.message));
         document.getElementById('btn-logout').onclick = () => { if(confirm("Đăng xuất?")) signOut(auth); };
 
-        // 3. LOGIC BÀI VIẾT (ADDONS)
+        // Realtime DB (Tải dữ liệu 1 lần)
         const postsRef = ref(db, 'addons');
         onValue(postsRef, (snapshot) => {
-            renderPosts(snapshot.val());
+            allPostsCache = snapshot.val(); // Lưu vào cache
+            renderPosts(allPostsCache);
         });
 
+        // Hàm render giao diện bài viết
         function renderPosts(data) {
             const container = document.getElementById('feed-container');
             container.innerHTML = '';
@@ -352,7 +343,6 @@
 
             let posts = Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse();
             
-            // Lọc theo Category
             if (currentFilter !== 'all') {
                 posts = posts.filter(p => p.category === currentFilter);
             }
@@ -378,12 +368,20 @@
             });
         }
 
-        // DEV/ADMIN Xóa Bài
+        // Logic Lọc (Sử dụng element được pass vào để dọn dẹp css mượt hơn, tránh lỗi đúp)
+        window.filterPosts = (cat, element) => {
+            currentFilter = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            // Dùng trực tiếp dữ liệu đã lưu thay vì tải lại từ Firebase, fix lỗi đúp!
+            renderPosts(allPostsCache); 
+        }
+
         window.deletePost = (id) => {
             if(confirm("Xóa bài viết này khỏi hệ thống?")) remove(ref(db, `addons/${id}`));
         }
 
-        // Đăng bài mới
         document.getElementById('btn-publish-post').onclick = () => {
             const title = document.getElementById('titleInput').value.trim();
             const cat = document.getElementById('postCategory').value;
@@ -403,16 +401,7 @@
             });
         };
 
-        // Lọc bài viết
-        window.filterPosts = (cat) => {
-            currentFilter = cat;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            get(postsRef).then(snap => renderPosts(snap.val())); // Trigger render lại
-        }
-
-
-        // 4. LOGIC CHAT & CẤP QUYỀN
+        // KÊNH CHAT
         const chatRef = ref(db, 'chat');
         const chatBox = document.getElementById('chat-messages');
 
@@ -423,7 +412,6 @@
                 Object.keys(data).forEach(key => {
                     const msg = data[key];
                     const isDev = currentUserInfo && currentUserInfo.role === 'dev';
-                    // Nếu là DEV, hiện dấu 3 chấm để cấp quyền
                     const optionsBtn = isDev ? `<button class="chat-options" onclick="toggleAdminBtn('${key}')"><i class="fas fa-ellipsis-v"></i></button>` : '';
                     const adminBtn = isDev ? `<button id="grant-${key}" class="grant-admin-btn" onclick="grantAdmin('${msg.uid}')">Make Admin</button>` : '';
 
@@ -442,7 +430,6 @@
             }
         });
 
-        // Gửi tin nhắn
         document.getElementById('btn-send-chat').onclick = sendMsg;
         document.getElementById('chat-input').addEventListener('keypress', e => { if(e.key === 'Enter') sendMsg(); });
 
@@ -461,7 +448,6 @@
             input.value = '';
         }
 
-        // DEV Cấp quyền Admin
         window.toggleAdminBtn = (msgId) => {
             const btn = document.getElementById(`grant-${msgId}`);
             btn.style.display = btn.style.display === 'block' ? 'none' : 'block';
