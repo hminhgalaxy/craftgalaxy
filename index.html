@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaxy Craft | Nền Tảng Minecraft Modpack & Addon Hàng Đầu</title>
-    <meta name="description" content="Tải xuống các Modpack, Addon, Texture Pack và Shaders Minecraft mới nhất, mượt mà và an toàn tại Galaxy Craft.">
-    <meta name="google-signin-client_id" content="263702418999-b3emaq40hrpe26k6rk95j2a2cnc35dgr.apps.googleusercontent.com">
-
+    
+    <!-- Google Identity Services (Thay thế Firebase Auth) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +34,6 @@
                         textMain: '#FFFFFF',
                         textMuted: '#94A3B8',
                         galaxyViolet: '#8B5CF6',
-                        galaxyPink: '#EC4899',
                         mcEmerald: '#22C55E',
                         devGold: '#F59E0B'
                     },
@@ -41,6 +41,10 @@
                         'neon-violet': '0 0 25px rgba(139, 92, 246, 0.25)',
                         'neon-emerald': '0 0 25px rgba(34, 197, 94, 0.25)',
                         'neon-gold': '0 0 25px rgba(245, 158, 11, 0.3)',
+                    },
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
                     }
                 }
             }
@@ -50,9 +54,8 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Firebase SDK (Compat Version for Single-File Architecture) -->
+    <!-- Firebase SDK (Chỉ dùng Core & Database) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <!-- Custom Style Rules -->
@@ -61,10 +64,16 @@
             background-color: #090A10;
             color: #FFFFFF;
             overflow-x: hidden;
+        }
+
+        /* Fix lỗi cuộn rung: Tách background ra một layer riêng biệt cố định */
+        .fixed-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
             background-image: 
                 radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
                 radial-gradient(circle at 85% 85%, rgba(34, 197, 94, 0.05) 0%, transparent 40%);
-            background-attachment: fixed;
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -85,12 +94,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .text-gradient-dev {
-            background: linear-gradient(135deg, #FDE047 0%, #F59E0B 50%, #D97706 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
         .badge-dev-animated {
             background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.2), rgba(245, 158, 11, 0.15));
             background-size: 200% 100%;
@@ -104,406 +107,286 @@
             100% { background-position: 0% 50%; }
         }
 
-        .hidden-accessible { display: none !important; }
-
-        .loader-spinner {
-            width: 1.25rem;
-            height: 1.25rem;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-top-color: #8B5CF6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        /* Modal Animated Background */
+        .modal-animated-bg {
+            position: absolute;
+            inset: -50%;
+            background: conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.2), transparent, rgba(34, 197, 94, 0.1), transparent);
+            animation: spin 10s linear infinite;
+            z-index: 0;
+            pointer-events: none;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .modal-inner { position: relative; z-index: 10; background: #181A26; border-radius: inherit; }
+
+        /* Splash Screen Animation */
+        #splash-screen { transition: opacity 0.8s ease-out, visibility 0.8s; }
+        .splash-ring {
+            position: absolute; border-radius: 50%;
+            border: 2px dashed rgba(139, 92, 246, 0.5);
+            animation: spin 4s linear infinite;
+        }
+
+        .hidden-accessible { display: none !important; }
+        
+        /* Trick to style Google button wrapper */
+        .g_id_signin { display: flex; justify-content: center; }
     </style>
 </head>
 <body class="selection:bg-galaxyViolet/30 selection:text-white flex flex-col min-h-screen">
 
+    <!-- Fixed Background (Fix Scroll Jitter) -->
+    <div class="fixed-bg"></div>
+
+    <!-- SPLASH SCREEN INTRO -->
+    <div id="splash-screen" class="fixed inset-0 z-[200] bg-bg flex flex-col items-center justify-center">
+        <div class="relative flex items-center justify-center w-64 h-64">
+            <div class="splash-ring w-48 h-48 border-galaxyViolet/30"></div>
+            <div class="splash-ring w-56 h-56 border-mcEmerald/20" style="animation-direction: reverse; animation-duration: 6s;"></div>
+            <div class="absolute z-10 text-center">
+                <i data-lucide="box" class="w-12 h-12 text-galaxyViolet mx-auto mb-2 animate-pulse"></i>
+                <h1 class="font-display font-extrabold text-3xl tracking-widest text-gradient-galaxy">GALAXY</h1>
+                <h1 class="font-display font-bold text-xl tracking-[0.3em] text-white">CRAFT</h1>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none w-full max-w-sm px-4 md:px-0"></div>
+    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-3 pointer-events-none w-full max-w-sm px-4"></div>
 
     <!-- HEADER / NAVIGATION -->
     <header class="fixed top-0 w-full z-50 glass-panel border-b border-border transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
             <!-- Logo -->
             <a href="#" class="flex items-center gap-3 group focus:outline-none">
-                <div class="w-10 h-10 rounded-xl bg-galaxyViolet/10 border border-galaxyViolet/30 flex items-center justify-center group-hover:bg-galaxyViolet/20 group-hover:shadow-neon-violet transition-all duration-300">
+                <div class="w-10 h-10 rounded-xl bg-galaxyViolet/10 border border-galaxyViolet/30 flex items-center justify-center group-hover:bg-galaxyViolet/20 transition-all">
                     <i data-lucide="box" class="text-galaxyViolet w-6 h-6"></i>
                 </div>
                 <div>
                     <span class="font-display font-extrabold text-xl tracking-wide text-white block leading-none">GALAXY<span class="text-galaxyViolet">CRAFT</span></span>
-                    <span class="text-[10px] text-textMuted tracking-wider font-semibold uppercase">Minecraft Resource Hub</span>
                 </div>
             </a>
 
             <!-- Desktop Nav Links -->
-            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <button onclick="App.Filter.setCategory('All')" class="nav-link text-white hover:text-galaxyViolet transition-colors">Trang Chủ</button>
-                <button onclick="App.Filter.setCategory('Modpack')" class="nav-link text-textMuted hover:text-white transition-colors">Modpack</button>
-                <button onclick="App.Filter.setCategory('Addon')" class="nav-link text-textMuted hover:text-white transition-colors">Addon / Mods</button>
-                <button onclick="App.Filter.setCategory('Texture')" class="nav-link text-textMuted hover:text-white transition-colors">Texture Pack</button>
-                <button onclick="App.Filter.setCategory('Shader')" class="nav-link text-textMuted hover:text-white transition-colors">Shaders</button>
+            <nav class="hidden md:flex items-center justify-center gap-8 text-sm font-medium flex-1">
+                <button onclick="App.Filter.setCategory('All')" class="text-white hover:text-galaxyViolet transition-colors">Trang Chủ</button>
+                <button onclick="App.Filter.setCategory('Modpack')" class="text-textMuted hover:text-white transition-colors">Modpack</button>
+                <button onclick="App.Filter.setCategory('Addon')" class="text-textMuted hover:text-white transition-colors">Addon</button>
+                <button onclick="App.Filter.setCategory('Texture')" class="text-textMuted hover:text-white transition-colors">Texture</button>
+                <button onclick="App.Filter.setCategory('Shader')" class="text-textMuted hover:text-white transition-colors">Shaders</button>
             </nav>
 
-            <!-- User Actions & Auth -->
-            <div class="flex items-center gap-3">
-                <!-- DEV Action: Add New Pack (Visible ONLY to Dev) -->
-                <button id="dev-add-btn" onclick="App.Modal.open('item-modal')" class="hidden-accessible px-3.5 py-2 rounded-lg badge-dev-animated text-devGold text-xs font-bold flex items-center gap-1.5 hover:scale-105 transition-transform shadow-neon-gold">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                    <span>THÊM PACK MỚI</span>
+            <!-- Desktop User Actions & Auth -->
+            <div class="hidden md:flex items-center gap-3">
+                <button id="dev-add-btn" onclick="App.Modal.open('item-modal')" class="hidden-accessible px-3.5 py-2 rounded-lg badge-dev-animated text-devGold text-xs font-bold flex items-center gap-1.5 hover:scale-105 shadow-neon-gold">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> THÊM PACK
                 </button>
 
-                <!-- Auth Container -->
-                <div id="auth-container">
-                    <!-- Loading State -->
-                    <div id="auth-loading" class="loader-spinner"></div>
-
-                    <!-- Login Button -->
-                    <button id="login-btn" onclick="App.Auth.loginWithGoogle()" class="hidden-accessible px-4 py-2 rounded-xl bg-surface border border-border hover:border-galaxyViolet/50 text-white text-sm font-medium transition-all flex items-center gap-2 hover:shadow-neon-violet">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-                        <span>Đăng Nhập</span>
-                    </button>
-
-                    <!-- User Profile Dropdown -->
-                    <div id="user-profile" class="hidden-accessible flex items-center gap-3">
-                        <div class="relative group">
-                            <button class="flex items-center gap-2.5 p-1.5 rounded-xl bg-surface border border-border group-hover:border-galaxyViolet transition-all">
-                                <img id="user-avatar" src="" alt="Avatar" class="w-8 h-8 rounded-lg object-cover border border-border">
-                                <span id="user-name" class="text-xs font-semibold max-w-[100px] truncate hidden sm:inline-block">User</span>
-                                <span id="user-role-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-surface border border-border text-textMuted">MEMBER</span>
-                            </button>
-                            <!-- Dropdown Menu -->
-                            <div class="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-2xl p-2 hidden group-hover:block transition-all">
-                                <div class="px-3 py-2 border-b border-border/50 mb-1">
-                                    <p id="user-email" class="text-[11px] text-textMuted truncate"></p>
-                                </div>
-                                <button onclick="App.Auth.logout()" class="w-full text-left px-3 py-2 text-xs text-error hover:bg-error/10 rounded-lg font-medium transition-colors flex items-center gap-2">
-                                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Đăng Xuất
-                                </button>
-                            </div>
-                        </div>
+                <!-- Google Sign In Container (Desktop) -->
+                <div id="auth-container-desktop">
+                    <div id="g_id_onload"
+                         data-client_id="263702418999-b3emaq40hrpe26k6rk95j2a2cnc35dgr.apps.googleusercontent.com"
+                         data-callback="handleCredentialResponse"
+                         data-auto_prompt="false">
                     </div>
+                    <div class="g_id_signin" id="google-btn-desktop" data-type="standard" data-theme="filled_black" data-text="signin_with" data-shape="rectangular" data-logo_alignment="left"></div>
                 </div>
 
-                <!-- Mobile Menu Toggle -->
-                <button id="mobile-menu-btn" onclick="App.UI.toggleMobileMenu()" class="md:hidden p-2 text-textMuted hover:text-white rounded-lg border border-border">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
-                </button>
+                <!-- Logged In Profile -->
+                <div id="user-profile-desktop" class="hidden-accessible flex items-center gap-3 relative group">
+                    <button class="flex items-center gap-2.5 p-1.5 rounded-xl bg-surface border border-border group-hover:border-galaxyViolet transition-all">
+                        <img id="user-avatar-desktop" src="" alt="Avatar" class="w-8 h-8 rounded-lg object-cover">
+                        <div class="text-left flex flex-col items-start hidden lg:flex">
+                            <span id="user-name-desktop" class="text-xs font-semibold max-w-[100px] truncate">User</span>
+                            <span id="user-role-badge-desktop" class="text-[10px] text-textMuted">MEMBER</span>
+                        </div>
+                    </button>
+                    <!-- Dropdown -->
+                    <div class="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-2xl p-2 hidden group-hover:block transition-all">
+                        <button onclick="App.Auth.logout()" class="w-full text-left px-3 py-2 text-xs text-error hover:bg-error/10 rounded-lg font-medium flex items-center gap-2">
+                            <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Đăng Xuất
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button onclick="App.UI.toggleMobileMenu()" class="md:hidden p-2 text-textMuted hover:text-white rounded-lg border border-border">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
         </div>
     </header>
 
-    <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 z-40 bg-bg/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 md:hidden flex flex-col pt-24 px-6 pb-6">
-        <nav class="flex flex-col gap-4 text-base font-medium">
-            <button onclick="App.Filter.setCategory('All'); App.UI.closeMobileMenu();" class="text-left py-2 text-white border-b border-border/50">Trang Chủ</button>
-            <button onclick="App.Filter.setCategory('Modpack'); App.UI.closeMobileMenu();" class="text-left py-2 text-textMuted border-b border-border/50">Modpack</button>
-            <button onclick="App.Filter.setCategory('Addon'); App.UI.closeMobileMenu();" class="text-left py-2 text-textMuted border-b border-border/50">Addon / Mods</button>
-            <button onclick="App.Filter.setCategory('Texture'); App.UI.closeMobileMenu();" class="text-left py-2 text-textMuted border-b border-border/50">Texture Pack</button>
-            <button onclick="App.Filter.setCategory('Shader'); App.UI.closeMobileMenu();" class="text-left py-2 text-textMuted border-b border-border/50">Shaders</button>
+    <!-- MOBILE DRAWER MENU (Fixed Click Issue) -->
+    <div id="mobile-drawer" class="fixed inset-0 z-[60] bg-bg/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 md:hidden flex flex-col">
+        <div class="flex items-center justify-between p-4 border-b border-border">
+            <span class="font-display font-bold text-lg">MENU</span>
+            <button onclick="App.UI.closeMobileMenu()" class="p-2 text-white bg-surface rounded-lg">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Nav Links - Centered -->
+        <nav class="flex flex-col text-center text-base font-medium p-4 gap-2">
+            <button onclick="App.Filter.setCategory('All'); App.UI.closeMobileMenu();" class="py-3 text-white bg-surface/50 rounded-lg">Trang Chủ</button>
+            <button onclick="App.Filter.setCategory('Modpack'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white">Modpack</button>
+            <button onclick="App.Filter.setCategory('Addon'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white">Addon / Mods</button>
+            <button onclick="App.Filter.setCategory('Texture'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white">Texture Pack</button>
+            <button onclick="App.Filter.setCategory('Shader'); App.UI.closeMobileMenu();" class="py-3 text-textMuted hover:text-white">Shaders</button>
         </nav>
+
+        <!-- Mobile Login/Profile -->
+        <div class="mt-auto p-6 border-t border-border flex flex-col items-center">
+            <div id="auth-container-mobile" class="w-full flex justify-center">
+                <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-text="signin_with" data-shape="rectangular" data-logo_alignment="center" data-width="250"></div>
+            </div>
+            
+            <div id="user-profile-mobile" class="hidden-accessible w-full flex flex-col items-center gap-3">
+                <img id="user-avatar-mobile" src="" class="w-16 h-16 rounded-full border-2 border-galaxyViolet">
+                <div class="text-center">
+                    <span id="user-name-mobile" class="text-base font-bold block">User</span>
+                    <span id="user-role-badge-mobile" class="text-xs text-textMuted">MEMBER</span>
+                </div>
+                <button onclick="App.Auth.logout(); App.UI.closeMobileMenu();" class="mt-2 w-full py-3 rounded-xl bg-error/10 text-error font-bold flex items-center justify-center gap-2">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> ĐĂNG XUẤT
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 pt-28 pb-20 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+    <main class="flex-1 pt-28 pb-20 px-4 sm:px-6 max-w-7xl mx-auto w-full flex flex-col items-center">
         
-        <!-- HERO SECTION -->
-        <section class="relative py-12 md:py-16 text-center flex flex-col items-center">
-            <!-- DEV WELCOME BANNER (Dynamic) -->
-            <div id="dev-welcome-banner" class="hidden-accessible mb-6 badge-dev-animated px-4 py-2 rounded-full flex items-center gap-2 shadow-neon-gold">
+        <!-- HERO SECTION (Centered) -->
+        <section class="relative py-12 md:py-16 text-center w-full flex flex-col items-center">
+            <div id="dev-welcome-banner" class="hidden-accessible mb-6 badge-dev-animated px-4 py-2 rounded-full flex items-center gap-2 shadow-neon-gold justify-center w-fit mx-auto">
                 <i data-lucide="crown" class="w-4 h-4 text-devGold"></i>
-                <span class="text-xs font-bold text-devGold">XIN CHÀO DEV GALAXY (HMINH) - QUYỀN CHỈNH SỬA TOÀN QUYỀN ĐÃ BẬT</span>
+                <span class="text-xs font-bold text-devGold">DEV GALAXY KÍCH HOẠT QUYỀN CHỈNH SỬA</span>
             </div>
 
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-galaxyViolet/30 bg-galaxyViolet/10 text-galaxyViolet text-xs font-bold mb-6">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Kho Tài Nguyên Minecraft Số 1 Việt Nam
-            </div>
-
-            <h1 class="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-gradient-galaxy tracking-tight leading-tight max-w-4xl mb-6">
-                Nâng Tầm Trải Nghiệm Minecraft Của Bạn Cùng Galaxy Craft
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-gradient-galaxy tracking-tight leading-tight max-w-4xl mx-auto mb-6 text-center">
+                Vũ Trụ Tài Nguyên Minecraft<br>Chất Lượng Nhất
             </h1>
-
-            <p class="text-textMuted text-sm sm:text-base max-w-2xl mb-8 leading-relaxed">
-                Tải xuống hàng ngàn Modpack chuẩn OptiFine, Addon Bedrock/Java, Shaders chân thực và Texture Pack tối ưu FPS hoàn toàn miễn phí.
+            <p class="text-textMuted text-sm sm:text-base max-w-2xl mx-auto mb-10 leading-relaxed text-center">
+                Modpack chuẩn, Addon mượt mà, Texture sắc nét. Đồng bộ dữ liệu Realtime nhanh chóng.
             </p>
 
-            <!-- SMART SEARCH & FILTER BAR -->
-            <div class="w-full max-w-3xl glass-panel p-2 sm:p-3 rounded-2xl shadow-2xl border border-border flex flex-col sm:flex-row gap-2">
-                <!-- Search Input -->
+            <!-- SMART SEARCH & FILTER -->
+            <div class="w-full max-w-3xl glass-panel p-2 rounded-2xl shadow-2xl border border-border flex flex-col sm:flex-row gap-2 mx-auto">
                 <div class="relative flex-1">
                     <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-textMuted"></i>
-                    <input type="text" id="search-input" placeholder="Tìm tên Modpack, Addon, Version (VD: 1.20, RLCraft...)" 
-                        class="w-full h-11 pl-10 pr-4 bg-surface border border-border/60 rounded-xl text-white text-sm placeholder:text-textMuted/60 focus:outline-none focus:border-galaxyViolet focus:ring-1 focus:ring-galaxyViolet transition-all">
+                    <input type="text" id="search-input" placeholder="Tìm tên Modpack, Addon..." 
+                        class="w-full h-12 pl-10 pr-4 bg-surface border border-border/60 rounded-xl text-white text-sm focus:outline-none focus:border-galaxyViolet transition-all">
                 </div>
-
-                <!-- Category Selector -->
-                <select id="category-select" class="h-11 px-3 bg-surface border border-border/60 rounded-xl text-white text-sm focus:outline-none focus:border-galaxyViolet transition-all cursor-pointer">
-                    <option value="All">Tất cả danh mục</option>
+                <select id="category-select" class="h-12 px-4 bg-surface border border-border/60 rounded-xl text-white text-sm focus:outline-none focus:border-galaxyViolet text-center cursor-pointer">
+                    <option value="All">Tất cả</option>
                     <option value="Modpack">Modpacks</option>
-                    <option value="Addon">Addons / Mods</option>
+                    <option value="Addon">Addons</option>
                     <option value="Texture">Texture Packs</option>
                     <option value="Shader">Shaders</option>
                 </select>
             </div>
         </section>
 
-        <!-- MONETIZATION / ADVERTISEMENT BANNER (Legal Ads Place) -->
-        <section class="my-8">
-            <div class="glass-panel p-4 rounded-2xl border border-galaxyViolet/20 bg-gradient-to-r from-galaxyViolet/10 via-surface to-mcEmerald/10 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-mcEmerald/20 border border-mcEmerald/40 flex items-center justify-center text-mcEmerald shrink-0">
-                        <i data-lucide="zap" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-white">Ủng hộ Server & Tải Tốc Độ Cao (VIP Pass)</h4>
-                        <p class="text-xs text-textMuted">Nâng cấp VIP để bỏ qua 10 giây đếm ngược tải file và tải không giới hạn băng thông.</p>
-                    </div>
-                </div>
-                <button onclick="App.Modal.open('vip-modal')" class="px-5 py-2.5 rounded-xl bg-mcEmerald hover:bg-mcEmerald/90 text-bg font-bold text-xs tracking-wider transition-all shadow-neon-emerald whitespace-nowrap">
-                    NÂNG CẤP VIP PASS
-                </button>
-            </div>
-        </section>
-
         <!-- CONTENT GRID SECTION -->
-        <section class="mt-12">
-            <!-- Section Header -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h2 class="text-2xl font-display font-bold text-white flex items-center gap-2">
-                        <i data-lucide="layers" class="w-5 h-5 text-galaxyViolet"></i>
-                        Danh Sách Tài Nguyên
-                    </h2>
-                    <p class="text-xs text-textMuted mt-1">Cập nhật thời gian thực từ cơ sở dữ liệu Firebase</p>
-                </div>
-
-                <!-- Category Quick Pills -->
-                <div class="flex flex-wrap gap-2" id="category-pills">
-                    <button onclick="App.Filter.setCategory('All')" class="pill-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-galaxyViolet text-white border border-galaxyViolet transition-all">Tất Cả</button>
-                    <button onclick="App.Filter.setCategory('Modpack')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all">Modpack</button>
-                    <button onclick="App.Filter.setCategory('Addon')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all">Addon</button>
-                    <button onclick="App.Filter.setCategory('Texture')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all">Texture</button>
-                    <button onclick="App.Filter.setCategory('Shader')" class="pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all">Shader</button>
+        <section class="mt-8 w-full">
+            <div class="flex flex-col items-center justify-center gap-4 mb-10 text-center">
+                <h2 class="text-2xl font-display font-bold text-white flex items-center justify-center gap-2">
+                    <i data-lucide="layers" class="w-6 h-6 text-galaxyViolet"></i>
+                    Danh Sách Tài Nguyên
+                </h2>
+                <div class="flex flex-wrap justify-center gap-2" id="category-pills">
+                    <button onclick="App.Filter.setCategory('All')" class="pill-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-galaxyViolet text-white border border-galaxyViolet">Tất Cả</button>
+                    <button onclick="App.Filter.setCategory('Modpack')" class="pill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white">Modpack</button>
+                    <button onclick="App.Filter.setCategory('Addon')" class="pill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white">Addon</button>
                 </div>
             </div>
 
-            <!-- Loading State Grid -->
-            <div id="grid-loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-card border border-border rounded-2xl p-4 h-80 animate-pulse flex flex-col gap-4">
-                    <div class="w-full h-44 bg-surface rounded-xl"></div>
-                    <div class="h-5 bg-surface rounded w-3/4"></div>
-                    <div class="h-4 bg-surface rounded w-1/2"></div>
-                </div>
-                <div class="bg-card border border-border rounded-2xl p-4 h-80 animate-pulse flex flex-col gap-4">
-                    <div class="w-full h-44 bg-surface rounded-xl"></div>
-                    <div class="h-5 bg-surface rounded w-3/4"></div>
-                    <div class="h-4 bg-surface rounded w-1/2"></div>
-                </div>
-                <div class="bg-card border border-border rounded-2xl p-4 h-80 animate-pulse flex flex-col gap-4">
-                    <div class="w-full h-44 bg-surface rounded-xl"></div>
-                    <div class="h-5 bg-surface rounded w-3/4"></div>
-                    <div class="h-4 bg-surface rounded w-1/2"></div>
-                </div>
+            <!-- Empty State (Centered) -->
+            <div id="grid-empty" class="hidden-accessible py-20 flex flex-col items-center justify-center text-center glass-panel rounded-2xl w-full max-w-2xl mx-auto">
+                <i data-lucide="package-open" class="w-16 h-16 text-textMuted mb-4"></i>
+                <h3 class="text-lg font-bold text-white mb-2">Không tìm thấy dữ liệu</h3>
+                <p class="text-sm text-textMuted">Hãy thử tìm kiếm với từ khóa khác.</p>
             </div>
 
-            <!-- Empty State -->
-            <div id="grid-empty" class="hidden-accessible py-16 flex flex-col items-center text-center glass-panel rounded-2xl border border-border">
-                <i data-lucide="package-open" class="w-12 h-12 text-textMuted mb-3"></i>
-                <h3 class="text-base font-bold text-white mb-1">Không tìm thấy tài nguyên nào</h3>
-                <p class="text-xs text-textMuted">Thử tìm kiếm với từ khóa khác hoặc chuyển danh mục.</p>
-            </div>
-
-            <!-- Real Items Grid -->
-            <div id="items-grid" class="hidden-accessible grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Injected dynamically from Firebase -->
+            <!-- Items Grid -->
+            <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <!-- Data injected by JS -->
             </div>
         </section>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-surface/50 border-t border-border py-12 px-4 sm:px-6 mt-auto">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-textMuted">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-galaxyViolet/10 border border-galaxyViolet/30 flex items-center justify-center text-galaxyViolet">
-                    <i data-lucide="box" class="w-4 h-4"></i>
-                </div>
-                <div>
-                    <p class="font-bold text-white">Galaxy Craft &copy; 2026</p>
-                    <p class="text-[11px]">Không liên kết trực tiếp với Mojang AB hoặc Microsoft.</p>
-                </div>
+    <!-- FOOTER (Centered) -->
+    <footer class="bg-surface/50 border-t border-border py-8 mt-auto w-full">
+        <div class="max-w-7xl mx-auto flex flex-col items-center justify-center gap-4 text-center">
+            <div class="flex items-center gap-2 justify-center">
+                <i data-lucide="box" class="w-5 h-5 text-galaxyViolet"></i>
+                <p class="font-bold text-white">Galaxy Craft &copy; 2026</p>
             </div>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-white transition-colors">Điều Khoản Service</a>
-                <a href="#" class="hover:text-white transition-colors">Bản Quyền DMCA</a>
-                <a href="#" class="hover:text-white transition-colors">Liên Hệ Dev</a>
-            </div>
+            <p class="text-xs text-textMuted">Không liên kết trực tiếp với Mojang AB hoặc Microsoft.</p>
         </div>
     </footer>
 
-    <!-- MODAL 1: ITEM DETAIL & DOWNLOAD (MONETIZED DELAY) -->
-    <div id="download-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden-accessible">
+    <!-- MODAL 1: DOWNLOAD (Animated Background) -->
+    <div id="download-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden-accessible">
         <div class="fixed inset-0 bg-bg/80 backdrop-blur-md" onclick="App.Modal.close('download-modal')"></div>
-        <div class="bg-card border border-border rounded-2xl p-6 shadow-2xl w-full max-w-lg relative z-10 max-h-[90vh] overflow-y-auto">
-            <button onclick="App.Modal.close('download-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-
-            <div id="modal-item-content">
-                <!-- Dynamically filled -->
-            </div>
-
-            <!-- Download Monetization Area -->
-            <div class="mt-6 pt-6 border-t border-border/60">
-                <!-- Ad Banner Simulator -->
-                <div class="p-3 bg-surface border border-border/80 rounded-xl mb-4 text-center">
-                    <span class="text-[10px] text-textMuted uppercase tracking-wider block mb-1">Quảng cáo hỗ trợ Duy trì Server</span>
-                    <div class="h-16 bg-bg/60 rounded-lg border border-dashed border-border/60 flex items-center justify-center text-xs text-galaxyViolet font-semibold">
-                        🌌 Galaxy Craft AdSpace - Tải Modpack Mượt Mà Nhất
-                    </div>
+        <div class="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl p-[1px]">
+            <!-- Animated Gradient Background -->
+            <div class="modal-animated-bg"></div>
+            <!-- Inner Content -->
+            <div class="modal-inner p-6">
+                <button onclick="App.Modal.close('download-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <div id="modal-item-content" class="text-center flex flex-col items-center">
+                    <!-- Dynamic Info -->
                 </div>
-
-                <!-- Timer & Download Actions -->
-                <div id="download-action-area" class="flex flex-col items-center">
-                    <button id="start-download-btn" onclick="App.Download.startTimer()" class="w-full h-12 rounded-xl bg-galaxyViolet hover:bg-galaxyViolet/90 text-white font-bold text-sm transition-all shadow-neon-violet flex items-center justify-center gap-2">
-                        <i data-lucide="download" class="w-4 h-4"></i> LẤY LINK TẢI XUỐNG
+                <div class="mt-6 pt-6 border-t border-border/60 w-full flex flex-col items-center">
+                    <button id="start-download-btn" onclick="App.Download.startTimer()" class="w-full h-12 rounded-xl bg-galaxyViolet text-white font-bold text-sm flex items-center justify-center gap-2 mx-auto">
+                        <i data-lucide="download" class="w-4 h-4"></i> LẤY LINK TẢI
                     </button>
-
-                    <!-- Countdown View -->
-                    <div id="timer-view" class="hidden-accessible w-full flex flex-col items-center gap-3">
-                        <p class="text-xs text-textMuted font-medium">Đang chuẩn bị đường truyền an toàn...</p>
-                        <div class="text-3xl font-display font-bold text-galaxyViolet" id="countdown-text">10s</div>
+                    <!-- Countdown View Centered -->
+                    <div id="timer-view" class="hidden-accessible w-full flex flex-col items-center gap-3 text-center">
+                        <p class="text-xs text-textMuted">Đang chuẩn bị link tải...</p>
+                        <div class="text-4xl font-display font-bold text-galaxyViolet" id="countdown-text">10s</div>
                         <div class="w-full bg-surface h-2 rounded-full overflow-hidden border border-border">
                             <div id="timer-progress" class="bg-galaxyViolet h-full w-0 transition-all duration-1000"></div>
                         </div>
                     </div>
-
-                    <!-- Final Download Button -->
-                    <a id="final-download-link" href="#" target="_blank" onclick="App.Download.completeDownload()" class="hidden-accessible w-full h-12 rounded-xl bg-mcEmerald hover:bg-mcEmerald/90 text-bg font-bold text-sm transition-all shadow-neon-emerald flex items-center justify-center gap-2">
-                        <i data-lucide="external-link" class="w-4 h-4"></i> TẢI XUỐNG NGAY (FILE CHÍNH THỨC)
+                    <a id="final-download-link" href="#" target="_blank" onclick="App.Download.completeDownload()" class="hidden-accessible w-full h-12 rounded-xl bg-mcEmerald text-bg font-bold text-sm flex items-center justify-center gap-2">
+                        TẢI XUỐNG NGAY
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: DEV ADD/EDIT ITEM (DEV ONLY) -->
-    <div id="item-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden-accessible">
-        <div class="fixed inset-0 bg-bg/80 backdrop-blur-md" onclick="App.Modal.close('item-modal')"></div>
-        <div class="bg-card border border-devGold/40 rounded-2xl p-6 shadow-2xl w-full max-w-xl relative z-10 max-h-[90vh] overflow-y-auto">
-            <button onclick="App.Modal.close('item-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-
-            <div class="flex items-center gap-2 mb-6">
-                <i data-lucide="shield-alert" class="w-6 h-6 text-devGold"></i>
-                <h3 class="text-lg font-bold text-white" id="modal-form-title">QUẢN TRỊ DEV: Thêm Tài Nguyên Mới</h3>
-            </div>
-
-            <form id="pack-form" class="flex flex-col gap-4">
-                <input type="hidden" id="form-item-id">
-                
-                <div>
-                    <label class="text-xs font-semibold text-textMuted block mb-1">Tên Modpack / Addon *</label>
-                    <input type="text" id="form-title" required placeholder="VD: Dragon Craft Ultra V2" class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs font-semibold text-textMuted block mb-1">Danh Mục *</label>
-                        <select id="form-category" class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
-                            <option value="Modpack">Modpack</option>
-                            <option value="Addon">Addon / Mods</option>
-                            <option value="Texture">Texture Pack</option>
-                            <option value="Shader">Shaders</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-textMuted block mb-1">Phiên Bản Minecraft *</label>
-                        <input type="text" id="form-version" required placeholder="VD: 1.20.x / PE & Java" class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-xs font-semibold text-textMuted block mb-1">URL Ảnh Bìa (Cover Image) *</label>
-                    <input type="url" id="form-image" required placeholder="https://images.unsplash.com/..." class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
-                </div>
-
-                <div>
-                    <label class="text-xs font-semibold text-textMuted block mb-1">URL File Tải Xuống *</label>
-                    <input type="url" id="form-download" required placeholder="https://drive.google.com/... hoặc Mediafire" class="w-full h-10 px-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none">
-                </div>
-
-                <div>
-                    <label class="text-xs font-semibold text-textMuted block mb-1">Mô Tả Chi Tiết *</label>
-                    <textarea id="form-description" rows="3" required placeholder="Mô tả các tính năng chính của Modpack này..." class="w-full p-3 bg-surface border border-border rounded-lg text-white text-sm focus:border-devGold focus:outline-none"></textarea>
-                </div>
-
-                <button type="submit" class="mt-2 h-11 bg-devGold hover:bg-devGold/90 text-bg font-extrabold text-sm rounded-lg transition-all shadow-neon-gold">
-                    LƯU VÀ PHÁT HÀNH LÊN FIREBASE
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL 3: VIP MONETIZATION -->
-    <div id="vip-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden-accessible">
-        <div class="fixed inset-0 bg-bg/80 backdrop-blur-md" onclick="App.Modal.close('vip-modal')"></div>
-        <div class="bg-card border border-mcEmerald/40 rounded-2xl p-6 shadow-2xl w-full max-w-md relative z-10 text-center">
-            <button onclick="App.Modal.close('vip-modal')" class="absolute top-4 right-4 text-textMuted hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-
-            <div class="w-12 h-12 rounded-2xl bg-mcEmerald/20 border border-mcEmerald/40 text-mcEmerald flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="crown" class="w-6 h-6"></i>
-            </div>
-
-            <h3 class="text-xl font-bold text-white mb-2">Nâng Cấp VIP PASS Galaxy Craft</h3>
-            <p class="text-xs text-textMuted mb-6">Ủng hộ Server hoạt động & Nhận đặc quyền cao cấp nhất</p>
-
-            <div class="p-4 bg-surface rounded-xl border border-border text-left space-y-2 text-xs text-textMuted mb-6">
-                <p class="flex items-center gap-2 text-white"><i data-lucide="check" class="w-4 h-4 text-mcEmerald"></i> Tải file lập tức (Không chờ 10s)</p>
-                <p class="flex items-center gap-2 text-white"><i data-lucide="check" class="w-4 h-4 text-mcEmerald"></i> Huy hiệu VIP màu Emerald nổi bật</p>
-                <p class="flex items-center gap-2 text-white"><i data-lucide="check" class="w-4 h-4 text-mcEmerald"></i> Link Google Drive VIP Tốc độ cao</p>
-            </div>
-
-            <div class="p-4 bg-bg rounded-xl border border-border flex flex-col items-center gap-2 mb-4">
-                <p class="text-xs font-bold text-devGold">Quét Mã QR Ngân Hàng / MoMo</p>
-                <div class="w-36 h-36 bg-white p-2 rounded-lg flex items-center justify-center text-bg font-mono font-bold text-xs">
-                    [QR BANKING PLACEHOLDER]
-                </div>
-                <p class="text-[11px] text-textMuted">Nội dung CK: VIP [Email của bạn]</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN APPLICATION LOGIC -->
+    <!-- MAIN SCRIPT ENGINE -->
     <script>
         /**
-         * GALAXY CRAFT - CORE ENGINE
-         * Single File Integrated Architecture
+         * XỬ LÝ GOOGLE JWT TOKEN (Giải mã thông tin Google)
          */
+        function handleCredentialResponse(response) {
+            const token = response.credential;
+            // Decode JWT (Base64 URL Decode)
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            
+            const user = JSON.parse(jsonPayload);
+            App.Auth.handleLoginSuccess(user);
+        }
 
-        // 1. FIREBASE CONFIGURATION
+        // --- FIREBASE DATABASE CẤU HÌNH ---
         const firebaseConfig = {
-            apiKey: "AIzaSyDBlMGmdcdxzJQ-dYBzw2zzfRTu2vh6GG0",
-            authDomain: "goggle-login-39224.firebaseapp.com",
             databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com",
             projectId: "goggle-login-39224",
-            storageBucket: "goggle-login-39224.firebasestorage.app",
-            messagingSenderId: "479026449758",
-            appId: "1:479026449758:web:661543f85ebeb7621393cf",
-            measurementId: "G-11EF7RQKS3"
         };
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const db = firebase.database();
 
-        // DEV CONSTANT
         const DEV_EMAIL = "hminhgalaxy@gmail.com";
-
-        // APP STATE
         const state = {
             currentUser: null,
             isDev: false,
@@ -514,212 +397,125 @@
             downloadTimer: null
         };
 
-        // INITIAL MOCK DATA (Seeded automatically if Firebase DB is empty)
-        const initialPacks = {
-            "pack_1": {
-                id: "pack_1",
-                title: "RLCraft Deluxe Edition 1.20",
-                category: "Modpack",
-                version: "1.20.4 Java",
-                image: "https://images.unsplash.com/photo-1627856013091-fed6e4e30025?auto=format&fit=crop&w=800&q=80",
-                downloadUrl: "https://mediafire.com",
-                description: "Gói Modpack sinh tồn siêu khó nổi tiếng bậc nhất đã được tối ưu lại mượt mà cho Minecraft 1.20.",
-                downloadsCount: 1420,
-                rating: 4.9,
-                createdAt: Date.now()
-            },
-            "pack_2": {
-                id: "pack_2",
-                title: "Dragon Craft Evolution Addon",
-                category: "Addon",
-                version: "1.20.80 PE/BE",
-                image: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=800&q=80",
-                downloadUrl: "https://drive.google.com",
-                description: "Thêm hơn 25 loại Rồng thần thoại có thể thuần phục, cưỡi và chiến đấu cực đẹp mắt.",
-                downloadsCount: 2890,
-                rating: 4.8,
-                createdAt: Date.now() - 100000
-            },
-            "pack_3": {
-                id: "pack_3",
-                title: "Faithful 64x Ultra HD Texture",
-                category: "Texture",
-                version: "1.16 - 1.20+",
-                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
-                downloadUrl: "https://curseforge.com",
-                description: "Bộ Texture sắc nét x64 giữ nguyên phong cách gốc Minecraft nhưng chân thực hơn gấp 4 lần.",
-                downloadsCount: 5120,
-                rating: 5.0,
-                createdAt: Date.now() - 200000
-            }
-        };
-
-        // APPLICATION MODULE
         const App = {
             init: () => {
                 lucide.createIcons();
-                App.Auth.listen();
+                App.UI.hideSplash();
                 App.Database.listenPacks();
                 App.UI.setupListeners();
+                
+                // Kiểm tra xem đã lưu user trong LocalStorage chưa
+                const savedUser = localStorage.getItem('galaxy_user');
+                if (savedUser) {
+                    App.Auth.handleLoginSuccess(JSON.parse(savedUser));
+                }
             },
 
-            // --- AUTHENTICATION MODULE ---
             Auth: {
-                listen: () => {
-                    auth.onAuthStateChanged((user) => {
-                        const loading = document.getElementById('auth-loading');
-                        const loginBtn = document.getElementById('login-btn');
-                        const userProfile = document.getElementById('user-profile');
-                        const devAddBtn = document.getElementById('dev-add-btn');
-                        const devBanner = document.getElementById('dev-welcome-banner');
-
-                        loading.classList.add('hidden-accessible');
-
-                        if (user) {
-                            state.currentUser = user;
-                            state.isDev = (user.email === DEV_EMAIL);
-
-                            // UI Update User Info
-                            loginBtn.classList.add('hidden-accessible');
-                            userProfile.classList.remove('hidden-accessible');
-                            document.getElementById('user-avatar').src = user.photoURL || 'https://via.placeholder.com/40';
-                            document.getElementById('user-name').innerText = user.displayName || 'User';
-                            document.getElementById('user-email').innerText = user.email;
-
-                            // DEV ROLE CHECK & UI OVERRIDE
-                            if (state.isDev) {
-                                const badge = document.getElementById('user-role-badge');
-                                badge.innerText = "✨ DEV GALAXY";
-                                badge.className = "px-2 py-0.5 rounded text-[10px] font-extrabold badge-dev-animated text-devGold shadow-neon-gold";
-                                
-                                devAddBtn.classList.remove('hidden-accessible');
-                                devBanner.classList.remove('hidden-accessible');
-
-                                App.UI.showToast("Đã xác nhận DEV GALAXY! Quyền quản trị đã kích hoạt.", "warning");
-                            } else {
-                                devAddBtn.classList.add('hidden-accessible');
-                                devBanner.classList.add('hidden-accessible');
-                                App.UI.showToast(`Xin chào ${user.displayName}!`, "info");
-                            }
-                        } else {
-                            state.currentUser = null;
-                            state.isDev = false;
-                            loginBtn.classList.remove('hidden-accessible');
-                            userProfile.classList.add('hidden-accessible');
-                            devAddBtn.classList.add('hidden-accessible');
-                            devBanner.classList.add('hidden-accessible');
-                        }
-
-                        // Re-render items grid to show/hide edit buttons based on DEV role
-                        App.Render.items();
-                    });
-                },
-
-                loginWithGoogle: async () => {
-                    try {
-                        const provider = new firebase.auth.GoogleAuthProvider();
-                        await auth.signInWithPopup(provider);
-                    } catch (error) {
-                        console.error("Google Auth Error:", error);
-                        App.UI.showToast("Đăng nhập Google thất bại: " + error.message, "error");
-                    }
-                },
-
-                logout: async () => {
-                    await auth.signOut();
-                    App.UI.showToast("Đã đăng xuất tài khoản.", "info");
-                }
-            },
-
-            // --- DATABASE MODULE ---
-            Database: {
-                listenPacks: () => {
-                    const packsRef = db.ref('packs');
-                    packsRef.on('value', (snapshot) => {
-                        const data = snapshot.val();
-                        
-                        // Seed database if empty
-                        if (!data) {
-                            db.ref('packs').set(initialPacks);
-                            return;
-                        }
-
-                        state.items = Object.values(data);
-                        
-                        document.getElementById('grid-loading').classList.add('hidden-accessible');
-                        App.Render.items();
-                    });
-                },
-
-                savePack: async (packData) => {
-                    if (!state.isDev) {
-                        App.UI.showToast("Chỉ có DEV GALAXY mới có quyền thực hiện!", "error");
-                        return;
-                    }
-
-                    const id = packData.id || db.ref('packs').push().key;
-                    const finalData = {
-                        ...packData,
-                        id: id,
-                        createdAt: packData.createdAt || Date.now(),
-                        downloadsCount: packData.downloadsCount || 0,
-                        rating: packData.rating || 5.0
-                    };
-
-                    await db.ref('packs/' + id).set(finalData);
-                    App.UI.showToast("Đã lưu tài nguyên lên Firebase thành công!", "success");
-                    App.Modal.close('item-modal');
-                },
-
-                deletePack: async (id) => {
-                    if (!state.isDev) {
-                        App.UI.showToast("Chỉ có DEV GALAXY mới có quyền xóa!", "error");
-                        return;
-                    }
-
-                    if (confirm("Bạn có chắc chắn muốn xóa Modpack này khỏi Firebase?")) {
-                        await db.ref('packs/' + id).remove();
-                        App.UI.showToast("Đã xóa tài nguyên thành công.", "info");
-                    }
-                },
-
-                incrementDownload: (id) => {
-                    db.ref(`packs/${id}/downloadsCount`).transaction((count) => (count || 0) + 1);
-                }
-            },
-
-            // --- FILTER & SEARCH MODULE ---
-            Filter: {
-                setCategory: (cat) => {
-                    state.activeCategory = cat;
-                    document.getElementById('category-select').value = cat;
+                handleLoginSuccess: (user) => {
+                    state.currentUser = user;
+                    state.isDev = (user.email === DEV_EMAIL);
                     
-                    // Update quick pill active state
-                    document.querySelectorAll('.pill-btn').forEach(btn => {
-                        if (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('Tất Cả'))) {
-                            btn.className = "pill-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-galaxyViolet text-white border border-galaxyViolet transition-all";
-                        } else {
-                            btn.className = "pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white transition-all";
-                        }
-                    });
+                    // Lưu session cơ bản
+                    localStorage.setItem('galaxy_user', JSON.stringify(user));
 
+                    // Cập nhật giao diện Desktop
+                    document.getElementById('google-btn-desktop').classList.add('hidden-accessible');
+                    const pd = document.getElementById('user-profile-desktop');
+                    pd.classList.remove('hidden-accessible');
+                    document.getElementById('user-avatar-desktop').src = user.picture;
+                    document.getElementById('user-name-desktop').innerText = user.name;
+
+                    // Cập nhật giao diện Mobile
+                    document.getElementById('auth-container-mobile').classList.add('hidden-accessible');
+                    const pm = document.getElementById('user-profile-mobile');
+                    pm.classList.remove('hidden-accessible');
+                    document.getElementById('user-avatar-mobile').src = user.picture;
+                    document.getElementById('user-name-mobile').innerText = user.name;
+
+                    // Dev Logic
+                    const devBtn = document.getElementById('dev-add-btn');
+                    const devBanner = document.getElementById('dev-welcome-banner');
+                    
+                    if (state.isDev) {
+                        document.getElementById('user-role-badge-desktop').innerText = "DEV GALAXY";
+                        document.getElementById('user-role-badge-mobile').innerText = "DEV GALAXY";
+                        document.getElementById('user-role-badge-desktop').classList.add('text-devGold', 'font-bold');
+                        document.getElementById('user-role-badge-mobile').classList.add('text-devGold', 'font-bold');
+                        
+                        devBtn.classList.remove('hidden-accessible');
+                        devBanner.classList.remove('hidden-accessible');
+                        App.UI.showToast("Xin chào sếp! Đã cấp quyền chỉnh sửa Firebase.", "success");
+                    } else {
+                        devBtn.classList.add('hidden-accessible');
+                        devBanner.classList.add('hidden-accessible');
+                        App.UI.showToast(`Chào mừng ${user.name} gia nhập vũ trụ!`);
+                    }
+                    
+                    App.Render.items();
+                    App.UI.closeMobileMenu();
+                },
+                logout: () => {
+                    state.currentUser = null;
+                    state.isDev = false;
+                    localStorage.removeItem('galaxy_user');
+                    
+                    // Reset UI Desktop
+                    document.getElementById('google-btn-desktop').classList.remove('hidden-accessible');
+                    document.getElementById('user-profile-desktop').classList.add('hidden-accessible');
+                    
+                    // Reset UI Mobile
+                    document.getElementById('auth-container-mobile').classList.remove('hidden-accessible');
+                    document.getElementById('user-profile-mobile').classList.add('hidden-accessible');
+
+                    document.getElementById('dev-add-btn').classList.add('hidden-accessible');
+                    document.getElementById('dev-welcome-banner').classList.add('hidden-accessible');
+
+                    App.UI.showToast("Đã đăng xuất thành công.");
                     App.Render.items();
                 }
             },
 
-            // --- RENDER ENGINE ---
+            Database: {
+                listenPacks: () => {
+                    db.ref('packs').on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        if(data) {
+                            state.items = Object.values(data);
+                            App.Render.items();
+                        }
+                    });
+                },
+                incrementDownload: (id) => {
+                    db.ref(`packs/${id}/downloadsCount`).transaction((c) => (c || 0) + 1);
+                }
+            },
+
+            Filter: {
+                setCategory: (cat) => {
+                    state.activeCategory = cat;
+                    document.getElementById('category-select').value = cat;
+                    document.querySelectorAll('.pill-btn').forEach(btn => {
+                        if (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('Tất Cả'))) {
+                            btn.className = "pill-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-galaxyViolet text-white border border-galaxyViolet";
+                        } else {
+                            btn.className = "pill-btn px-4 py-2 rounded-xl text-xs font-semibold bg-surface border border-border text-textMuted hover:text-white";
+                        }
+                    });
+                    App.Render.items();
+                }
+            },
+
             Render: {
                 items: () => {
                     const grid = document.getElementById('items-grid');
                     const empty = document.getElementById('grid-empty');
-                    
                     grid.innerHTML = '';
 
                     const filtered = state.items.filter(item => {
-                        const matchesCategory = (state.activeCategory === 'All' || item.category === state.activeCategory);
-                        const matchesSearch = item.title.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
-                                              item.version.toLowerCase().includes(state.searchQuery.toLowerCase());
-                        return matchesCategory && matchesSearch;
+                        const mCat = (state.activeCategory === 'All' || item.category === state.activeCategory);
+                        const mSearch = item.title.toLowerCase().includes(state.searchQuery.toLowerCase());
+                        return mCat && mSearch;
                     });
 
                     if (filtered.length === 0) {
@@ -733,224 +529,101 @@
 
                     filtered.forEach(item => {
                         const card = document.createElement('div');
-                        card.className = "group bg-card border border-border hover:border-galaxyViolet/50 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-neon-violet flex flex-col justify-between relative";
-
+                        card.className = "group bg-card border border-border rounded-2xl p-4 flex flex-col justify-between items-center text-center transition-all hover:border-galaxyViolet/50 hover:-translate-y-1 hover:shadow-neon-violet";
                         card.innerHTML = `
-                            <div>
-                                <!-- Image Container -->
-                                <div class="relative w-full h-44 rounded-xl overflow-hidden mb-4 border border-border/50">
-                                    <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                    <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-bg/80 backdrop-blur-md text-galaxyViolet border border-galaxyViolet/30 uppercase">
-                                        ${item.category}
-                                    </span>
-                                    <span class="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-bg/80 backdrop-blur-md text-mcEmerald border border-mcEmerald/30">
-                                        ${item.version}
-                                    </span>
-                                </div>
-
-                                <!-- Content -->
-                                <h3 class="text-base font-bold text-white mb-2 line-clamp-1 group-hover:text-galaxyViolet transition-colors">${item.title}</h3>
-                                <p class="text-xs text-textMuted line-clamp-2 leading-relaxed mb-4">${item.description}</p>
+                            <div class="w-full flex flex-col items-center">
+                                <img src="${item.image}" class="w-full h-44 rounded-xl object-cover mb-4 border border-border">
+                                <span class="px-2 py-1 rounded bg-surface border border-border text-[10px] text-galaxyViolet mb-2">${item.category}</span>
+                                <h3 class="text-base font-bold text-white mb-1 line-clamp-1">${item.title}</h3>
+                                <p class="text-xs text-textMuted line-clamp-2">${item.description}</p>
                             </div>
-
-                            <!-- Footer Meta & Actions -->
-                            <div>
-                                <div class="flex items-center justify-between text-xs text-textMuted border-t border-border/50 pt-3 mb-3">
-                                    <span class="flex items-center gap-1"><i data-lucide="download-cloud" class="w-3.5 h-3.5 text-galaxyViolet"></i> ${item.downloadsCount || 0} lượt tải</span>
-                                    <span class="flex items-center gap-1 text-devGold"><i data-lucide="star" class="w-3.5 h-3.5 fill-devGold"></i> ${item.rating || '5.0'}</span>
-                                </div>
-
-                                <div class="flex items-center gap-2">
-                                    <button onclick="App.Download.openModal('${item.id}')" class="flex-1 h-9 rounded-lg bg-surface border border-border hover:border-galaxyViolet text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5 group-hover:bg-galaxyViolet group-hover:text-white">
-                                        <span>Xem & Tải File</span>
-                                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                                    </button>
-
-                                    <!-- DEV Controls (Sửa / Xóa) -->
-                                    ${state.isDev ? `
-                                        <button onclick="App.UI.editPack('${item.id}')" class="p-2 rounded-lg bg-devGold/10 border border-devGold/30 text-devGold hover:bg-devGold hover:text-bg transition-colors" title="Sửa (Dev)">
-                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                        </button>
-                                        <button onclick="App.Database.deletePack('${item.id}')" class="p-2 rounded-lg bg-error/10 border border-error/30 text-error hover:bg-error hover:text-white transition-colors" title="Xóa (Dev)">
-                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                    ` : ''}
-                                </div>
+                            <div class="w-full mt-4 flex items-center justify-center gap-2">
+                                <button onclick="App.Download.openModal('${item.id}')" class="w-full py-2 bg-surface hover:bg-galaxyViolet text-white rounded-lg text-sm transition-colors">Tải File</button>
+                                ${state.isDev ? `<button onclick="db.ref('packs/${item.id}').remove()" class="p-2 bg-error/10 text-error rounded-lg"><i data-lucide="trash" class="w-4 h-4"></i></button>` : ''}
                             </div>
                         `;
                         grid.appendChild(card);
                     });
-
                     lucide.createIcons();
                 }
             },
 
-            // --- DOWNLOAD & MONETIZATION TIMER ---
             Download: {
                 openModal: (id) => {
-                    const item = state.items.find(i => i.id === id);
-                    if (!item) return;
-
-                    state.selectedItem = item;
-
-                    const container = document.getElementById('modal-item-content');
-                    container.innerHTML = `
-                        <div class="flex gap-4 items-start mb-4">
-                            <img src="${item.image}" class="w-20 h-20 rounded-xl object-cover border border-border shrink-0">
-                            <div>
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-galaxyViolet/20 text-galaxyViolet border border-galaxyViolet/30 uppercase mb-1 inline-block">${item.category}</span>
-                                <h3 class="text-lg font-bold text-white leading-tight">${item.title}</h3>
-                                <p class="text-xs text-mcEmerald font-medium mt-1">Phiên bản: ${item.version}</p>
-                            </div>
-                        </div>
-                        <p class="text-xs text-textMuted leading-relaxed bg-surface p-3 rounded-xl border border-border">${item.description}</p>
+                    state.selectedItem = state.items.find(i => i.id === id);
+                    if (!state.selectedItem) return;
+                    
+                    document.getElementById('modal-item-content').innerHTML = `
+                        <img src="${state.selectedItem.image}" class="w-24 h-24 rounded-xl object-cover border border-border mx-auto mb-3">
+                        <h3 class="text-xl font-bold text-white mb-1">${state.selectedItem.title}</h3>
+                        <p class="text-xs text-mcEmerald bg-surface px-3 py-1 rounded-full border border-border mx-auto block w-fit mb-2">Version: ${state.selectedItem.version}</p>
                     `;
-
-                    // Reset Timer UI
                     document.getElementById('start-download-btn').classList.remove('hidden-accessible');
                     document.getElementById('timer-view').classList.add('hidden-accessible');
                     document.getElementById('final-download-link').classList.add('hidden-accessible');
-
                     App.Modal.open('download-modal');
                 },
-
                 startTimer: () => {
                     document.getElementById('start-download-btn').classList.add('hidden-accessible');
                     document.getElementById('timer-view').classList.remove('hidden-accessible');
-
-                    let timeLeft = 10;
-                    const countdownText = document.getElementById('countdown-text');
-                    const progressBar = document.getElementById('timer-progress');
-
+                    let t = 10;
+                    document.getElementById('countdown-text').innerText = t + 's';
                     clearInterval(state.downloadTimer);
-
                     state.downloadTimer = setInterval(() => {
-                        timeLeft--;
-                        countdownText.innerText = `${timeLeft}s`;
-                        progressBar.style.width = `${((10 - timeLeft) / 10) * 100}%`;
-
-                        if (timeLeft <= 0) {
+                        t--;
+                        document.getElementById('countdown-text').innerText = t + 's';
+                        document.getElementById('timer-progress').style.width = ((10-t)*10)+'%';
+                        if(t <= 0) {
                             clearInterval(state.downloadTimer);
                             document.getElementById('timer-view').classList.add('hidden-accessible');
-                            
-                            const finalLink = document.getElementById('final-download-link');
-                            finalLink.href = state.selectedItem.downloadUrl;
-                            finalLink.classList.remove('hidden-accessible');
+                            const a = document.getElementById('final-download-link');
+                            a.href = state.selectedItem.downloadUrl;
+                            a.classList.remove('hidden-accessible');
                         }
                     }, 1000);
                 },
-
                 completeDownload: () => {
-                    if (state.selectedItem) {
-                        App.Database.incrementDownload(state.selectedItem.id);
-                        App.UI.showToast("Cảm ơn bạn đã tải tài nguyên từ Galaxy Craft!", "success");
-                        App.Modal.close('download-modal');
-                    }
+                    App.Database.incrementDownload(state.selectedItem.id);
+                    App.Modal.close('download-modal');
                 }
             },
 
-            // --- UI HELPERS ---
             UI: {
+                hideSplash: () => {
+                    setTimeout(() => {
+                        const splash = document.getElementById('splash-screen');
+                        splash.style.opacity = '0';
+                        setTimeout(() => splash.remove(), 800);
+                    }, 2000);
+                },
                 setupListeners: () => {
-                    // Search Input Debounce
                     document.getElementById('search-input').addEventListener('input', (e) => {
-                        state.searchQuery = e.target.value;
-                        App.Render.items();
+                        state.searchQuery = e.target.value; App.Render.items();
                     });
-
-                    // Category Select
                     document.getElementById('category-select').addEventListener('change', (e) => {
                         App.Filter.setCategory(e.target.value);
                     });
-
-                    // Form Submit (Dev Add/Edit Pack)
-                    document.getElementById('pack-form').addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        const packData = {
-                            id: document.getElementById('form-item-id').value,
-                            title: document.getElementById('form-title').value,
-                            category: document.getElementById('form-category').value,
-                            version: document.getElementById('form-version').value,
-                            image: document.getElementById('form-image').value,
-                            downloadUrl: document.getElementById('form-download').value,
-                            description: document.getElementById('form-description').value,
-                        };
-                        App.Database.savePack(packData);
-                    });
                 },
-
-                editPack: (id) => {
-                    const item = state.items.find(i => i.id === id);
-                    if (!item) return;
-
-                    document.getElementById('modal-form-title').innerText = "QUẢN TRỊ DEV: Chỉnh Sửa Resource";
-                    document.getElementById('form-item-id').value = item.id;
-                    document.getElementById('form-title').value = item.title;
-                    document.getElementById('form-category').value = item.category;
-                    document.getElementById('form-version').value = item.version;
-                    document.getElementById('form-image').value = item.image;
-                    document.getElementById('form-download').value = item.downloadUrl;
-                    document.getElementById('form-description').value = item.description;
-
-                    App.Modal.open('item-modal');
-                },
-
-                toggleMobileMenu: () => {
-                    const drawer = document.getElementById('mobile-drawer');
-                    drawer.classList.toggle('translate-x-full');
-                },
-
-                closeMobileMenu: () => {
-                    document.getElementById('mobile-drawer').classList.add('translate-x-full');
-                },
-
-                showToast: (msg, type = 'info') => {
-                    const container = document.getElementById('toast-container');
-                    const toast = document.createElement('div');
-                    toast.className = `p-4 rounded-xl bg-card border border-border shadow-2xl flex items-center gap-3 text-xs font-semibold text-white pointer-events-auto transition-all duration-300 transform translate-x-full`;
-
-                    const icons = {
-                        success: '<i data-lucide="check-circle" class="w-4 h-4 text-mcEmerald"></i>',
-                        error: '<i data-lucide="alert-circle" class="w-4 h-4 text-error"></i>',
-                        warning: '<i data-lucide="crown" class="w-4 h-4 text-devGold"></i>',
-                        info: '<i data-lucide="info" class="w-4 h-4 text-galaxyViolet"></i>'
-                    };
-
-                    toast.innerHTML = `${icons[type]} <span>${msg}</span>`;
-                    container.appendChild(toast);
-                    lucide.createIcons();
-
-                    setTimeout(() => toast.classList.remove('translate-x-full'), 10);
-                    setTimeout(() => {
-                        toast.classList.add('opacity-0', 'translate-x-full');
-                        setTimeout(() => toast.remove(), 300);
-                    }, 4000);
+                toggleMobileMenu: () => document.getElementById('mobile-drawer').classList.toggle('translate-x-full'),
+                closeMobileMenu: () => document.getElementById('mobile-drawer').classList.add('translate-x-full'),
+                showToast: (msg, type='info') => {
+                    const c = document.getElementById('toast-container');
+                    const t = document.createElement('div');
+                    t.className = "p-3 rounded-xl bg-card border border-border shadow-xl flex items-center justify-center gap-2 text-xs font-bold text-white transition-all transform -translate-y-10 mx-auto w-fit";
+                    t.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-galaxyViolet"></i> ${msg}`;
+                    c.appendChild(t); lucide.createIcons();
+                    setTimeout(() => t.classList.remove('-translate-y-10'), 10);
+                    setTimeout(() => { t.classList.add('-translate-y-10', 'opacity-0'); setTimeout(()=>t.remove(), 300); }, 3000);
                 }
             },
 
-            // --- MODAL CONTROLLER ---
             Modal: {
-                open: (id) => {
-                    if (id === 'item-modal' && !state.isDev) {
-                        App.UI.showToast("Chỉ DEV GALAXY mới có quyền mở bảng này!", "error");
-                        return;
-                    }
-                    if (id === 'item-modal' && !document.getElementById('form-item-id').value) {
-                        document.getElementById('modal-form-title').innerText = "QUẢN TRỊ DEV: Thêm Tài Nguyên Mới";
-                        document.getElementById('pack-form').reset();
-                        document.getElementById('form-item-id').value = '';
-                    }
-                    document.getElementById(id).classList.remove('hidden-accessible');
-                },
-                close: (id) => {
-                    document.getElementById(id).classList.add('hidden-accessible');
-                    if (id === 'download-modal') clearInterval(state.downloadTimer);
-                }
+                open: (id) => document.getElementById(id).classList.remove('hidden-accessible'),
+                close: (id) => { document.getElementById(id).classList.add('hidden-accessible'); clearInterval(state.downloadTimer); }
             }
         };
 
-        // Launch Engine on DOM Load
-        document.addEventListener('DOMContentLoaded', App.init);
+        window.addEventListener('load', App.init);
     </script>
 </body>
 </html>
