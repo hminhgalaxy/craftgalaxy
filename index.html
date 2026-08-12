@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GalaxyCraft | Holographic Aurora</title>
+    <title>GalaxyCraft | Holographic Aurora V2</title>
     
     <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,40 +14,34 @@
            1. HỆ THỐNG BIẾN CSS & TOKENS (HOLOGRAPHIC THEME)
            ========================================================================== */
         :root {
-            /* Backgrounds */
             --bg-space: #010104;
             --bg-glass: rgba(10, 10, 15, 0.45);
             --bg-glass-heavy: rgba(5, 5, 10, 0.85);
             
-            /* Aurora Colors */
             --aurora-1: #00f2fe;
             --aurora-2: #4facfe;
             --aurora-3: #f093fb;
             --aurora-4: #f5576c;
             
-            /* UI Colors */
             --primary: #00f2fe;
             --secondary: #f093fb;
             --accent: #f5576c;
             --gold: #f6d365;
             --danger: #ff0844;
             
-            /* Text */
             --text-main: #ffffff;
             --text-muted: #94a3b8;
             
-            /* Structural */
             --radius-sm: 12px;
             --radius-md: 20px;
             --radius-lg: 30px;
             --nav-height: 75px;
             
-            /* Shadows & Borders */
             --border-glass: rgba(255, 255, 255, 0.1);
             --border-glow: rgba(0, 242, 254, 0.3);
             --shadow-holo: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --shadow-neon: 0 0 15px rgba(0, 242, 254, 0.4);
             
-            /* Roles */
             --role-dev: #ff0844; --role-admin: #f6d365; --role-glx: #00f2fe; --role-guest: #64748b;
         }
 
@@ -59,32 +53,46 @@
         button { cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         img { max-width: 100%; display: block; object-fit: cover; }
         
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(var(--primary), var(--secondary)); }
 
-        /* Typography */
+        /* Typography & Utilities */
         .font-space { font-family: 'Space Grotesk', sans-serif; }
         .text-gradient { background: linear-gradient(to right, var(--aurora-1), var(--aurora-3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .title-glow { text-shadow: 0 0 20px rgba(0, 242, 254, 0.5); }
         
-        /* Glassmorphism Classes */
+        /* Glassmorphism */
         .glass-panel { background: var(--bg-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); }
-        .glass-heavy { background: var(--bg-glass-heavy); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border-glass); }
+        
+        /* ANIMATIONS (Hiệu ứng mượt mà) */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translate3d(0, 40px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .animate-up { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(245, 87, 108, 0.4); transform: scale(1); }
+            50% { box-shadow: 0 0 20px rgba(245, 87, 108, 0.8); transform: scale(1.05); }
+            100% { box-shadow: 0 0 10px rgba(245, 87, 108, 0.4); transform: scale(1); }
+        }
+        .hot-badge { animation: pulseGlow 2s infinite; background: linear-gradient(45deg, #ff0844, #ffb199); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 900; letter-spacing: 1px; }
 
         /* ==========================================================================
-           2. AURORA BACKGROUND ENGINE
+           2. AURORA BACKGROUND ENGINE (Tối ưu GPU)
            ========================================================================== */
         .aurora-container { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; background: var(--bg-space); }
-        .aurora-blob { position: absolute; filter: blur(80px); opacity: 0.5; border-radius: 50%; animation: auroraFloat 20s infinite alternate ease-in-out; }
+        .aurora-blob { position: absolute; filter: blur(80px); opacity: 0.4; border-radius: 50%; animation: auroraFloat 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); will-change: transform; }
         .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--aurora-1); animation-delay: 0s; }
         .blob-2 { top: 40%; right: -20%; width: 40vw; height: 40vw; background: var(--aurora-2); animation-delay: -5s; }
         .blob-3 { bottom: -20%; left: 20%; width: 60vw; height: 60vw; background: var(--aurora-3); animation-delay: -10s; }
         
         @keyframes auroraFloat {
-            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            50% { transform: translate(10%, 15%) scale(1.2) rotate(90deg); }
-            100% { transform: translate(-10%, -10%) scale(0.9) rotate(180deg); }
+            0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate3d(10%, 15%, 0) scale(1.2) rotate(90deg); }
+            100% { transform: translate3d(-10%, -10%, 0) scale(0.9) rotate(180deg); }
         }
 
         #star-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.8; }
@@ -97,7 +105,7 @@
         @keyframes plPulse { 0% { filter: drop-shadow(0 0 10px var(--aurora-1)); transform: scale(1); } 100% { filter: drop-shadow(0 0 30px var(--aurora-3)); transform: scale(1.05); } }
 
         #toast-zone { position: fixed; top: 24px; right: 24px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast-card { background: rgba(5,5,10,0.9); backdrop-filter: blur(15px); border: 1px solid var(--border-glass); border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: var(--radius-sm); display: flex; align-items: flex-start; gap: 16px; min-width: 320px; transform: translateX(120%); opacity: 0; transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: var(--shadow-holo); pointer-events: auto; }
+        .toast-card { background: rgba(5,5,10,0.95); backdrop-filter: blur(15px); border: 1px solid var(--border-glass); border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: var(--radius-sm); display: flex; align-items: flex-start; gap: 16px; min-width: 320px; transform: translateX(120%); opacity: 0; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: var(--shadow-holo); pointer-events: auto; }
         .toast-card.show { transform: translateX(0); opacity: 1; }
         .toast-card.success { border-left-color: #00e676; } .toast-card.error { border-left-color: var(--danger); }
         .t-icon { font-size: 1.5rem; margin-top: 2px; }
@@ -107,27 +115,29 @@
         /* ==========================================================================
            4. GLOBAL HEADER & HERO
            ========================================================================== */
-        header { position: sticky; top: 0; height: var(--nav-height); z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; background: rgba(2, 2, 5, 0.7); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border-glass); }
+        header { position: sticky; top: 0; height: var(--nav-height); z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; background: rgba(2, 2, 5, 0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border-glass); transition: all 0.3s; }
         
         .header-left { display: flex; align-items: center; gap: 16px; }
         .btn-menu { width: 44px; height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); display: flex; justify-content: center; align-items: center; font-size: 1.2rem; background: rgba(255,255,255,0.03); }
-        .btn-menu:hover { background: rgba(0,242,254,0.1); border-color: var(--primary); color: var(--primary); box-shadow: var(--shadow-neon); }
-        .brand { font-size: 1.6rem; display: flex; align-items: center; gap: 8px; }
+        .btn-menu:hover { background: rgba(0,242,254,0.1); border-color: var(--primary); color: var(--primary); box-shadow: var(--shadow-neon); transform: translateY(-2px); }
+        .brand { font-size: 1.6rem; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s;}
+        .brand:hover { transform: scale(1.05); }
         .brand i { color: var(--primary); }
 
         .header-search { flex: 1; max-width: 400px; margin: 0 24px; position: relative; display: none; }
         @media (min-width: 768px) { .header-search { display: block; } }
-        .header-search input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); padding: 12px 16px 12px 45px; border-radius: 30px; font-size: 0.9rem; transition: 0.3s; }
+        .header-search input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); padding: 12px 16px 12px 45px; border-radius: 30px; font-size: 0.9rem; transition: 0.3s; color: white;}
         .header-search input:focus { border-color: var(--primary); box-shadow: inset 0 0 15px rgba(0,242,254,0.15); background: rgba(0,0,0,0.5); }
         .header-search i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
         .header-right { display: flex; align-items: center; gap: 12px; }
-        .btn-icon-top { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-glass); display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.03); font-size: 1.1rem; }
-        .btn-icon-top:hover { border-color: var(--secondary); color: var(--secondary); box-shadow: 0 0 15px rgba(240,147,251,0.3); }
-        .user-avatar-top { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); cursor: pointer; display: none; }
+        .btn-icon-top { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-glass); display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.03); font-size: 1.1rem; transition: 0.3s; }
+        .btn-icon-top:hover { border-color: var(--secondary); color: var(--secondary); box-shadow: 0 0 15px rgba(240,147,251,0.3); transform: rotate(15deg);}
+        .user-avatar-top { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; cursor: pointer; display: none; transition: 0.3s;}
+        .user-avatar-top:hover { border-color: var(--primary); box-shadow: 0 0 15px var(--primary); transform: scale(1.1); }
 
-        /* Hero Section with Typewriter */
-        .hero { padding: 80px 24px 40px; text-align: center; max-width: 900px; margin: 0 auto; }
+        /* Hero Section */
+        .hero { padding: 80px 24px 40px; text-align: center; max-width: 900px; margin: 0 auto; position: relative; z-index: 1;}
         .hero h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.1; margin-bottom: 20px; }
         .typewriter-wrap { display: inline-block; color: var(--primary); border-right: 3px solid var(--primary); padding-right: 5px; animation: blinkCursor 0.75s step-end infinite; }
         @keyframes blinkCursor { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
@@ -136,42 +146,48 @@
         /* ==========================================================================
            5. FILTERS & CONTENT GRID
            ========================================================================== */
-        .controls { padding: 0 24px 20px; max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+        .controls { padding: 0 24px 20px; max-width: 1300px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 1;}
         .mobile-search { display: block; position: relative; width: 100%; }
         @media (min-width: 768px) { .mobile-search { display: none; } }
-        .mobile-search input { width: 100%; background: var(--bg-glass); border: 1px solid var(--border-glass); padding: 14px 16px 14px 45px; border-radius: var(--radius-md); font-size: 0.95rem; }
+        .mobile-search input { width: 100%; background: var(--bg-glass); border: 1px solid var(--border-glass); padding: 14px 16px 14px 45px; border-radius: var(--radius-md); font-size: 0.95rem; color: white; transition: 0.3s;}
+        .mobile-search input:focus { border-color: var(--primary); }
         .mobile-search i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
         .filter-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
         .pills { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; flex: 1; }
         .pills::-webkit-scrollbar { display: none; }
-        .pill-btn { flex-shrink: 0; padding: 12px 28px; border-radius: 30px; font-weight: 700; color: var(--text-muted); font-size: 0.95rem; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02); }
+        .pill-btn { flex-shrink: 0; padding: 12px 28px; border-radius: 30px; font-weight: 700; color: var(--text-muted); font-size: 0.95rem; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02); position: relative; overflow: hidden;}
+        .pill-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
+        .pill-btn:hover::before { left: 100%; }
         .pill-btn.active, .pill-btn:hover { background: linear-gradient(135deg, rgba(0,242,254,0.2), rgba(240,147,251,0.2)); color: var(--text-main); border-color: var(--primary); box-shadow: var(--shadow-neon); }
         
-        .sort-btn { padding: 12px 20px; border-radius: var(--radius-md); background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-main); font-weight: 600; cursor: pointer; outline: none; }
+        .sort-btn { padding: 12px 20px; border-radius: var(--radius-md); background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-main); font-weight: 600; cursor: pointer; outline: none; transition: 0.3s; }
+        .sort-btn:hover { border-color: var(--secondary); }
         .sort-btn option { background: var(--bg-space); }
 
         /* Feed Grid */
-        .feed-grid { padding: 10px 24px 60px; max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; min-height: 400px; perspective: 1000px; }
+        .feed-grid { padding: 10px 24px 60px; max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; min-height: 400px; perspective: 1000px; position: relative; z-index: 1;}
         
-        .holo-card { background: var(--bg-glass); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; position: relative; transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; border: 1px solid var(--border-glass); transform-style: preserve-3d; }
+        .holo-card { background: var(--bg-glass); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; position: relative; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; border: 1px solid var(--border-glass); transform-style: preserve-3d; }
         .holo-card::before { content:''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent); opacity: 0; transition: 0.4s; z-index: 5; pointer-events: none; }
-        .holo-card:hover { transform: translateY(-10px); border-color: var(--aurora-2); box-shadow: 0 20px 40px rgba(79, 172, 254, 0.25); }
+        .holo-card:hover { transform: translateY(-12px) scale(1.02); border-color: var(--aurora-2); box-shadow: 0 20px 40px rgba(79, 172, 254, 0.3); }
         .holo-card:hover::before { opacity: 1; }
 
         .hc-cover { width: 100%; padding-top: 56.25%; position: relative; overflow: hidden; }
-        .hc-cover img { position: absolute; inset: 0; width: 100%; height: 100%; transition: 0.6s; }
-        .holo-card:hover .hc-cover img { transform: scale(1.1) rotate(1deg); }
+        .hc-cover img { position: absolute; inset: 0; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .holo-card:hover .hc-cover img { transform: scale(1.15) rotate(2deg); filter: brightness(1.1); }
         
         .hc-badges { position: absolute; top: 16px; left: 16px; display: flex; gap: 8px; z-index: 10; }
         .hc-cat { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); border: 1px solid var(--border-glass); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; color: var(--primary); }
         
         .hc-admin { position: absolute; top: 16px; right: 16px; z-index: 10; display: none; }
-        .btn-trash { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,8,68,0.9); display: flex; justify-content: center; align-items: center; font-size: 1rem; color: white; }
-        .btn-trash:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--danger); }
+        .btn-trash { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,8,68,0.9); display: flex; justify-content: center; align-items: center; font-size: 1rem; color: white; transition: 0.3s; }
+        .btn-trash:hover { transform: scale(1.2) rotate(15deg); box-shadow: 0 0 20px var(--danger); }
 
-        .hc-body { padding: 20px; flex: 1; display: flex; flex-direction: column; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); }
-        .hc-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .hc-body { padding: 20px; flex: 1; display: flex; flex-direction: column; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); }
+        .hc-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.3s;}
+        .holo-card:hover .hc-title { color: var(--primary); text-shadow: 0 0 10px rgba(0,242,254,0.3); }
+        
         .hc-author { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; }
         .hc-author img { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-glass); }
         
@@ -180,11 +196,12 @@
         .hc-stats span { display: flex; align-items: center; gap: 6px; }
         
         .hc-actions { display: flex; gap: 8px; }
-        .btn-action { padding: 8px; border-radius: var(--radius-round); background: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 700; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; transition: 0.3s; }
+        .btn-action { padding: 8px; border-radius: 50%; background: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 700; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative;}
+        .btn-action:hover { transform: scale(1.15); }
         .btn-action.like:hover { background: rgba(245,87,108,0.1); color: var(--accent); }
-        .btn-action.like.active { color: var(--accent); background: rgba(245,87,108,0.15); box-shadow: inset 0 0 10px rgba(245,87,108,0.2); }
+        .btn-action.like.active { color: var(--accent); background: rgba(245,87,108,0.15); box-shadow: 0 0 15px rgba(245,87,108,0.4); }
         .btn-action.bookmark:hover { background: rgba(246,211,101,0.1); color: var(--gold); }
-        .btn-action.bookmark.active { color: var(--gold); background: rgba(246,211,101,0.15); }
+        .btn-action.bookmark.active { color: var(--gold); background: rgba(246,211,101,0.15); box-shadow: 0 0 15px rgba(246,211,101,0.4);}
 
         /* Skeletons */
         .sk-card { border-radius: var(--radius-lg); border: 1px solid var(--border-glass); overflow: hidden; }
@@ -193,85 +210,104 @@
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* ==========================================================================
-           6. FULLSCREEN DETAIL VIEW (HIỆN ĐẠI HƠN)
+           6. FULLSCREEN DETAIL VIEW
            ========================================================================== */
-        .view-fullscreen { position: fixed; inset: 0; background: var(--bg-space); z-index: 2000; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; overflow: hidden; }
+        .view-fullscreen { position: fixed; inset: 0; background: var(--bg-space); z-index: 2000; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; overflow: hidden; }
         .view-fullscreen.active { transform: translateY(0); }
         
         .vf-header { position: absolute; top: 0; left: 0; width: 100%; padding: 20px 24px; display: flex; justify-content: space-between; z-index: 10; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
-        .btn-close-view { width: 48px; height: 48px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
-        .btn-close-view:hover { background: var(--danger); border-color: var(--danger); transform: rotate(90deg); }
+        .btn-close-view { width: 48px; height: 48px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); color: white; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; transition: 0.3s;}
+        .btn-close-view:hover { background: var(--danger); border-color: var(--danger); transform: rotate(90deg) scale(1.1); }
 
-        .vf-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; }
-        .vf-cover { width: 100%; height: 45vh; min-height: 300px; position: relative; }
+        .vf-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;}
+        .vf-cover { width: 100%; height: 50vh; min-height: 350px; position: relative; }
         .vf-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .vf-cover::after { content:''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-space) 5%, transparent); }
+        .vf-cover::after { content:''; position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-space) 5%, transparent 60%); }
         
-        .vf-container { padding: 0 24px 60px; max-width: 900px; margin: -60px auto 0; position: relative; z-index: 2; display: flex; flex-direction: column; gap: 30px;}
+        .vf-container { padding: 0 24px 60px; max-width: 900px; margin: -80px auto 0; position: relative; z-index: 2; display: flex; flex-direction: column; gap: 30px;}
         
-        .vf-main-info { background: var(--bg-glass-heavy); padding: 30px; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); box-shadow: var(--shadow-holo); }
+        .vf-main-info { background: var(--bg-glass-heavy); padding: 35px; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); box-shadow: var(--shadow-holo); backdrop-filter: blur(20px); }
         .vf-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; line-height: 1.2; margin-bottom: 16px; }
         .vf-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 1rem; color: var(--text-muted); margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border-glass); }
         .vf-meta-item { display: flex; align-items: center; gap: 8px; }
+        
+        .vf-action-bar { display: flex; gap: 15px; margin-bottom: 30px; }
+        .btn-primary { flex: 1; padding: 14px; border-radius: var(--radius-md); background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 800; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
+        .btn-primary:hover { box-shadow: 0 10px 20px rgba(0,242,254,0.3); transform: translateY(-3px); filter: brightness(1.1);}
+        .btn-secondary { padding: 14px 24px; border-radius: var(--radius-md); background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: white; font-weight: 700; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+
         .vf-desc { font-size: 1.1rem; line-height: 1.8; color: #e2e8f0; white-space: pre-wrap; }
 
         .vf-comments { background: var(--bg-glass-heavy); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); padding: 30px; }
         .cmt-header { font-size: 1.4rem; font-weight: 900; color: var(--aurora-1); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;}
         .cmt-list { display: flex; flex-direction: column; gap: 16px; max-height: 500px; overflow-y: auto; margin-bottom: 24px; padding-right: 8px;}
-        .cmt-card { background: rgba(0,0,0,0.4); padding: 16px; border-radius: 16px; border-left: 3px solid transparent; }
+        .cmt-card { background: rgba(255,255,255,0.03); padding: 16px; border-radius: 16px; border-left: 3px solid transparent; transition: 0.3s;}
+        .cmt-card:hover { background: rgba(255,255,255,0.06); transform: translateX(5px); }
         .cmt-user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .cmt-user-info img { width: 32px; height: 32px; border-radius: 50%; }
         .cmt-name { font-weight: 800; font-size: 0.95rem; }
         .cmt-text { font-size: 1rem; line-height: 1.6; color: #cbd5e1; word-wrap: break-word;}
         
         .cmt-input-row { display: flex; gap: 12px; }
-        .cmt-input-row input { flex: 1; padding: 16px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); border-radius: var(--radius-md); font-size: 1rem; }
-        .cmt-input-row button { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 0 24px; border-radius: var(--radius-md); font-size: 1.2rem; }
+        .cmt-input-row input { flex: 1; padding: 16px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); border-radius: var(--radius-md); font-size: 1rem; color: white;}
+        .cmt-input-row input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,242,254,0.2);}
+        .cmt-input-row button { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 0 24px; border-radius: var(--radius-md); font-size: 1.2rem; transition: 0.3s;}
+        .cmt-input-row button:hover { transform: scale(1.05); box-shadow: var(--shadow-neon); }
 
         /* ==========================================================================
            7. MODALS, DRAWERS & PROFILE
            ========================================================================== */
         .drawer-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2999; opacity: 0; visibility: hidden; transition: 0.3s; }
         .drawer-bg.active { opacity: 1; visibility: visible; }
-        .drawer { position: fixed; top: 0; left: 0; width: 100%; max-width: 420px; height: 100vh; background: rgba(5,5,10,0.98); border-right: 1px solid var(--border-glass); z-index: 3000; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; box-shadow: 20px 0 50px rgba(0,0,0,0.5);}
+        .drawer { position: fixed; top: 0; left: 0; width: 100%; max-width: 420px; height: 100vh; background: rgba(5,5,10,0.98); border-right: 1px solid var(--border-glass); z-index: 3000; transform: translateX(-100%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; box-shadow: 20px 0 50px rgba(0,0,0,0.5);}
         .drawer.open { transform: translateX(0); }
         
         .dr-head { padding: 24px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
         .dr-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
 
         /* Auth Panel */
-        .auth-panel { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 24px; text-align: center; }
-        .btn-login { width: 100%; padding: 16px; border-radius: var(--radius-sm); font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 1rem; }
+        .auth-panel { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 24px; text-align: center; position: relative; overflow: hidden;}
+        .auth-panel::before { content:''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,242,254,0.1) 0%, transparent 70%); pointer-events: none;}
+        .btn-login { width: 100%; padding: 16px; border-radius: var(--radius-sm); font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 1rem; transition: 0.3s; }
         .btn-login.gg { background: white; color: black; }
+        .btn-login.gg:hover { background: #f1f1f1; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.2);}
         .btn-login.guest { background: #1a1a24; color: white; border: 1px solid #333; }
+        .btn-login.guest:hover { background: #2a2a35; border-color: var(--text-muted); }
         
-        /* Profile Panel trong Drawer */
-        .pf-view { display: none; flex-direction: column; align-items: center; gap: 12px; }
-        .pf-avatar-big { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); padding: 3px; object-fit: cover;}
-        .pf-level-badge { background: linear-gradient(90deg, var(--gold), #ff9100); color: black; padding: 4px 12px; border-radius: 20px; font-weight: 900; font-size: 0.8rem; margin-top: -15px; z-index: 2; border: 2px solid var(--bg-space);}
+        /* Profile Panel */
+        .pf-view { display: none; flex-direction: column; align-items: center; gap: 12px; position: relative; z-index: 1;}
+        .pf-avatar-big { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); padding: 3px; object-fit: cover; box-shadow: var(--shadow-neon);}
+        .pf-level-badge { background: linear-gradient(90deg, var(--gold), #ff9100); color: black; padding: 4px 12px; border-radius: 20px; font-weight: 900; font-size: 0.8rem; margin-top: -15px; z-index: 2; border: 2px solid var(--bg-space); box-shadow: 0 5px 10px rgba(246, 211, 101, 0.4);}
         .pf-name { font-size: 1.3rem; font-weight: 900; }
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+        .role-dev { background: rgba(255,8,68,0.2); color: var(--role-dev); border: 1px solid var(--role-dev); }
+        .role-admin { background: rgba(246,211,101,0.2); color: var(--role-admin); border: 1px solid var(--role-admin); }
+        .role-glx { background: rgba(0,242,254,0.2); color: var(--role-glx); border: 1px solid var(--role-glx); }
         
         .exp-bar-wrap { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 10px;}
-        .exp-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s; }
+        .exp-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 10px var(--primary);}
         .exp-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; }
 
-        .btn-logout { margin-top: 15px; color: var(--danger); font-size: 0.95rem; font-weight: 700; text-decoration: underline; }
+        .btn-logout { margin-top: 15px; color: var(--danger); font-size: 0.95rem; font-weight: 700; text-decoration: underline; transition: 0.3s;}
+        .btn-logout:hover { color: #ff4a75; }
 
         /* Global Chat */
         .chat-box { flex: 1; display: flex; flex-direction: column; background: #010103; border-radius: var(--radius-md); border: 1px solid var(--border-glass); overflow: hidden; position: relative; min-height: 450px;}
         .chat-head { padding: 16px; background: rgba(255,255,255,0.03); font-weight: 900; color: var(--secondary); text-align: center; border-bottom: 1px solid var(--border-glass);}
-        .chat-list { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-        .chat-msg { background: rgba(255,255,255,0.03); padding: 14px; border-radius: 12px; border-left: 3px solid transparent;}
+        .chat-list { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth;}
+        .gc-msg { background: rgba(255,255,255,0.03); padding: 14px; border-radius: 12px; border-left: 3px solid transparent; animation: fadeUp 0.3s ease forwards;}
         .chat-input-row { display: flex; padding: 12px; background: rgba(255,255,255,0.03); border-top: 1px solid var(--border-glass); }
-        .chat-input-row input { flex: 1; font-size: 0.95rem; padding: 10px; }
-        .chat-input-row button { color: var(--primary); font-size: 1.3rem; padding: 0 12px; }
+        .chat-input-row input { flex: 1; font-size: 0.95rem; padding: 10px; color: white;}
+        .chat-input-row button { color: var(--primary); font-size: 1.3rem; padding: 0 12px; transition: 0.3s;}
+        .chat-input-row button:hover { transform: scale(1.2); }
         .chat-lock { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 12px; font-weight: bold; color: var(--text-muted); z-index: 10;}
 
-        /* Modals Chung */
+        /* Modals */
         .modal-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 4000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s; }
         .modal-wrap.active { opacity: 1; visibility: visible; }
-        .modal-content { background: #0a0b12; width: 95%; max-width: 550px; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); padding: 32px; transform: translateY(30px); transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: var(--shadow-holo); max-height: 90vh; overflow-y: auto;}
-        .modal-wrap.active .modal-content { transform: translateY(0); }
+        .modal-content { background: #0a0b12; width: 95%; max-width: 550px; border-radius: var(--radius-lg); border: 1px solid var(--border-glass); padding: 32px; transform: translateY(30px) scale(0.95); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: var(--shadow-holo); max-height: 90vh; overflow-y: auto;}
+        .modal-wrap.active .modal-content { transform: translateY(0) scale(1); }
         
         .mc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .mc-head h3 { font-size: 1.5rem; font-weight: 900; color: var(--primary); }
@@ -280,27 +316,30 @@
         .fm-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-muted); font-size: 0.95rem; }
         .fm-input { width: 100%; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); font-size: 1rem; transition: 0.3s; color: white;}
         .fm-input:focus { border-color: var(--primary); box-shadow: inset 0 0 15px rgba(0,242,254,0.15); }
-        .btn-submit-main { width: 100%; padding: 16px; border-radius: var(--radius-sm); background: linear-gradient(90deg, var(--primary), var(--secondary)); font-weight: 900; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; color: white; margin-top: 10px; }
+        .btn-submit-main { width: 100%; padding: 16px; border-radius: var(--radius-sm); background: linear-gradient(90deg, var(--primary), var(--secondary)); font-weight: 900; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; color: white; margin-top: 10px; transition: 0.3s;}
+        .btn-submit-main:hover { box-shadow: 0 10px 20px rgba(240,147,251,0.4); transform: translateY(-2px);}
 
         /* Profile Modal Tabs */
         .pf-tabs { display: flex; gap: 10px; margin: 20px 0; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;}
-        .pf-tab-btn { flex: 1; padding: 10px; text-align: center; color: var(--text-muted); font-weight: 700; border-radius: 8px; }
+        .pf-tab-btn { flex: 1; padding: 10px; text-align: center; color: var(--text-muted); font-weight: 700; border-radius: 8px; transition: 0.3s;}
         .pf-tab-btn.active { background: rgba(255,255,255,0.05); color: var(--primary); }
-        .pf-tab-content { display: none; max-height: 300px; overflow-y: auto; }
-        .pf-tab-content.active { display: flex; flex-direction: column; gap: 12px; }
-        .mini-card { display: flex; align-items: center; gap: 15px; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); cursor: pointer;}
-        .mini-card img { width: 60px; height: 60px; border-radius: 8px; }
+        .pf-tab-content { display: none; max-height: 400px; overflow-y: auto; }
+        .pf-tab-content.active { display: flex; flex-direction: column; gap: 12px; animation: fadeUp 0.3s forwards;}
+        .mini-card { display: flex; align-items: center; gap: 15px; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-sm); cursor: pointer; transition: 0.3s;}
+        .mini-card:hover { background: rgba(255,255,255,0.08); border-color: var(--primary); transform: translateX(5px);}
+        .mini-card img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover;}
         .mini-card-info h4 { font-size: 1rem; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;}
         .mini-card-info p { font-size: 0.8rem; color: var(--text-muted); }
 
         /* ==========================================================================
            8. MOBILE BOTTOM DOCK
            ========================================================================== */
-        .bottom-dock { position: fixed; bottom: 24px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 90; pointer-events: none; }
+        .bottom-dock { position: fixed; bottom: 24px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 90; pointer-events: none; transition: transform 0.3s;}
         .dock-bar { background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); padding: 8px; border-radius: 40px; display: flex; gap: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); pointer-events: auto; }
-        .dock-item { padding: 12px 24px; border-radius: 30px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .dock-item { padding: 12px 24px; border-radius: 30px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; font-size: 0.95rem; transition: 0.3s;}
         .dock-item.active, .dock-item:hover { color: white; background: rgba(255,255,255,0.08); }
-        .dock-action { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; display: none; }
+        .dock-action { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; display: none; box-shadow: 0 5px 15px rgba(240,147,251,0.3);}
+        .dock-action:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -321,10 +360,10 @@
     <div id="toast-zone"></div>
 
     <!-- LỚP 3: HEADER -->
-    <header>
+    <header id="main-header">
         <div class="header-left">
             <button class="btn-icon btn-menu" onclick="App.UI.toggleMenu(true)"><i class="fas fa-bars"></i></button>
-            <div class="brand font-space title-glow"><i class="fas fa-meteor"></i> GALAXY</div>
+            <div class="brand font-space title-glow" onclick="window.scrollTo(0,0)"><i class="fas fa-meteor"></i> GALAXY</div>
         </div>
         
         <div class="header-search">
@@ -340,24 +379,24 @@
 
     <!-- LỚP 4: HERO SECTION (TYPEWRITER) -->
     <section class="hero">
-        <h1>Chia sẻ & Khám phá <br><span class="title-glow typewriter-wrap" id="typewriter">Addons</span></h1>
-        <p>Hệ sinh thái thời gian thực dành cho Minecraft PE. Đóng góp tác phẩm, trò chuyện toàn cầu và thăng cấp thẻ tác giả của bạn.</p>
+        <h1 class="animate-up" style="animation-delay: 0.1s">Chia sẻ & Khám phá <br><span class="title-glow typewriter-wrap" id="typewriter">Addons</span></h1>
+        <p class="animate-up" style="animation-delay: 0.2s">Hệ sinh thái thời gian thực dành cho Minecraft PE. Đóng góp tác phẩm, trò chuyện toàn cầu và thăng cấp thẻ tác giả của bạn.</p>
     </section>
 
     <!-- LỚP 5: BỘ LỌC & TÌM KIẾM MOBILE -->
-    <section class="controls">
+    <section class="controls animate-up" style="animation-delay: 0.3s">
         <div class="mobile-search">
             <i class="fas fa-search"></i>
             <input type="text" id="mobile-search" placeholder="Tìm tên tác phẩm, tác giả...">
         </div>
         <div class="filter-bar">
             <div class="pills">
-                <button class="pill-btn active" data-filter="all">Tất cả</button>
-                <button class="pill-btn" data-filter="Addon">Addon / Mod</button>
-                <button class="pill-btn" data-filter="Map">Bản đồ (Map)</button>
-                <button class="pill-btn" data-filter="Shader">Shader / Texture</button>
+                <button class="pill-btn filter-btn active" data-filter="all">Tất cả</button>
+                <button class="pill-btn filter-btn" data-filter="Addon">Addon / Mod</button>
+                <button class="pill-btn filter-btn" data-filter="Map">Bản đồ (Map)</button>
+                <button class="pill-btn filter-btn" data-filter="Shader">Shader / Texture</button>
             </div>
-            <select class="sort-select" id="feed-sort">
+            <select class="sort-select sort-btn" id="feed-sort">
                 <option value="new">Mới nhất</option>
                 <option value="views">Xem nhiều</option>
                 <option value="likes">Yêu thích</option>
@@ -370,12 +409,13 @@
         <!-- Skeleton Loading -->
         <div class="sk-card glass-panel"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:60%"></div></div>
         <div class="sk-card glass-panel"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:60%"></div></div>
+        <div class="sk-card glass-panel"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line" style="width:60%"></div></div>
     </main>
 
     <!-- LỚP 7: BOTTOM DOCK NAV -->
-    <div class="bottom-dock">
+    <div class="bottom-dock" id="bottom-dock">
         <div class="dock-bar">
-            <button class="dock-item active" onclick="window.scrollTo(0,0)"><i class="fas fa-compass"></i> Feed</button>
+            <button class="dock-item active" onclick="window.scrollTo(0,0)"><i class="fas fa-compass"></i> Khám phá</button>
             <button class="dock-item dock-action" id="btn-dock-up" onclick="App.UI.toggleModal('modal-upload', true)"><i class="fas fa-cloud-upload-alt"></i> Phát Hành</button>
         </div>
     </div>
@@ -389,14 +429,14 @@
     <div class="drawer-bg" id="menu-overlay" onclick="App.UI.toggleMenu(false)"></div>
     <aside class="drawer" id="side-menu">
         <div class="dr-head">
-            <h2 class="title-glow" style="font-size: 1.4rem;">Tương Tác</h2>
-            <button class="btn-icon" style="background:transparent; border:none;" onclick="App.UI.toggleMenu(false)"><i class="fas fa-times"></i></button>
+            <h2 class="title-glow" style="font-size: 1.4rem;">Trạm Kết Nối</h2>
+            <button class="btn-icon" style="background:transparent; border:none; color: white;" onclick="App.UI.toggleMenu(false)"><i class="fas fa-times"></i></button>
         </div>
         <div class="dr-body">
             <!-- Auth Station -->
             <div class="auth-panel">
                 <div id="auth-unlogged">
-                    <h3 style="margin-bottom: 16px; font-size: 1.1rem; color: var(--primary);">Đăng nhập hệ thống</h3>
+                    <h3 style="margin-bottom: 16px; font-size: 1.1rem; color: var(--primary);">Xác thực danh tính</h3>
                     <button class="btn-login gg" id="btn-log-gg"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="20"> Tiếp tục với Google</button>
                     <button class="btn-login guest" id="btn-log-guest"><i class="fas fa-user-secret"></i> Dùng thử Ẩn Danh</button>
                 </div>
@@ -439,7 +479,7 @@
         <div class="vf-header">
             <button class="btn-close-view" onclick="App.UI.closeDetail()"><i class="fas fa-arrow-down"></i></button>
         </div>
-        <div class="vf-scroll">
+        <div class="vf-scroll" id="vf-scroll-area">
             <div class="vf-cover"><img id="dt-img" src=""></div>
             <div class="vf-container">
                 <div class="vf-main-info">
@@ -447,8 +487,15 @@
                     <div class="vf-meta">
                         <div class="vf-meta-item"><i class="fas fa-user-circle"></i> <span id="dt-author">Tác giả</span></div>
                         <div class="vf-meta-item" style="color: var(--primary); font-weight: 700;"><i class="fas fa-tag"></i> <span id="dt-cat">Thể loại</span></div>
-                        <div class="vf-meta-item"><i class="fas fa-eye"></i> <span id="dt-views">0</span></div>
+                        <div class="vf-meta-item"><i class="fas fa-eye"></i> <span id="dt-views">0</span> lượt xem</div>
                     </div>
+                    
+                    <!-- Action Bar Mới -->
+                    <div class="vf-action-bar">
+                        <button class="btn-primary" onclick="App.UI.toast('Đang bắt đầu tải xuống...', 'success')"><i class="fas fa-download"></i> Tải Ngay</button>
+                        <button class="btn-secondary" id="btn-share-post"><i class="fas fa-share-alt"></i> Chia sẻ</button>
+                    </div>
+
                     <h3 style="margin-bottom: 12px; color: var(--secondary); font-weight: 900;">Tài liệu kỹ thuật</h3>
                     <div class="vf-desc" id="dt-desc">Nội dung...</div>
                 </div>
@@ -470,7 +517,7 @@
         <div class="modal-content">
             <div class="mc-head">
                 <h3>Phát Hành Addon</h3>
-                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;" onclick="App.UI.toggleModal('modal-upload', false)"><i class="fas fa-times"></i></button>
+                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;color:white;" onclick="App.UI.toggleModal('modal-upload', false)"><i class="fas fa-times"></i></button>
             </div>
             <div class="fm-group">
                 <label class="fm-label">Lĩnh vực</label>
@@ -501,11 +548,11 @@
         <div class="modal-content">
             <div class="mc-head">
                 <h3>Kho Lưu Trữ Cá Nhân</h3>
-                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;" onclick="App.UI.toggleModal('modal-profile', false)"><i class="fas fa-times"></i></button>
+                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;color:white;" onclick="App.UI.toggleModal('modal-profile', false)"><i class="fas fa-times"></i></button>
             </div>
             <div class="pf-tabs">
-                <button class="pf-tab-btn active" data-tab="tab-myposts">Tác phẩm của tôi</button>
-                <button class="pf-tab-btn" data-tab="tab-bookmarks">Đã lưu (Bookmarks)</button>
+                <button class="pf-tab-btn active" data-tab="tab-myposts">Tác phẩm của tôi (<span id="my-posts-count">0</span>)</button>
+                <button class="pf-tab-btn" data-tab="tab-bookmarks">Đã lưu</button>
             </div>
             <div class="pf-tab-content active" id="tab-myposts">
                 <!-- JS Render My Posts -->
@@ -521,7 +568,7 @@
         <div class="modal-content">
             <div class="mc-head">
                 <h3><i class="fas fa-shield-alt"></i> Console Quản Trị</h3>
-                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;" onclick="App.UI.toggleModal('modal-admin', false)"><i class="fas fa-times"></i></button>
+                <button class="btn-icon" style="border:none;background:none;font-size:1.5rem;color:white;" onclick="App.UI.toggleModal('modal-admin', false)"><i class="fas fa-times"></i></button>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                 <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; text-align: center;">
@@ -539,7 +586,7 @@
 
 
     <!-- ==========================================================================
-         JAVASCRIPT ENGINE (MVC, AUDIO, STARS, TYPEWRITER)
+         JAVASCRIPT ENGINE (MVC, AUDIO, STARS, TYPEWRITER, FIREBASE)
          ========================================================================== -->
     <script type="module">
         // --- 1. FIREBASE SETUP ---
@@ -547,6 +594,7 @@
         import { getAuth, signInWithPopup, signInAnonymously, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, onValue, push, set, remove, serverTimestamp, runTransaction, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
+        // Cấu hình chuẩn theo yêu cầu của bạn (Bao gồm measurementId)
         const firebaseConfig = {
             apiKey: "AIzaSyDBlMGmdcdxzJQ-dYBzw2zzfRTu2vh6GG0",
             authDomain: "goggle-login-39224.firebaseapp.com",
@@ -584,7 +632,7 @@
             expForNext: (lvl) => lvl * 100
         };
 
-        // Audio Engine V2
+        // Audio Engine V2 (Đã sửa lỗi gọi hàm)
         const AudioSys = {
             ctx: null,
             init() { if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
@@ -596,18 +644,19 @@
                 else if(type==='success') { o.type='triangle'; o.frequency.setValueAtTime(400,n); o.frequency.setValueAtTime(800,n+0.1); g.gain.setValueAtTime(0.1,n); g.gain.linearRampToValueAtTime(0,n+0.3); o.start(n); o.stop(n+0.3); }
             }
         };
+        // Kích hoạt audio khi user chạm màn hình lần đầu
         document.body.addEventListener('click', () => { AudioSys.init(); if(AudioSys.ctx.state === 'suspended') AudioSys.ctx.resume(); }, {once:true});
 
         // Typewriter Effect
         const initTypewriter = () => {
-            const words = ["Addons", "Maps 3D", "Shaders", "Mods"];
+            const words = ["Addons", "Maps 3D", "Shaders", "Mods", "Texture Packs"];
             let i=0, j=0, isDel=false, el=document.getElementById('typewriter');
             function type() {
                 const current = words[i];
                 if(isDel) { el.textContent = current.substring(0, j-1); j--; }
                 else { el.textContent = current.substring(0, j+1); j++; }
                 
-                let speed = isDel ? 50 : 150;
+                let speed = isDel ? 30 : 120; // Nhanh và mượt hơn
                 if(!isDel && j===current.length) { speed=2000; isDel=true; }
                 else if(isDel && j===0) { isDel=false; i=(i+1)%words.length; speed=500; }
                 setTimeout(type, speed);
@@ -616,28 +665,44 @@
         };
         initTypewriter();
 
-        // Parallax Star Background
+        // Parallax Star Background (Tối ưu requestAnimationFrame)
         class Starfield {
             constructor() {
                 this.c = document.getElementById('star-canvas'); this.ctx = this.c.getContext('2d');
                 this.stars = []; this.resize();
                 window.addEventListener('resize', ()=>this.resize());
-                for(let i=0; i<150; i++) this.stars.push({ x:Math.random()*this.w, y:Math.random()*this.h, s:Math.random()*1.5, v:Math.random()*0.5+0.1 });
+                for(let i=0; i<150; i++) this.stars.push({ x:Math.random()*this.w, y:Math.random()*this.h, s:Math.random()*1.5, v:Math.random()*0.3+0.1 });
                 this.anim();
             }
             resize() { this.w = this.c.width = window.innerWidth; this.h = this.c.height = window.innerHeight; }
             anim() {
                 this.ctx.clearRect(0,0,this.w,this.h);
-                this.ctx.fillStyle = 'white';
+                this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
                 this.stars.forEach(s => {
                     s.y -= s.v; if(s.y < 0) { s.y = this.h; s.x = Math.random()*this.w; }
                     this.ctx.beginPath(); this.ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
-                    this.ctx.globalAlpha = Math.random()*0.5 + 0.5; this.ctx.fill();
+                    this.ctx.fill();
                 });
                 requestAnimationFrame(()=>this.anim());
             }
         }
         new Starfield();
+
+        // Ẩn hiện header khi scroll (Tăng độ mượt UI)
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            const header = document.getElementById('main-header');
+            const dock = document.getElementById('bottom-dock');
+            if (currentScroll > 100 && currentScroll > lastScroll) {
+                header.style.transform = 'translateY(-100%)';
+                dock.style.transform = 'translateY(150%)';
+            } else {
+                header.style.transform = 'translateY(0)';
+                dock.style.transform = 'translateY(0)';
+            }
+            lastScroll = currentScroll;
+        });
 
         // --- 4. VIEW CONTROLLER (UI) ---
         const UI = {
@@ -653,7 +718,7 @@
             },
             toggleMenu: (s) => { AudioSys.play('click'); document.getElementById('side-menu').classList.toggle('open', s); document.getElementById('menu-overlay').classList.toggle('active', s); },
             toggleModal: (id, s) => { AudioSys.play('click'); document.getElementById(id).classList.toggle('active', s); },
-            openDetail: () => { AudioSys.play('click'); document.getElementById('view-detail').classList.add('active'); document.body.style.overflow='hidden'; },
+            openDetail: () => { AudioSys.play('click'); document.getElementById('view-detail').classList.add('active'); document.body.style.overflow='hidden'; document.getElementById('vf-scroll-area').scrollTop=0;},
             closeDetail: () => { AudioSys.play('click'); document.getElementById('view-detail').classList.remove('active'); document.body.style.overflow='auto'; DB.currentPostId=null; },
             
             updateAuthDOM: (isLog) => {
@@ -688,15 +753,13 @@
             },
             openProfile: () => {
                 if(!State.user) return;
-                document.getElementById('my-avatar').src = State.user.avatar;
-                document.getElementById('my-name').innerText = State.user.name;
                 
                 // Render My Posts
                 const myPosts = State.posts.filter(p => p.authorUid === State.user.uid);
                 document.getElementById('my-posts-count').innerText = myPosts.length;
                 let cMy = document.getElementById('tab-myposts'); cMy.innerHTML='';
                 myPosts.forEach(p => cMy.insertAdjacentHTML('beforeend', `<div class="mini-card" onclick="App.UI.toggleModal('modal-profile',false); App.DB.viewDetail('${p.id}')"><img src="${p.image}"><div class="mini-card-info"><h4>${p.title}</h4><p><i class="fas fa-eye"></i> ${p.views||0} • <i class="fas fa-heart"></i> ${p.likes?Object.keys(p.likes).length:0}</p></div></div>`));
-                if(myPosts.length===0) cMy.innerHTML='<p style="color:#777; text-align:center;">Bạn chưa đăng tác phẩm nào.</p>';
+                if(myPosts.length===0) cMy.innerHTML='<p style="color:#777; text-align:center; padding: 20px;">Bạn chưa đăng tác phẩm nào.</p>';
 
                 // Render Bookmarks
                 const bms = State.user.bookmarks || {};
@@ -709,7 +772,7 @@
                         cBm.insertAdjacentHTML('beforeend', `<div class="mini-card" onclick="App.UI.toggleModal('modal-profile',false); App.DB.viewDetail('${p.id}')"><img src="${p.image}"><div class="mini-card-info"><h4>${p.title}</h4><p>${p.authorName}</p></div></div>`);
                     }
                 });
-                if(bmCount===0) cBm.innerHTML='<p style="color:#777; text-align:center;">Kho lưu trữ trống.</p>';
+                if(bmCount===0) cBm.innerHTML='<p style="color:#777; text-align:center; padding: 20px;">Kho lưu trữ trống.</p>';
 
                 document.querySelectorAll('.pf-tab-btn').forEach(b=>b.classList.remove('active'));
                 document.querySelectorAll('.pf-tab-content').forEach(c=>c.classList.remove('active'));
@@ -751,7 +814,6 @@
                         exp = d.exp || 0;
                         bookmarks = d.bookmarks || {};
                     } else {
-                        // User mới
                         set(ref(fDb, `users/${u.uid}`), { role: role, exp: 0, createdAt: serverTimestamp() });
                     }
                 } catch(e){}
@@ -759,13 +821,13 @@
                 State.user = { uid: u.uid, role: role, exp: exp, bookmarks: bookmarks, name: u.isAnonymous?`Khách_${u.uid.substring(0,4)}`:u.displayName, avatar: u.isAnonymous?"https://cdn-icons-png.flaticon.com/512/149/149071.png":u.photoURL };
                 UI.updateAuthDOM(true);
                 
-                // Lắng nghe thay đổi User Data Realtime (EXP & Bookmarks)
+                // Realtime Data Listener
                 onValue(ref(fDb, `users/${u.uid}`), snap => {
                     if(snap.exists() && State.user) {
                         const d = snap.val();
                         State.user.exp = d.exp || 0;
                         State.user.bookmarks = d.bookmarks || {};
-                        UI.updateAuthDOM(true); // Re-render bar
+                        UI.updateAuthDOM(true);
                     }
                 });
 
@@ -776,7 +838,7 @@
 
         document.getElementById('btn-log-gg').onclick = async () => {
             try { UI.toast("Đang kết nối Google...", "info"); await signInWithPopup(fAuth, googleProvider); UI.toast("Xác thực thành công!", "success"); } 
-            catch(e) { alert("LỖI:\n" + e.message + "\n\nVào Firebase Console -> Authentication -> Settings -> Authorized domains -> Thêm 'craftgalaxy.vercel.app'"); }
+            catch(e) { alert("LỖI:\n" + e.message + "\n\nVào Firebase Console -> Authentication -> Settings -> Authorized domains -> Thêm tên miền của bạn"); }
         };
         document.getElementById('btn-log-guest').onclick = () => signInAnonymously(fAuth).catch(e=>alert(e.message));
         document.getElementById('btn-logout').onclick = () => { if(confirm("Rời khỏi hệ thống?")) signOut(fAuth); };
@@ -819,22 +881,28 @@
                 if(State.search) { const q = State.search.toLowerCase(); arr = arr.filter(p => p.title.toLowerCase().includes(q) || p.authorName.toLowerCase().includes(q)); }
                 
                 if(State.sort === 'new') arr.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
-                if(State.sort === 'old') arr.sort((a,b) => (a.timestamp||0) - (b.timestamp||0));
                 if(State.sort === 'views') arr.sort((a,b) => (b.views||0) - (a.views||0));
                 if(State.sort === 'likes') arr.sort((a,b) => (b.likes?Object.keys(b.likes).length:0) - (a.likes?Object.keys(a.likes).length:0));
 
-                if(arr.length===0) return c.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:50px;">Không có tín hiệu nào trong vũ trụ.</div>';
+                if(arr.length===0) return c.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:50px;font-size:1.1rem;"><i class="fas fa-satellite-dish" style="font-size:3rem; margin-bottom:15px; opacity:0.5;"></i><br>Không tìm thấy tín hiệu nào trong vũ trụ.</div>';
 
-                arr.forEach(p => {
+                arr.forEach((p, index) => {
                     const lc = p.likes ? Object.keys(p.likes).length : 0;
                     const isLiked = State.user && p.likes && p.likes[State.user.uid];
                     const isBM = State.user && State.user.bookmarks && State.user.bookmarks[p.id];
                     const isPriv = State.user && (State.user.role==='dev'||State.user.role==='admin');
                     
+                    // Logic Huy hiệu HOT (Nhiều views hoặc likes)
+                    const isHot = (p.views > 50) || (lc > 5);
+                    let delay = (index * 0.05).toFixed(2); // Staggered Animation Delay
+
                     c.insertAdjacentHTML('beforeend', `
-                        <article class="holo-card" onclick="App.DB.viewDetail('${p.id}')">
+                        <article class="holo-card animate-up" style="animation-delay: ${delay}s" onclick="App.DB.viewDetail('${p.id}')">
                             ${isPriv ? `<div class="hc-admin" style="display:flex;"><button class="btn-trash" onclick="event.stopPropagation(); App.DB.delPost('${p.id}')"><i class="fas fa-trash"></i></button></div>`:''}
-                            <div class="hc-badges"><span class="hc-cat cat-${p.category}">${p.category}</span></div>
+                            <div class="hc-badges">
+                                <span class="hc-cat cat-${p.category}">${p.category}</span>
+                                ${isHot ? '<span class="hot-badge"><i class="fas fa-fire"></i> HOT</span>' : ''}
+                            </div>
                             <div class="hc-cover"><img src="${p.image}" loading="lazy"></div>
                             <div class="hc-body">
                                 <h3 class="hc-title">${p.title}</h3>
@@ -864,6 +932,13 @@
                 document.getElementById('dt-views').innerText=`${p.views?p.views+1:1}`;
                 document.getElementById('dt-desc').innerHTML=Utils.parseMD(p.desc || "Không có tài liệu kỹ thuật.");
                 
+                // Tính năng Share
+                document.getElementById('btn-share-post').onclick = () => {
+                    AudioSys.play('click');
+                    const link = window.location.href.split('?')[0] + '?post=' + id;
+                    navigator.clipboard.writeText(link).then(() => UI.toast("Đã copy link bài viết!", "success"));
+                };
+
                 onValue(ref(fDb, `addons/${id}/comments`), s => {
                     const cl = document.getElementById('dt-cmt-list'); cl.innerHTML='';
                     if(s.exists()) {
@@ -878,7 +953,7 @@
                             `);
                         });
                         cl.scrollTop = cl.scrollHeight;
-                    } else { cl.innerHTML = '<div style="color:#777; text-align:center;">Hãy là người đầu tiên phân tích!</div>'; document.getElementById('dt-cmt-count').innerText = 0;}
+                    } else { cl.innerHTML = '<div style="color:#777; text-align:center; padding:20px;">Hãy là người đầu tiên phân tích!</div>'; document.getElementById('dt-cmt-count').innerText = 0;}
                 });
             },
 
@@ -892,7 +967,7 @@
                 const btn=document.getElementById('btn-submit-post'); btn.innerText="ĐANG XỬ LÝ..."; btn.disabled=true;
                 push(ref(fDb, 'addons'), { title:t, category:c, image:i, desc:d, authorName:State.user.name, authorUid:State.user.uid, views:0, timestamp:serverTimestamp() })
                 .then(()=>{ 
-                    SFX.play('success'); UI.toast("Phát hành thành công! +50 EXP", "success"); 
+                    AudioSys.play('success'); UI.toast("Phát hành thành công! +50 EXP", "success"); 
                     DB.addExp(50); // Cộng EXP
                     UI.toggleModal('modal-upload',false); 
                     document.getElementById('up-title').value=''; document.getElementById('up-img').value=''; document.getElementById('up-desc').value=''; 
@@ -904,9 +979,9 @@
             cmt: () => { const i=document.getElementById('cmt-input'); if(i.value.trim()&&State.user&&DB.currentPostId){ push(ref(fDb, `addons/${DB.currentPostId}/comments`), {uid:State.user.uid, name:State.user.name, role:State.user.role, text:i.value.trim(), ts:serverTimestamp()}); DB.addExp(10); i.value=''; } },
             
             delPost: (id) => { if(confirm("Xóa vĩnh viễn?")) remove(ref(fDb, `addons/${id}`)).then(()=>UI.toast("Đã xóa!", "success")); },
-            toggleLike: (id) => { if(!State.user) return UI.toast("Đăng nhập để thả tim!", "error"); SFX.play('click'); const r=ref(fDb, `addons/${id}/likes/${State.user.uid}`); get(r).then(s=>s.exists()?remove(r):set(r,true)); },
+            toggleLike: (id) => { if(!State.user) return UI.toast("Đăng nhập để thả tim!", "error"); AudioSys.play('click'); const r=ref(fDb, `addons/${id}/likes/${State.user.uid}`); get(r).then(s=>s.exists()?remove(r):set(r,true)); },
             toggleBM: (id) => { 
-                if(!State.user) return UI.toast("Đăng nhập để lưu!", "error"); SFX.play('click');
+                if(!State.user) return UI.toast("Đăng nhập để lưu!", "error"); AudioSys.play('click');
                 const r=ref(fDb, `users/${State.user.uid}/bookmarks/${id}`); 
                 get(r).then(s=>{ s.exists()?remove(r):set(r,true); UI.toast(s.exists()?"Đã bỏ lưu":"Đã lưu vào Kho", "info"); }); 
             },
@@ -914,13 +989,22 @@
         };
         App.DB = DB; DB.init();
 
-        // 7. GẮN SỰ KIỆN DOM CƠ BẢN
-        document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', e => { SFX.play('click'); document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); e.target.classList.add('active'); State.filter=e.target.dataset.filter; DB.renderFeed(); }));
-        const bindInput = (id1, id2) => { const el = document.getElementById(id1); if(el) el.addEventListener('input', e => { State.search=e.target.value; DB.renderFeed(); if(id2) document.getElementById(id2).value = e.target.value; }); };
-        bindInput('inp-search', 'mobile-search'); bindInput('mobile-search', 'inp-search');
+        // 7. GẮN SỰ KIỆN DOM (Fix bugs thanh tìm kiếm)
+        document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', e => { AudioSys.play('click'); document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active')); e.target.classList.add('active'); State.filter=e.target.dataset.filter; DB.renderFeed(); }));
         
-        document.getElementById('sel-sort').addEventListener('change', e => { State.sort=e.target.value; document.getElementById('feed-sort').value=e.target.value; DB.renderFeed(); });
-        document.getElementById('feed-sort').addEventListener('change', e => { State.sort=e.target.value; document.getElementById('sel-sort').value=e.target.value; DB.renderFeed(); });
+        // Fix đồng bộ search Header và Mobile
+        const bindInput = (id1, id2) => { 
+            const el = document.getElementById(id1); 
+            if(el) el.addEventListener('input', e => { 
+                State.search=e.target.value; 
+                DB.renderFeed(); 
+                if(id2 && document.getElementById(id2)) document.getElementById(id2).value = e.target.value; 
+            }); 
+        };
+        bindInput('header-search', 'mobile-search'); 
+        bindInput('mobile-search', 'header-search');
+        
+        document.getElementById('feed-sort').addEventListener('change', e => { State.sort=e.target.value; DB.renderFeed(); });
         
         document.getElementById('btn-submit-post').addEventListener('click', DB.submit);
         document.getElementById('btn-send-chat').addEventListener('click', DB.chat); document.getElementById('chat-input').addEventListener('keypress', e => {if(e.key==='Enter') DB.chat();});
