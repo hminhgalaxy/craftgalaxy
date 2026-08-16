@@ -16,7 +16,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Tailwind Config -->
+    <!-- Tailwind Custom Setup -->
     <script>
         tailwind.config = {
             theme: {
@@ -51,11 +51,10 @@
 
     <style>
         :root {
-            /* Nền chính hiển thị sắc nét tự nhiên */
+            /* Nền hiển thị tự nhiên sắc nét */
             --global-overlay-opacity: 0.25;
             --global-backdrop-blur: 0px;
             
-            /* Tùy biến khung - Mặc định giữ nền trong mờ hiển thị rõ cảnh Minecraft */
             --banner-bg: rgba(30, 20, 5, 0.75);
             --banner-blur: 4px;
             --banner-bg-image: none;
@@ -82,7 +81,6 @@
             --mc-grid-cols: repeat(auto-fill, minmax(310px, 1fr));
         }
 
-        /* Chế độ trong suốt tuyệt đối (Chỉ giữ viền & chữ) */
         .wireframe-mode {
             --banner-bg: transparent !important;
             --banner-blur: 0px !important;
@@ -105,7 +103,6 @@
             image-rendering: pixelated;
         }
 
-        /* HÌNH NỀN CHÍNH SẮC NÉT KHÔNG BỊ CHE MỜ */
         #dynamic-bg {
             position: fixed;
             top: 0;
@@ -189,7 +186,6 @@
             border-right-color: #164E63;
         }
 
-        /* KHUNG NỀN TỰ ĐỘNG THEO BIẾN CSS */
         .announcement-custom {
             background-color: var(--banner-bg);
             background-image: var(--banner-bg-image);
@@ -276,7 +272,7 @@
             image-rendering: pixelated;
         }
 
-        /* 5-SECOND MINECRAFT LOADING SCREEN */
+        /* 5-SECOND MINECRAFT LOADING SCREEN VỚI NÚT KÍCH HOẠT AUTOPLAY */
         #minecraft-loading-screen {
             position: fixed;
             inset: 0;
@@ -288,6 +284,7 @@
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+            cursor: pointer;
         }
 
         .loading-dirt-overlay {
@@ -316,6 +313,23 @@
             transition: width 0.1s linear;
         }
 
+        /* CROP CANVAS CONTAINER */
+        #crop-canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            background: #0A0B10;
+            border: 2px dashed #5A627E;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+        }
+        #crop-canvas-wrapper:active {
+            cursor: grabbing;
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #08090D; border-left: 2px solid #000; }
         ::-webkit-scrollbar-thumb { background: #3C4258; border: 2px solid #5A627E; }
@@ -325,7 +339,7 @@
 <body class="selection:bg-mcGreenDark selection:text-white flex flex-col min-h-screen">
 
     <!-- 5-SECOND LOADING INTRO -->
-    <div id="minecraft-loading-screen">
+    <div id="minecraft-loading-screen" onclick="App.Loading.userInteracted()">
         <div class="loading-dirt-overlay"></div>
         <div class="relative z-10 flex flex-col items-center px-4 text-center max-w-lg">
             
@@ -345,9 +359,13 @@
             </div>
 
             <div class="flex items-center justify-between w-full max-w-[360px] text-[11px] font-mono text-slate-400">
-                <span id="loading-status">Nạp cấu hình máy chủ...</span>
+                <span id="loading-status">Nạp âm thanh & tài nguyên...</span>
                 <span id="loading-seconds" class="text-mcGreen font-bold">5s</span>
             </div>
+
+            <button id="loading-enter-btn" class="hidden mc-btn mc-btn-green mt-4 px-6 py-2 text-xs font-mc animate-pulse">
+                VÀO THẾ GIỚI & BẬT NHẠC
+            </button>
         </div>
     </div>
 
@@ -355,8 +373,6 @@
     <div id="dynamic-bg"></div>
     <div id="global-dim-overlay"></div>
     <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none"></canvas>
-
-    <!-- TOAST CONTAINER ĐƠN LẺ (CHỐNG TRÀN VÀ XUẤT HIỆN DÀY ĐẶC) -->
     <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[300] flex flex-col gap-2 pointer-events-none w-full max-w-md px-4"></div>
 
     <!-- THÔNG BÁO CHẠY SERVER -->
@@ -575,10 +591,10 @@
             <!-- DEV TABS -->
             <div class="flex flex-wrap gap-1.5 border-b-2 border-[#3C4258] pb-3 mb-4">
                 <button onclick="App.Dev.setTab('style')" id="dev-tab-btn-style" class="mc-btn mc-btn-gold px-3 py-1 text-xs">ĐỘ MỜ & TRONG SUỐT</button>
+                <button onclick="App.Dev.setTab('bg')" id="dev-tab-btn-bg" class="mc-btn px-3 py-1 text-xs">ĐỔI HÌNH NỀN & KHÔI PHỤC</button>
                 <button onclick="App.Dev.setTab('text')" id="dev-tab-btn-text" class="mc-btn px-3 py-1 text-xs">SỬA VĂN BẢN</button>
-                <button onclick="App.Dev.setTab('bg')" id="dev-tab-btn-bg" class="mc-btn px-3 py-1 text-xs">ĐỔI HÌNH NỀN</button>
                 <button onclick="App.Dev.setTab('music')" id="dev-tab-btn-music" class="mc-btn px-3 py-1 text-xs">QUẢN LÝ NHẠC PLAYLIST</button>
-                <button onclick="App.Dev.setTab('post')" id="dev-tab-btn-post" class="mc-btn px-3 py-1 text-xs">ĐĂNG BÀI VIẾT</button>
+                <button onclick="App.Dev.setTab('post')" id="dev-tab-btn-post" class="mc-btn px-3 py-1 text-xs">ĐĂNG BÀI & CĂN CHỈNH ẢNH</button>
             </div>
 
             <!-- TAB 1: ĐỘ TRONG SUỐT & CHẾ ĐỘ WIREFRAME -->
@@ -588,7 +604,7 @@
                         <span class="font-bold text-mcGold font-mc block">1. CHẾ ĐỘ TRONG SUỐT TUYỆT ĐỐI (CHỈ GIỮ VIỀN & CHỮ)</span>
                         <input type="checkbox" id="dev-wireframe-toggle" onchange="App.Dev.toggleWireframeMode(this.checked)" class="w-5 h-5 accent-mcGreen">
                     </div>
-                    <p class="text-[11px] text-slate-300">Bật tính năng này để ẩn hoàn toàn các mảng màu nền đục, chỉ giữ lại viền khung Minecraft và văn bản giúp hình nền hiển thị 100% rõ nét.</p>
+                    <p class="text-[11px] text-slate-300">Ẩn hoàn toàn các mảng màu nền đục, chỉ giữ lại viền khung Minecraft và văn bản giúp hình nền hiển thị 100% rõ nét.</p>
                 </div>
 
                 <div class="mc-slot p-3 rounded space-y-2">
@@ -596,24 +612,42 @@
                     <input type="range" min="0" max="0.9" step="0.05" value="0.25" id="inp-global-opacity" class="w-full" oninput="App.Dev.liveUpdateGlobalOpacity(this.value)">
                 </div>
 
-                <div class="mc-slot p-3 rounded space-y-2">
-                    <span class="font-bold text-mcGreen font-mc block">3. ĐỘ TRONG SUỐT CÁC KHUNG CON (HERO, SEARCH, CARDS)</span>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label>Độ đục Khung Giới Thiệu (Hero):</label>
-                            <input type="range" min="0" max="1" step="0.05" value="0.7" id="inp-hero-bg-op" class="w-full" oninput="App.Dev.liveUpdateBoxOpacity('hero', this.value)">
-                        </div>
-                        <div>
-                            <label>Độ đục Khung Thẻ Card:</label>
-                            <input type="range" min="0" max="1" step="0.05" value="0.75" id="inp-card-bg-op" class="w-full" oninput="App.Dev.liveUpdateBoxOpacity('card', this.value)">
-                        </div>
-                    </div>
-                </div>
-
                 <button onclick="App.Dev.saveStylesToFirebase()" class="mc-btn mc-btn-green w-full py-2 text-xs font-mc">LƯU CẤU HÌNH TRONG SUỐT LÊN FIREBASE</button>
             </div>
 
-            <!-- TAB 2: SỬA VĂN BẢN CHO TẤT CẢ MỤC -->
+            <!-- TAB 2: ĐỔI HÌNH NỀN VÀ KHÔI PHỤC VỀ MẶC ĐỊNH -->
+            <div id="dev-tab-bg" class="hidden-accessible space-y-3 text-xs font-sans">
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-mcGold font-mc block">1. HÌNH NỀN CHÍNH TOÀN TRANG</span>
+                        <button onclick="App.Dev.resetBackground('main_bg')" class="mc-btn mc-btn-red px-2 py-0.5 text-[9px]">KHÔI PHỤC GỐC</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('main_bg', event)" class="w-full text-slate-300">
+                </div>
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-mcAqua font-mc block">2. ẢNH NỀN KHUNG THÔNG BÁO</span>
+                        <button onclick="App.Dev.resetBackground('banner_bg')" class="mc-btn mc-btn-red px-2 py-0.5 text-[9px]">KHÔI PHỤC GỐC</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('banner_bg', event)" class="w-full text-slate-300">
+                </div>
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-mcGreen font-mc block">3. ẢNH NỀN KHUNG GIỚI THIỆU (HERO)</span>
+                        <button onclick="App.Dev.resetBackground('hero_bg')" class="mc-btn mc-btn-red px-2 py-0.5 text-[9px]">KHÔI PHỤC GỐC</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('hero_bg', event)" class="w-full text-slate-300">
+                </div>
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-mcYellow font-mc block">4. ẢNH NỀN KHUNG TÌM KIẾM</span>
+                        <button onclick="App.Dev.resetBackground('search_bg')" class="mc-btn mc-btn-red px-2 py-0.5 text-[9px]">KHÔI PHỤC GỐC</button>
+                    </div>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('search_bg', event)" class="w-full text-slate-300">
+                </div>
+            </div>
+
+            <!-- TAB 3: SỬA VĂN BẢN -->
             <div id="dev-tab-text" class="hidden-accessible space-y-3 text-xs font-sans">
                 <div class="mc-slot p-3 rounded space-y-2">
                     <span class="font-bold text-mcGold font-mc block">SỬA VĂN BẢN TRÊN TOÀN BỘ WEBSITE</span>
@@ -641,31 +675,10 @@
                 </div>
             </div>
 
-            <!-- TAB 3: ĐỔI HÌNH NỀN TỪNG KHUNG -->
-            <div id="dev-tab-bg" class="hidden-accessible space-y-3 text-xs font-sans">
-                <div class="mc-slot p-3 rounded space-y-2">
-                    <span class="font-bold text-mcGold font-mc block">1. HÌNH NỀN CHÍNH TOÀN WEB (HIỂN THỊ SẮC NÉT)</span>
-                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('main_bg', event)" class="w-full text-slate-300">
-                </div>
-                <div class="mc-slot p-3 rounded space-y-2">
-                    <span class="font-bold text-mcAqua font-mc block">2. ĐỔI ẢNH NỀN KHUNG THÔNG BÁO</span>
-                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('banner_bg', event)" class="w-full text-slate-300">
-                </div>
-                <div class="mc-slot p-3 rounded space-y-2">
-                    <span class="font-bold text-mcGreen font-mc block">3. ĐỔI ẢNH NỀN KHUNG GIỚI THIỆU (HERO)</span>
-                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('hero_bg', event)" class="w-full text-slate-300">
-                </div>
-                <div class="mc-slot p-3 rounded space-y-2">
-                    <span class="font-bold text-mcYellow font-mc block">4. ĐỔI ẢNH NỀN KHUNG TÌM KIẾM</span>
-                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('search_bg', event)" class="w-full text-slate-300">
-                </div>
-            </div>
-
-            <!-- TAB 4: QUẢN LÝ NHẠC PLAYLIST TỰ ĐỘNG PHÁT -->
+            <!-- TAB 4: QUẢN LÝ NHẠC PLAYLIST -->
             <div id="dev-tab-music" class="hidden-accessible space-y-3 text-xs font-sans">
                 <div class="mc-slot p-3 rounded space-y-2">
                     <span class="font-bold text-mcGold font-mc block">THÊM BÀI HÁT VÀO DANH SÁCH PHÁT (TRÁNH TRÙNG LẶP)</span>
-                    <p class="text-[11px] text-slate-300">Hệ thống sẽ tự động chặn các bài hát trùng tên hoặc trùng file.</p>
                     <div class="flex gap-2">
                         <input type="file" id="dev-music-file" accept="audio/*" class="w-full text-[11px] text-slate-300">
                         <button onclick="App.Dev.uploadMusicFile()" class="mc-btn mc-btn-aqua px-3 py-1 text-xs shrink-0 font-mc">TẢI FILE</button>
@@ -685,18 +698,39 @@
                 </div>
             </div>
 
-            <!-- TAB 5: ĐĂNG TÀI NGUYÊN -->
+            <!-- TAB 5: ĐĂNG TÀI NGUYÊN & CĂN CHỈNH ẢNH TRỰC QUAN -->
             <div id="dev-tab-post" class="hidden-accessible space-y-3 text-xs font-sans">
                 <form id="pack-form" class="space-y-2.5">
                     <input type="hidden" id="form-item-id">
+                    
                     <div>
-                        <label class="font-bold text-slate-300 block mb-1">ẢNH BÌA TÀI NGUYÊN (NHẤN ĐỂ CHỌN) *</label>
-                        <div class="mc-slot w-full h-28 flex items-center justify-center cursor-pointer rounded overflow-hidden relative" onclick="document.getElementById('image-upload').click()">
-                            <input type="file" id="image-upload" accept="image/*" class="hidden" onchange="App.UI.handleImageUpload(event)">
-                            <img id="image-preview" src="" class="hidden w-full h-full object-cover">
-                            <span id="image-placeholder" class="text-slate-400 font-mc text-[10px]">Tải ảnh bìa (Nén HD)</span>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="font-bold text-slate-300 block">ẢNH BÌA TÀI NGUYÊN (NHẤN CHỌN & CĂN CHỈNH) *</label>
+                            <span class="text-[10px] text-mcAqua">Kéo chuột/chạm để di chuyển góc ảnh</span>
                         </div>
+
+                        <!-- CROP & ALIGNMENT TOOL CHO DEV -->
+                        <div id="crop-canvas-wrapper" class="mc-slot rounded mb-2">
+                            <canvas id="crop-canvas" width="480" height="270" class="max-w-full max-h-full"></canvas>
+                            <div id="crop-placeholder" class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer bg-black/50" onclick="document.getElementById('image-upload').click()">
+                                <svg class="w-8 h-8 text-slate-400 mb-1" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                <span class="text-[11px] text-slate-300 font-mc">Chọn ảnh từ thiết bị để căn chỉnh</span>
+                            </div>
+                        </div>
+
+                        <div id="crop-controls" class="hidden grid grid-cols-2 gap-2 bg-[#0C0E14] p-2 border border-[#3C4258] rounded">
+                            <div>
+                                <label class="block text-[10px] text-slate-400">Thu phóng ảnh (Zoom):</label>
+                                <input type="range" id="crop-zoom" min="1" max="3" step="0.05" value="1" class="w-full" oninput="App.Dev.updateCrop()">
+                            </div>
+                            <div class="flex items-end gap-1">
+                                <button type="button" onclick="document.getElementById('image-upload').click()" class="mc-btn flex-1 py-1 text-[10px]">ĐỔI ẢNH KHÁC</button>
+                                <button type="button" onclick="App.Dev.resetCrop()" class="mc-btn mc-btn-aqua px-2 py-1 text-[10px]">ĐẶT LẠI</button>
+                            </div>
+                        </div>
+                        <input type="file" id="image-upload" accept="image/*" class="hidden" onchange="App.Dev.handleCropImageSelect(event)">
                     </div>
+
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="font-bold text-slate-300 block mb-1">TÊN PACK / MOD *</label>
@@ -795,7 +829,7 @@
         </div>
     </div>
 
-    <!-- ENGINE JAVASCRIPT -->
+    <!-- SCRIPT ENGINE -->
     <script>
         function handleCredentialResponse(response) {
             const token = response.credential;
@@ -836,12 +870,21 @@
             expandedCards: {},
             playlist: [],
             currentTrackIndex: 0,
-            isToastShowing: false // Kiểm soát xuất hiện Toast 1 lần duy nhất
+            isToastShowing: false,
+
+            // CROP STATE
+            cropImg: null,
+            cropX: 0,
+            cropY: 0,
+            cropZoom: 1,
+            isDraggingCrop: false,
+            dragStartX: 0,
+            dragStartY: 0
         };
 
         const App = {
             init: () => {
-                App.Loading.start(5); // Loading 5 giây chuẩn Minecraft
+                App.Loading.start(5);
                 App.Canvas.init();
                 App.Database.listenPacks();
                 App.Database.listenSettings();
@@ -853,19 +896,19 @@
                     App.Auth.handleLoginSuccess(JSON.parse(savedUser));
                 }
 
-                // Autoplay Unlock khi người dùng tương tác lần đầu
-                const unlockAutoplay = () => {
+                // Global listener: Mở khóa Autoplay ngay khi người dùng chạm/click vào web
+                const unlockAudio = () => {
                     if (!state.bgmPlaying && state.playlist.length > 0) {
                         App.Audio.playCurrentTrack();
                     }
-                    window.removeEventListener('click', unlockAutoplay);
-                    window.removeEventListener('touchstart', unlockAutoplay);
+                    window.removeEventListener('click', unlockAudio);
+                    window.removeEventListener('touchstart', unlockAudio);
                 };
-                window.addEventListener('click', unlockAutoplay);
-                window.addEventListener('touchstart', unlockAutoplay);
+                window.addEventListener('click', unlockAudio);
+                window.addEventListener('touchstart', unlockAudio);
             },
 
-            // LOADING 5 GIÂY REALTIME
+            // 5S LOADING INTRO
             Loading: {
                 start: (seconds = 5) => {
                     const screen = document.getElementById('minecraft-loading-screen');
@@ -881,7 +924,7 @@
                         if (progressPercent > 100) progressPercent = 100;
                         progress.style.width = progressPercent + '%';
 
-                        if (progressPercent < 30) statusText.innerText = "Nạp cấu hình Realtime...";
+                        if (progressPercent < 30) statusText.innerText = "Nạp âm thanh & tài nguyên...";
                         else if (progressPercent < 70) statusText.innerText = "Đồng bộ giao diện & Playlist...";
                         else statusText.innerText = "Khởi tạo thế giới hoàn tất!";
                     }, (seconds * 1000) / 50);
@@ -900,45 +943,36 @@
                                 screen.style.opacity = '0';
                                 setTimeout(() => {
                                     screen.remove();
-                                    App.Audio.playCurrentTrack(); // Tự động kích hoạt nhạc
+                                    App.Audio.playCurrentTrack();
                                 }, 500);
                             }, 300);
                         }
                     }, 1000);
+                },
+                userInteracted: () => {
+                    // Người dùng click vào loading screen -> Kích hoạt âm thanh ngay
+                    App.Audio.playCurrentTrack();
                 }
             },
 
-            // AUDIO ENGINE ĐÃ FIX PHÁT RÕ RÀNG VÀ CHUYỂN BÀI MƯỢT MÀ
+            // AUDIO ENGINE: ÂM THANH CLICK CHUẨN MINECRAFT RAW AUDIO & BGM AUTOPLAY
             Audio: {
                 bgmAudio: new Audio(),
-                targetVolume: 0.75, // Âm lượng rõ ràng 75%
-                fadeInterval: null,
+                // File âm thanh click chính thống từ Minecraft Sound Pack (Ogg/Wav Audio)
+                clickAudio: new Audio('https://ia800109.us.archive.org/30/items/minecraft-volume-alpha/01.%20Key.mp3'),
+                targetVolume: 0.75,
 
                 play: (type) => {
                     try {
-                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.connect(gain);
-                        gain.connect(ctx.destination);
-                        const now = ctx.currentTime;
-
                         if (type === 'click') {
-                            osc.type = 'square';
-                            osc.frequency.setValueAtTime(320, now);
-                            osc.frequency.exponentialRampToValueAtTime(100, now + 0.04);
-                            gain.gain.setValueAtTime(0.2, now);
-                            gain.gain.linearRampToValueAtTime(0.01, now + 0.04);
-                            osc.start(now);
-                            osc.stop(now + 0.04);
+                            // File âm thanh click chính thống từ Minecraft
+                            const clickSnd = new Audio('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.20.1/assets/minecraft/sounds/ui/click.ogg');
+                            clickSnd.volume = 0.85;
+                            clickSnd.play().catch(() => {});
                         } else if (type === 'levelup') {
-                            osc.type = 'sine';
-                            osc.frequency.setValueAtTime(587.33, now);
-                            osc.frequency.setValueAtTime(880, now + 0.08);
-                            gain.gain.setValueAtTime(0.35, now);
-                            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-                            osc.start(now);
-                            osc.stop(now + 0.45);
+                            const orbSnd = new Audio('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.20.1/assets/minecraft/sounds/random/levelup.ogg');
+                            orbSnd.volume = 0.9;
+                            orbSnd.play().catch(() => {});
                         }
                     } catch (e) {}
                 },
@@ -959,7 +993,7 @@
                     audio.src = track.url;
                     audio.volume = App.Audio.targetVolume;
 
-                    // Giám sát fade-out ở 3 giây cuối
+                    // Giám sát fade-out 3 giây cuối bài
                     audio.ontimeupdate = () => {
                         if (audio.duration && audio.currentTime > 0) {
                             const timeLeft = audio.duration - audio.currentTime;
@@ -977,8 +1011,9 @@
                     audio.play().then(() => {
                         state.bgmPlaying = true;
                         document.getElementById('bgm-status-text').innerText = "BGM: ĐANG PHÁT";
-                    }).catch((err) => {
-                        console.log("Trình duyệt tạm hoãn Autoplay chờ tương tác...");
+                    }).catch(() => {
+                        // Nếu autoplay bị browser hoãn -> Chờ người dùng chạm vào web
+                        document.getElementById('bgm-status-text').innerText = "BGM: CHẠM ĐỂ PHÁT";
                     });
                 },
 
@@ -1006,7 +1041,7 @@
                 }
             },
 
-            // CANVAS BACKGROUND PARTICLES
+            // CANVAS BACKGROUND
             Canvas: {
                 init: () => {
                     const canvas = document.getElementById('bg-canvas');
@@ -1097,7 +1132,7 @@
                 }
             },
 
-            // REALTIME DATABASE VÀ ĐỒNG BỘ PLAYLIST, THEME
+            // REALTIME DATABASE VÀ ĐỒNG BỘ
             Database: {
                 listenPacks: () => {
                     db.ref('packs').on('value', (snapshot) => {
@@ -1111,7 +1146,7 @@
                     db.ref('site_settings').on('value', (snapshot) => {
                         const s = snapshot.val() || {};
                         
-                        // Chế độ trong suốt tuyệt đối (Wireframe)
+                        // Chế độ siêu trong suốt
                         if (s.wireframe_mode) {
                             document.body.classList.add('wireframe-mode');
                             const toggle = document.getElementById('dev-wireframe-toggle');
@@ -1122,19 +1157,22 @@
                             if (toggle) toggle.checked = false;
                         }
 
-                        // Độ đục và mờ
+                        // Độ đục
                         if (s.styles) {
                             const st = s.styles;
                             if (st.global_opacity !== undefined) document.documentElement.style.setProperty('--global-overlay-opacity', st.global_opacity);
-                            if (st.hero_bg_op !== undefined) document.documentElement.style.setProperty('--hero-bg', `rgba(18, 20, 28, ${st.hero_bg_op})`);
-                            if (st.card_bg_op !== undefined) document.documentElement.style.setProperty('--card-bg', `rgba(20, 22, 32, ${st.card_bg_op})`);
                         }
 
                         // Hình nền
                         if (s.main_bg) document.getElementById('dynamic-bg').style.backgroundImage = `url('${s.main_bg}')`;
                         if (s.banner_bg) document.documentElement.style.setProperty('--banner-bg-image', `url('${s.banner_bg}')`);
+                        else document.documentElement.style.setProperty('--banner-bg-image', 'none');
+
                         if (s.hero_bg) document.documentElement.style.setProperty('--hero-bg-image', `url('${s.hero_bg}')`);
+                        else document.documentElement.style.setProperty('--hero-bg-image', 'none');
+
                         if (s.search_bg) document.documentElement.style.setProperty('--search-bg-image', `url('${s.search_bg}')`);
+                        else document.documentElement.style.setProperty('--search-bg-image', 'none');
 
                         // Văn bản
                         if (s.texts) {
@@ -1161,7 +1199,7 @@
                             }
                         }
 
-                        // Danh sách phát
+                        // Playlist
                         if (s.playlist && Array.isArray(s.playlist)) {
                             state.playlist = s.playlist;
                         } else {
@@ -1235,7 +1273,7 @@
                 }
             },
 
-            // DEV STUDIO CONTROLS & XỬ LÝ NHẠC FIREBASE CHUẨN XÁC
+            // DEV STUDIO: CĂN CHỈNH ẢNH TRỰC QUAN & KHÔI PHỤC HÌNH NỀN
             Dev: {
                 openControlCenter: () => {
                     App.Audio.play('click');
@@ -1250,9 +1288,123 @@
                     });
                     document.getElementById(`dev-tab-${tab}`).classList.remove('hidden-accessible');
                     document.getElementById(`dev-tab-btn-${tab}`).className = "mc-btn mc-btn-gold px-3 py-1 text-xs";
+
+                    if (tab === 'post') {
+                        App.Dev.initCropCanvas();
+                    }
                 },
 
-                // Chế độ trong suốt tuyệt đối
+                // CÔNG CỤ CĂN CHỈNH ẢNH TRƯỚC KHI ĐĂNG
+                initCropCanvas: () => {
+                    const canvas = document.getElementById('crop-canvas');
+                    const wrapper = document.getElementById('crop-canvas-wrapper');
+                    
+                    wrapper.onmousedown = (e) => {
+                        if (!state.cropImg) return;
+                        state.isDraggingCrop = true;
+                        state.dragStartX = e.clientX - state.cropX;
+                        state.dragStartY = e.clientY - state.cropY;
+                    };
+                    window.onmousemove = (e) => {
+                        if (!state.isDraggingCrop) return;
+                        state.cropX = e.clientX - state.dragStartX;
+                        state.cropY = e.clientY - state.dragStartY;
+                        App.Dev.renderCropCanvas();
+                    };
+                    window.onmouseup = () => {
+                        state.isDraggingCrop = false;
+                    };
+
+                    // Touch support cho mobile
+                    wrapper.ontouchstart = (e) => {
+                        if (!state.cropImg || e.touches.length === 0) return;
+                        state.isDraggingCrop = true;
+                        state.dragStartX = e.touches[0].clientX - state.cropX;
+                        state.dragStartY = e.touches[0].clientY - state.cropY;
+                    };
+                    wrapper.ontouchmove = (e) => {
+                        if (!state.isDraggingCrop || e.touches.length === 0) return;
+                        state.cropX = e.touches[0].clientX - state.dragStartX;
+                        state.cropY = e.touches[0].clientY - state.dragStartY;
+                        App.Dev.renderCropCanvas();
+                    };
+                    wrapper.ontouchend = () => {
+                        state.isDraggingCrop = false;
+                    };
+                },
+
+                handleCropImageSelect: (event) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            state.cropImg = img;
+                            state.cropX = 0;
+                            state.cropY = 0;
+                            state.cropZoom = 1;
+                            document.getElementById('crop-zoom').value = 1;
+                            document.getElementById('crop-placeholder').classList.add('hidden');
+                            document.getElementById('crop-controls').classList.remove('hidden');
+                            App.Dev.renderCropCanvas();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                updateCrop: () => {
+                    state.cropZoom = parseFloat(document.getElementById('crop-zoom').value) || 1;
+                    App.Dev.renderCropCanvas();
+                },
+
+                resetCrop: () => {
+                    state.cropX = 0;
+                    state.cropY = 0;
+                    state.cropZoom = 1;
+                    document.getElementById('crop-zoom').value = 1;
+                    App.Dev.renderCropCanvas();
+                },
+
+                renderCropCanvas: () => {
+                    const canvas = document.getElementById('crop-canvas');
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    if (!state.cropImg) return;
+
+                    const cw = canvas.width;
+                    const ch = canvas.height;
+                    const img = state.cropImg;
+
+                    // Tính toán tỷ lệ căn giữa
+                    const scale = Math.max(cw / img.width, ch / img.height) * state.cropZoom;
+                    const w = img.width * scale;
+                    const h = img.height * scale;
+
+                    const x = (cw - w) / 2 + state.cropX;
+                    const y = (ch - h) / 2 + state.cropY;
+
+                    ctx.drawImage(img, x, y, w, h);
+
+                    // Xuất Base64 vào biến state để sẵn sàng lưu
+                    state.currentUploadBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                },
+
+                // KHÔI PHỤC HÌNH NỀN GỐC TỪNG MỤC
+                resetBackground: async (key) => {
+                    App.Audio.play('click');
+                    if (key === 'main_bg') {
+                        await db.ref('site_settings/main_bg').set('https://images.alphacoders.com/131/1319717.jpeg');
+                        App.UI.showToast("Đã khôi phục hình nền chính Minecraft mặc định!", "success");
+                    } else {
+                        await db.ref(`site_settings/${key}`).remove(); // Xóa ảnh riêng của khung đó
+                        App.UI.showToast(`Đã khôi phục nền khung ${key} về ban đầu!`, "success");
+                    }
+                },
+
                 toggleWireframeMode: async (checked) => {
                     await db.ref('site_settings/wireframe_mode').set(checked);
                     App.UI.showToast(checked ? "Đã bật chế độ Siêu Trong Suốt!" : "Đã tắt chế độ Siêu Trong Suốt.");
@@ -1261,16 +1413,10 @@
                 liveUpdateGlobalOpacity: (val) => {
                     document.documentElement.style.setProperty('--global-overlay-opacity', val);
                 },
-                liveUpdateBoxOpacity: (box, val) => {
-                    if (box === 'hero') document.documentElement.style.setProperty('--hero-bg', `rgba(18, 20, 28, ${val})`);
-                    if (box === 'card') document.documentElement.style.setProperty('--card-bg', `rgba(20, 22, 32, ${val})`);
-                },
 
                 saveStylesToFirebase: async () => {
                     const styles = {
                         global_opacity: document.getElementById('inp-global-opacity').value,
-                        hero_bg_op: document.getElementById('inp-hero-bg-op').value,
-                        card_bg_op: document.getElementById('inp-card-bg-op').value,
                     };
                     await db.ref('site_settings/styles').set(styles);
                     App.UI.showToast("Đã lưu cấu hình giao diện lên Server!", "success");
@@ -1299,7 +1445,6 @@
                     reader.readAsDataURL(file);
                 },
 
-                // Upload nhạc & TRÁNH TRÙNG LẶP
                 uploadMusicFile: () => {
                     const fileInput = document.getElementById('dev-music-file');
                     const file = fileInput.files[0];
@@ -1310,7 +1455,6 @@
 
                     const trackTitle = file.name.replace(/\.[^/.]+$/, "").trim();
 
-                    // Kiểm tra trùng lặp
                     const isDuplicate = state.playlist.some(t => t.title.toLowerCase() === trackTitle.toLowerCase());
                     if (isDuplicate) {
                         App.UI.showToast("Bài hát này đã tồn tại trong danh sách!", "error");
@@ -1336,7 +1480,6 @@
                     const url = urlInput.value.trim();
                     if (!url) return;
 
-                    // Kiểm tra trùng lặp URL
                     const isDuplicate = state.playlist.some(t => t.url === url);
                     if (isDuplicate) {
                         App.UI.showToast("Link bài hát này đã có trong danh sách!", "error");
@@ -1353,14 +1496,13 @@
                     App.UI.showToast("Đã thêm bài hát vào Playlist!", "success");
                 },
 
-                // XÓA BÀI HÁT TRÊN FIREBASE CHUẨN XÁC
                 removeTrack: async (index) => {
                     App.Audio.play('click');
                     const updated = [...state.playlist];
                     updated.splice(index, 1);
 
                     if (updated.length === 0) {
-                        await db.ref('site_settings/playlist').remove(); // Xóa sạch trên Firebase
+                        await db.ref('site_settings/playlist').remove();
                         App.Audio.bgmAudio.pause();
                         state.bgmPlaying = false;
                         document.getElementById('bgm-status-text').innerText = "BGM: TẮT";
@@ -1659,35 +1801,6 @@
                     state.expandedCards[id] = !state.expandedCards[id];
                     App.Render.items();
                 },
-                handleImageUpload: (event) => {
-                    const file = event.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            const MAX_WIDTH = 600;
-                            let width = img.width;
-                            let height = img.height;
-                            if (width > MAX_WIDTH) {
-                                height = Math.round((height * MAX_WIDTH) / width);
-                                width = MAX_WIDTH;
-                            }
-                            canvas.width = width;
-                            canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-                            const base64String = canvas.toDataURL('image/jpeg', 0.7);
-                            document.getElementById('image-preview').src = base64String;
-                            document.getElementById('image-preview').classList.remove('hidden');
-                            document.getElementById('image-placeholder').classList.add('hidden');
-                            state.currentUploadBase64 = base64String;
-                        };
-                        img.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                },
                 editPack: (id) => {
                     const item = state.items.find(i => i.id === id);
                     if (!item) return;
@@ -1703,9 +1816,19 @@
                     document.getElementById('form-description').value = item.description;
 
                     state.currentUploadBase64 = item.image;
-                    document.getElementById('image-preview').src = item.image;
-                    document.getElementById('image-preview').classList.remove('hidden');
-                    document.getElementById('image-placeholder').classList.add('hidden');
+                    
+                    // Nạp ảnh cũ vào Canvas Crop
+                    const img = new Image();
+                    img.onload = () => {
+                        state.cropImg = img;
+                        state.cropX = 0;
+                        state.cropY = 0;
+                        state.cropZoom = 1;
+                        document.getElementById('crop-placeholder').classList.add('hidden');
+                        document.getElementById('crop-controls').classList.remove('hidden');
+                        App.Dev.renderCropCanvas();
+                    };
+                    img.src = item.image;
 
                     App.Modal.open('dev-modal');
                 },
@@ -1738,13 +1861,12 @@
                     });
                 },
 
-                // HIỂN THỊ 1 THÔNG BÁO DUY NHẤT (CHỐNG TRÀN VÀ XUẤT HIỆN DÀY ĐẶC)
                 showToast: (msg, type = 'info') => {
-                    if (state.isToastShowing) return; // Nếu đang có thông báo, bỏ qua các lần bấm dồn dập
+                    if (state.isToastShowing) return;
                     state.isToastShowing = true;
 
                     const c = document.getElementById('toast-container');
-                    c.innerHTML = ''; // Đảm bảo chỉ có 1 toast
+                    c.innerHTML = '';
 
                     const t = document.createElement('div');
                     let color = type === 'error' ? 'border-mcRed text-mcRed' : (type === 'success' ? 'border-mcGreen text-mcGreen' : 'border-mcAqua text-mcAqua');
@@ -1757,23 +1879,26 @@
                         t.classList.add('-translate-y-6', 'opacity-0');
                         setTimeout(() => {
                             t.remove();
-                            state.isToastShowing = false; // Hết thông báo thì mới cho hiện lần kế tiếp
+                            state.isToastShowing = false;
                         }, 300);
                     }, 2200);
                 }
             },
 
-            // MODAL SYSTEM
+            // MODAL
             Modal: {
                 open: (id) => {
                     App.Audio.play('click');
                     if (id === 'dev-modal' && !document.getElementById('form-item-id').value) {
                         document.getElementById('pack-form').reset();
                         document.getElementById('form-item-id').value = '';
-                        document.getElementById('image-preview').classList.add('hidden');
-                        document.getElementById('image-placeholder').classList.remove('hidden');
-                        document.getElementById('image-preview').src = '';
+                        state.cropImg = null;
+                        document.getElementById('crop-placeholder').classList.remove('hidden');
+                        document.getElementById('crop-controls').classList.add('hidden');
                         state.currentUploadBase64 = '';
+                        const canvas = document.getElementById('crop-canvas');
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
                     }
                     document.getElementById(id).classList.remove('hidden-accessible');
                 },
