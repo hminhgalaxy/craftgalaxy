@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Galaxy Craft | Kho Tài Nguyên Minecraft Studio</title>
+    <title>Galaxy Craft | Minecraft Studio Engine</title>
     
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
-    <!-- Google Fonts: Silkscreen, VT323 & Plus Jakarta Sans (Hỗ trợ tiếng Việt 100% không lỗi dấu) -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
@@ -44,38 +44,39 @@
         }
     </script>
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-
-    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
-            /* Tùy biến toàn trang từ Firebase */
-            --global-overlay-opacity: 0.82;
+            /* Tùy biến toàn trang */
+            --global-overlay-opacity: 0.85;
             --global-backdrop-blur: 8px;
             
-            /* Tùy biến khung Hero */
-            --hero-bg-custom: rgba(22, 25, 36, 0.92);
+            /* Độ trong suốt & Độ mờ từng khung */
+            --banner-opacity: 0.95;
+            --banner-blur: 4px;
+            --banner-bg-image: none;
+
+            --hero-opacity: 0.92;
+            --hero-blur: 8px;
             --hero-bg-image: none;
             --hero-border-radius: 8px;
 
-            /* Tùy biến Card */
-            --card-bg-custom: rgba(24, 26, 36, 0.94);
+            --search-opacity: 0.92;
+            --search-blur: 8px;
+            --search-bg-image: none;
+
+            --card-opacity: 0.94;
+            --card-blur: 6px;
+            --card-bg-image: none;
             --card-border-radius: 6px;
             --card-img-fit: cover;
 
-            /* Tùy biến Slot / Khung viền */
-            --slot-bg-custom: #12141C;
             --slot-bg-image: none;
             --slot-border-radius: 4px;
-
-            /* Grid Columns */
             --mc-grid-cols: repeat(auto-fill, minmax(310px, 1fr));
         }
 
@@ -87,7 +88,7 @@
             image-rendering: pixelated;
         }
 
-        /* NỀN ĐỘNG CHÍNH ĐỒNG BỘ REALTIME TỪ FIREBASE */
+        /* NỀN ĐỘNG TOÀN WEB */
         #dynamic-bg {
             position: fixed;
             top: 0;
@@ -116,7 +117,7 @@
             transition: background-color 0.2s ease, backdrop-filter 0.2s ease;
         }
 
-        /* MINECRAFT BEVELED BUTTONS */
+        /* MINECRAFT BUTTONS */
         .mc-btn {
             background-color: #585C6E;
             color: #FFFFFF;
@@ -142,7 +143,6 @@
             border-right: 3px solid #8D93A8;
             transform: translateY(2px);
         }
-
         .mc-btn-green {
             background-color: #15803D;
             border-top-color: #4ADE80;
@@ -172,29 +172,48 @@
             border-right-color: #164E63;
         }
 
-        /* MINECRAFT GUI PANELS */
-        .mc-panel {
-            background-color: var(--card-bg-custom);
+        /* KHUNG RIÊNG BIỆT ÁP DỤNG BIẾN CSS */
+        .announcement-custom {
+            background-color: rgba(43, 29, 6, var(--banner-opacity));
+            background-image: var(--banner-bg-image);
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(var(--banner-blur));
+        }
+
+        .hero-custom {
+            background-color: rgba(22, 25, 36, var(--hero-opacity));
+            background-image: var(--hero-bg-image);
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(var(--hero-blur));
+            border-radius: var(--hero-border-radius);
+        }
+
+        .search-custom {
+            background-color: rgba(22, 25, 36, var(--search-opacity));
+            background-image: var(--search-bg-image);
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(var(--search-blur));
+        }
+
+        .card-custom {
+            background-color: rgba(24, 26, 36, var(--card-opacity));
+            background-image: var(--card-bg-image);
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(var(--card-blur));
+            border-radius: var(--card-border-radius);
             border-top: 3px solid #5A627E;
             border-left: 3px solid #5A627E;
             border-bottom: 3px solid #10121A;
             border-right: 3px solid #10121A;
             box-shadow: 0 0 0 3px #000000, 0 14px 28px rgba(0,0,0,0.65);
-            border-radius: var(--card-border-radius);
-            transition: border-radius 0.2s ease;
         }
 
-        .hero-custom-panel {
-            background-color: var(--hero-bg-custom);
-            background-image: var(--hero-bg-image);
-            background-size: cover;
-            background-position: center;
-            border-radius: var(--hero-border-radius);
-        }
-
-        /* SLOTS VÀ KHUNG TÙY BIẾN */
         .mc-slot {
-            background-color: var(--slot-bg-custom);
+            background-color: #12141C;
             background-image: var(--slot-bg-image);
             background-size: cover;
             background-position: center;
@@ -213,7 +232,6 @@
             height: 100%;
         }
 
-        /* MỞ RỘNG MƯỢT MÀ */
         .expand-content {
             display: grid;
             grid-template-rows: 0fr;
@@ -233,13 +251,52 @@
 
         .hidden-accessible { display: none !important; }
 
-        /* MINECRAFT PIXEL ICONS (SVG) */
         .mc-pixel-icon {
             display: inline-block;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             vertical-align: middle;
             image-rendering: pixelated;
+        }
+
+        /* 5-SECOND MINECRAFT LOADING SCREEN */
+        #minecraft-loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #191410 url('https://textures.minecraft.net/texture/c2cf30a08e1a12d1b827e85e921d7b1b369c9b19e2bb82f5b610c59cb9e863cf') repeat;
+            background-size: 64px 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        }
+
+        .loading-dirt-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 8, 6, 0.85);
+            backdrop-filter: blur(4px);
+        }
+
+        .mc-progress-track {
+            width: 100%;
+            max-width: 380px;
+            height: 22px;
+            background: #000;
+            border: 3px solid #5A627E;
+            box-shadow: inset 2px 2px 0 #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mc-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #55FF55;
+            box-shadow: inset 0 3px 0 #A8FFA8, inset 0 -3px 0 #00AA00;
+            transition: width 0.1s linear;
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -250,27 +307,53 @@
 </head>
 <body class="selection:bg-mcGreenDark selection:text-white flex flex-col min-h-screen">
 
-    <!-- NỀN ĐỘNG & LỚP PHỦ CHỈNH ĐỘ ĐẬM/MỜ -->
+    <!-- 5-SECOND MINECRAFT REALTIME LOADING SCREEN -->
+    <div id="minecraft-loading-screen">
+        <div class="loading-dirt-overlay"></div>
+        <div class="relative z-10 flex flex-col items-center px-4 text-center max-w-lg">
+            
+            <div class="w-16 h-16 bg-[#25293A] border-4 border-[#5A627E] rounded flex items-center justify-center shadow-2xl mb-4 animate-bounce">
+                <svg class="w-10 h-10 text-mcGreen" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+
+            <h2 class="text-xl sm:text-2xl font-mc font-bold text-white tracking-widest mb-1">
+                GALAXY<span class="text-mcGreen">CRAFT</span>
+            </h2>
+            <p class="text-xs font-mc text-mcYellow mb-6" id="loading-tip-text">ĐANG TẢI DỮ LIỆU REALTIME FIREBASE (5s)...</p>
+
+            <div class="mc-progress-track mb-3">
+                <div id="loading-progress" class="mc-progress-bar"></div>
+            </div>
+
+            <div class="flex items-center justify-between w-full max-w-[380px] text-[11px] font-mono text-slate-400">
+                <span id="loading-status">Đồng bộ máy chủ...</span>
+                <span id="loading-seconds" class="text-mcGreen font-bold">5s</span>
+            </div>
+
+            <div id="loading-music-notice" class="mt-4 text-[10px] text-mcAqua font-sans bg-black/60 px-3 py-1 border border-[#3C4258] rounded">
+                🎵 Nhạc nền tự động kích hoạt ngay sau khi nạp xong
+            </div>
+        </div>
+    </div>
+
+    <!-- BACKGROUND ENGINE -->
     <div id="dynamic-bg"></div>
     <div id="global-dim-overlay"></div>
-
-    <!-- CANVAS PARTICLES -->
     <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none"></canvas>
-
-    <!-- TOAST NOTIFICATION -->
     <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[300] flex flex-col gap-2 pointer-events-none w-full max-w-md px-4"></div>
 
-    <!-- THÔNG BÁO TỔNG SERVER (DEV QUẢN LÝ) -->
-    <div id="announcement-banner" class="w-full bg-[#2B1D06]/95 border-b-2 border-mcGold text-mcYellow px-4 py-2 text-center text-xs sm:text-sm font-bold flex items-center justify-center gap-2 z-40 relative">
+    <!-- THÔNG BÁO TỔNG (DEV TÙY BIẾN ẢNH, ĐỘ TRONG SUỐT, NỘI DUNG) -->
+    <div id="announcement-banner" class="announcement-custom w-full border-b-2 border-mcGold text-mcYellow px-4 py-2 text-center text-xs sm:text-sm font-bold flex items-center justify-center gap-2 z-40 relative">
         <svg class="mc-pixel-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M1 3h3v10H1V3zm4 2h4v6H5V5zm5 1h5v4h-5V6z"/></svg>
         <span id="announcement-text">Chào mừng bạn đến với Galaxy Craft! Chúc bạn chơi Minecraft vui vẻ.</span>
     </div>
 
-    <!-- HEADER / NAVIGATION (ĐÃ TỐI ƯU GỌN GÀNG TRÊN MOBILE, KHÔNG BỊ TRÀN) -->
+    <!-- HEADER / NAVIGATION -->
     <header class="sticky top-0 w-full z-50 bg-[#12141C]/95 border-b-4 border-[#252836] shadow-2xl">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2">
             
-            <!-- Logo & Title -->
             <a href="#" onclick="App.Audio.play('click')" class="flex items-center gap-2 sm:gap-3 group focus:outline-none shrink-0">
                 <div class="w-9 h-9 sm:w-11 sm:h-11 bg-[#25293A] border-2 border-[#5A627E] rounded flex items-center justify-center shadow-md group-hover:border-mcGreen transition-colors">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6 text-mcGreen" viewBox="0 0 24 24" fill="currentColor">
@@ -278,39 +361,35 @@
                     </svg>
                 </div>
                 <div>
-                    <span class="text-base sm:text-2xl font-mc font-bold tracking-wider text-white block leading-none">
+                    <span class="text-base sm:text-2xl font-mc font-bold tracking-wider text-white block leading-none" id="site-logo-text">
                         GALAXY<span class="text-mcGreen">CRAFT</span>
                     </span>
-                    <span class="text-[9px] sm:text-[10px] text-mcAqua font-mono tracking-widest uppercase" data-i18n="tagline">MODS & ADDONS HUB</span>
+                    <span class="text-[9px] sm:text-[10px] text-mcAqua font-mono tracking-widest uppercase" id="site-tagline-text">MODS & ADDONS HUB</span>
                 </div>
             </a>
 
             <!-- Tabs Desktop -->
             <nav class="hidden lg:flex items-center gap-1.5 bg-[#0A0B10] p-1.5 border-2 border-[#3C4258] rounded">
-                <button onclick="App.Filter.setCategory('All')" class="nav-tab active mc-btn px-3 py-1 text-xs" data-i18n="tab_all">TẤT CẢ</button>
-                <button onclick="App.Filter.setCategory('Modpack')" class="nav-tab mc-btn px-3 py-1 text-xs text-slate-300" data-i18n="tab_modpack">MODPACK</button>
-                <button onclick="App.Filter.setCategory('Addon')" class="nav-tab mc-btn px-3 py-1 text-xs text-slate-300" data-i18n="tab_addon">ADDON/MOD</button>
-                <button onclick="App.Filter.setCategory('Texture')" class="nav-tab mc-btn px-3 py-1 text-xs text-slate-300" data-i18n="tab_texture">TEXTURE</button>
-                <button onclick="App.Filter.setCategory('Shader')" class="nav-tab mc-btn px-3 py-1 text-xs text-slate-300" data-i18n="tab_shader">SHADERS</button>
+                <button onclick="App.Filter.setCategory('All')" class="nav-tab active mc-btn px-3 py-1 text-xs">TẤT CẢ</button>
+                <button onclick="App.Filter.setCategory('Modpack')" class="nav-tab mc-btn px-3 py-1 text-xs text-slate-300">MODPACK</button>
+                <button onclick="App.Filter.setCategory('Addon')" class="nav-tab mc-btn px-3 py-1 text-xs text-slate-300">ADDON/MOD</button>
+                <button onclick="App.Filter.setCategory('Texture')" class="nav-tab mc-btn px-3 py-1 text-xs text-slate-300">TEXTURE</button>
+                <button onclick="App.Filter.setCategory('Shader')" class="nav-tab mc-btn px-3 py-1 text-xs text-slate-300">SHADERS</button>
             </nav>
 
-            <!-- Actions Right (Gọn gàng trên Mobile) -->
+            <!-- Actions Right -->
             <div class="flex items-center gap-1.5 sm:gap-2.5">
-                
-                <!-- Nút Đổi Ngôn Ngữ -->
                 <button onclick="App.i18n.toggleLanguage()" class="mc-btn px-2 sm:px-2.5 py-1.5 sm:py-2 text-xs flex items-center gap-1 text-mcYellow font-bold" title="Language">
                     <span id="lang-btn-text">VI</span>
                 </button>
 
-                <!-- Bật / Tắt BGM Máy Chủ (Người dùng chỉ nghe, không được up nhạc) -->
                 <button id="bgm-toggle-btn" onclick="App.Audio.toggleBGM(event)" class="mc-btn px-2 sm:px-3 py-1.5 sm:py-2 text-xs flex items-center gap-1.5 text-slate-200">
                     <svg id="music-icon" class="w-4 h-4 text-mcGreen" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                     </svg>
-                    <span class="hidden md:inline" id="bgm-status-text">BGM: TẮT</span>
+                    <span class="hidden md:inline" id="bgm-status-text">BGM: TỰ ĐỘNG</span>
                 </button>
 
-                <!-- Menu Drawer Button -->
                 <button onclick="App.UI.toggleDrawer()" class="mc-btn p-1.5 sm:p-2 text-white flex items-center justify-center">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
@@ -320,38 +399,34 @@
         </div>
     </header>
 
-    <!-- NÚT DEV STUDIO GỌN GÀNG (ĐÃ FIX LỖI ĐÈ NỘI DUNG TRÊN MOBILE) -->
+    <!-- NÚT DEV STUDIO DOCK -->
     <div id="dev-quick-dock" class="hidden-accessible fixed bottom-4 right-4 z-[160] flex items-center gap-2">
-        <button onclick="App.Dev.openControlCenter()" class="mc-btn mc-btn-gold px-3 py-2 rounded text-xs font-mc flex items-center gap-1.5 shadow-2xl animate-pulse">
+        <button onclick="App.Dev.openControlCenter()" class="mc-btn mc-btn-gold px-3.5 py-2 rounded text-xs font-mc flex items-center gap-1.5 shadow-2xl animate-pulse">
             <svg class="w-4 h-4 text-yellow-200" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 18l10-5V9l-10 5-10-5v6l10 5z"/></svg>
             <span>DEV STUDIO</span>
         </button>
     </div>
 
-    <!-- 3-LINE DRAWER -->
+    <!-- 3-LINE DRAWER MENU -->
     <div id="side-drawer" class="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm transform translate-x-full transition-transform duration-300 flex justify-end">
         <div class="w-full max-w-sm h-full bg-[#161822] border-l-4 border-[#3C4258] p-5 flex flex-col justify-between overflow-y-auto">
             <div>
                 <div class="flex items-center justify-between border-b-2 border-[#3C4258] pb-3 mb-5">
-                    <span class="text-sm font-bold text-mcGreen font-mc flex items-center gap-2" data-i18n="account_management">
-                        QUẢN LÝ TÀI KHOẢN
-                    </span>
+                    <span class="text-sm font-bold text-mcGreen font-mc flex items-center gap-2">QUẢN LÝ TÀI KHOẢN</span>
                     <button onclick="App.UI.toggleDrawer()" class="mc-btn p-1.5">
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                     </button>
                 </div>
 
-                <!-- CHƯA ĐĂNG NHẬP -->
                 <div id="drawer-guest-view" class="space-y-4 text-center py-4">
                     <div class="mc-slot p-4 rounded">
                         <svg class="w-10 h-10 text-mcGold mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/></svg>
-                        <p class="text-xs text-slate-300 font-bold mb-3" data-i18n="login_prompt">Đăng nhập tài khoản Google để thả tim và mở quyền Dev.</p>
+                        <p class="text-xs text-slate-300 font-bold mb-3">Đăng nhập tài khoản Google để thả tim và mở quyền Dev.</p>
                         <div id="g_id_onload" data-client_id="263702418999-b3emaq40hrpe26k6rk95j2a2cnc35dgr.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
                         <div class="g_id_signin w-full flex justify-center" data-type="standard" data-theme="filled_black" data-text="signin_with" data-shape="rectangular"></div>
                     </div>
                 </div>
 
-                <!-- ĐÃ ĐĂNG NHẬP -->
                 <div id="drawer-user-view" class="hidden-accessible space-y-4">
                     <div class="mc-slot p-3.5 rounded flex items-center gap-3">
                         <img id="drawer-avatar" src="" class="w-12 h-12 border-2 border-mcGreen rounded object-cover">
@@ -362,36 +437,35 @@
                     </div>
 
                     <button onclick="App.Filter.toggleFavoritesOnly(); App.UI.toggleDrawer();" class="mc-btn w-full py-2.5 text-xs flex items-center justify-between px-3">
-                        <span data-i18n="saved_resources">Tài Nguyên Đã Lưu</span>
+                        <span>Tài Nguyên Đã Lưu</span>
                         <span id="drawer-fav-count" class="bg-black/60 px-2 py-0.5 rounded text-mcGold font-bold">0</span>
                     </button>
                 </div>
             </div>
 
-            <!-- ĐĂNG XUẤT -->
             <div id="drawer-logout-container" class="hidden-accessible pt-4 border-t-2 border-[#3C4258]">
                 <button onclick="App.Auth.promptLogout()" class="mc-btn mc-btn-red w-full py-2.5 text-xs flex items-center justify-center gap-2">
-                    <span data-i18n="logout_btn">ĐĂNG XUẤT TÀI KHOẢN</span>
+                    <span>ĐĂNG XUẤT TÀI KHOẢN</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN CONTENT (ĐÃ TĂNG BOTTOM PADDING TRÁNH BỊ ĐÈ BỞI NÚT DOCK) -->
+    <!-- MAIN CONTENT -->
     <main class="flex-1 max-w-7xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6 pb-32 w-full z-10 flex flex-col items-center">
         
         <!-- HERO / INTRO SECTION -->
         <section class="w-full max-w-4xl py-2 sm:py-4 flex flex-col items-center text-center">
             
             <div class="mb-3">
-                <h1 class="text-2xl sm:text-4xl font-mc font-bold text-white tracking-wider">
+                <h1 class="text-2xl sm:text-4xl font-mc font-bold text-white tracking-wider" id="hero-main-title">
                     GALAXY <span class="text-mcGreen">CRAFT</span>
                 </h1>
-                <p class="text-xs sm:text-sm text-slate-300 font-sans mt-0.5" data-i18n="hero_subtitle">Kho Addons, Modpacks, Texture Packs chuẩn phong cách Minecraft</p>
+                <p class="text-xs sm:text-sm text-slate-300 font-sans mt-0.5" id="hero-sub-title">Kho Addons, Modpacks, Texture Packs chuẩn phong cách Minecraft</p>
             </div>
 
-            <!-- BỘ CHỌN NỀN TẢNG: BEDROCK vs JAVA EDITION -->
-            <div class="w-full max-w-md mc-panel p-2 mb-4 flex items-center justify-center gap-2">
+            <!-- BỘ LỌC HỆ MÁY: BEDROCK vs JAVA -->
+            <div class="w-full max-w-md card-custom p-2 mb-4 flex items-center justify-center gap-2">
                 <span class="text-xs font-bold text-mcGold font-mc mr-1">HỆ MÁY:</span>
                 <button onclick="App.Filter.setPlatform('ALL')" id="plat-btn-all" class="mc-btn mc-btn-gold flex-1 py-1.5 text-xs">TẤT CẢ</button>
                 <button onclick="App.Filter.setPlatform('JAVA')" id="plat-btn-java" class="mc-btn flex-1 py-1.5 text-xs text-slate-300">JAVA</button>
@@ -399,50 +473,36 @@
             </div>
 
             <!-- HỘP MỞ RỘNG / THU GỌN GIỚI THIỆU WEB -->
-            <div id="hero-panel" class="w-full mc-panel hero-custom-panel p-3.5 sm:p-4 text-left mb-4 border-2 border-[#3C4258] relative">
+            <div id="hero-panel" class="w-full hero-custom p-3.5 sm:p-4 text-left mb-4 border-2 border-[#3C4258] relative">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2 text-xs text-mcGreen font-bold font-mc">
                         <svg class="mc-pixel-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm1 12H7V7h2v5zm0-6H7V4h2v2z"/></svg>
-                        <span data-i18n="hero_title">GIỚI THIỆU HỆ THỐNG GALAXY CRAFT</span>
+                        <span id="hero-block-title">GIỚI THIỆU HỆ THỐNG GALAXY CRAFT</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <!-- Nút Dev đổi ảnh khung Hero -->
-                        <button id="dev-hero-edit-btn" onclick="document.getElementById('hero-bg-upload').click()" class="hidden-accessible mc-btn mc-btn-gold px-2 py-0.5 text-[10px]" title="Đổi nền khung này">
-                            ĐỔI ẢNH
-                        </button>
-                        <input type="file" id="hero-bg-upload" accept="image/*" class="hidden" onchange="App.Dev.handleCustomHeroImage(event)">
-
-                        <button onclick="App.UI.toggleHeroIntro()" id="hero-expand-btn" class="mc-btn px-2.5 py-1 text-[11px] text-mcAqua flex items-center gap-1">
-                            <span id="hero-expand-text" data-i18n="expand">Mở Rộng</span>
-                            <span id="hero-expand-arrow">▼</span>
-                        </button>
-                    </div>
+                    <button onclick="App.UI.toggleHeroIntro()" id="hero-expand-btn" class="mc-btn px-2.5 py-1 text-[11px] text-mcAqua flex items-center gap-1">
+                        <span id="hero-expand-text">Mở Rộng</span>
+                        <span id="hero-expand-arrow">▼</span>
+                    </button>
                 </div>
 
                 <div id="hero-expandable" class="expand-content">
-                    <div class="expand-inner text-xs sm:text-sm text-slate-300 pt-3 border-t-2 border-[#3C4258] mt-3 font-sans leading-relaxed space-y-2">
-                        <p data-i18n="hero_desc_1">🔹 <b>Galaxy Craft</b> là nơi cung cấp các phiên bản Modpack sinh tồn, Addon cơ chế và Texture HD tối ưu hiệu năng cao nhất.</p>
-                        <p data-i18n="hero_desc_2">🔹 Hỗ trợ đầy đủ cho cả <b>Java Edition (Forge/Fabric)</b> và <b>Bedrock Edition (MCPE/Addons)</b>.</p>
-                        <p data-i18n="hero_desc_3">🔹 Kiểm duyệt sạch sẽ, an toàn 100% không link độc hại, tải trực tiếp tốc độ cao.</p>
+                    <div class="expand-inner text-xs sm:text-sm text-slate-300 pt-3 border-t-2 border-[#3C4258] mt-3 font-sans leading-relaxed space-y-2" id="hero-block-desc">
+                        <p>🔹 <b>Galaxy Craft</b> là nơi cung cấp các phiên bản Modpack sinh tồn, Addon cơ chế và Texture HD tối ưu hiệu năng cao nhất.</p>
+                        <p>🔹 Hỗ trợ đầy đủ cho cả <b>Java Edition (Forge/Fabric)</b> và <b>Bedrock Edition (MCPE/Addons)</b>.</p>
+                        <p>🔹 Kiểm duyệt sạch sẽ, an toàn 100% không link độc hại, tải trực tiếp tốc độ cao.</p>
                     </div>
                 </div>
             </div>
 
             <!-- SEARCH & FILTER TOOLBAR -->
-            <div id="search-panel" class="w-full mc-panel p-2.5 sm:p-3 flex flex-col sm:flex-row gap-2 sm:gap-3 relative">
-                <!-- Nút Dev đổi ảnh khung Tìm kiếm -->
-                <button id="dev-search-edit-btn" onclick="document.getElementById('search-bg-upload').click()" class="hidden-accessible absolute -top-3 right-3 mc-btn mc-btn-gold px-2 py-0.5 text-[10px] z-10">
-                    ĐỔI ẢNH KHUNG
-                </button>
-                <input type="file" id="search-bg-upload" accept="image/*" class="hidden" onchange="App.Dev.handleCustomSearchImage(event)">
-
+            <div id="search-panel" class="w-full search-custom p-2.5 sm:p-3 rounded-lg border-2 border-[#3C4258] flex flex-col sm:flex-row gap-2 sm:gap-3 relative">
                 <div class="relative flex-1">
                     <input type="text" id="search-input" placeholder="Tìm tên pack, addon, shader..." 
                         class="w-full h-10 pl-3 pr-3 bg-[#0E1017] border-2 border-[#3C4258] focus:border-mcGreen text-white text-xs rounded focus:outline-none">
                 </div>
 
                 <select id="loader-select" onchange="App.Filter.setLoader(this.value)" class="h-10 px-2.5 bg-[#0E1017] border-2 border-[#3C4258] focus:border-mcGreen text-white text-xs rounded cursor-pointer">
-                    <option value="All" data-i18n="loader_all">TẤT CẢ LOADER</option>
+                    <option value="All">TẤT CẢ LOADER</option>
                     <option value="Forge">⚡ Forge (Java)</option>
                     <option value="Fabric">🧶 Fabric (Java)</option>
                     <option value="Bedrock">📱 Bedrock / PE</option>
@@ -450,9 +510,9 @@
                 </select>
 
                 <select id="sort-select" onchange="App.Filter.setSort(this.value)" class="h-10 px-2.5 bg-[#0E1017] border-2 border-[#3C4258] focus:border-mcGreen text-white text-xs rounded cursor-pointer">
-                    <option value="newest" data-i18n="sort_newest">🕒 MỚI NHẤT</option>
-                    <option value="downloads" data-i18n="sort_downloads">🔥 TẢI NHIỀU</option>
-                    <option value="likes" data-i18n="sort_likes">❤️ NHIỀU TIM</option>
+                    <option value="newest">🕒 MỚI NHẤT</option>
+                    <option value="downloads">🔥 TẢI NHIỀU</option>
+                    <option value="likes">❤️ NHIỀU TIM</option>
                 </select>
             </div>
         </section>
@@ -461,24 +521,21 @@
         <section class="w-full mt-3">
             <div class="flex items-center justify-between mb-3 px-1">
                 <span class="text-xs sm:text-sm font-bold text-white font-mc flex items-center gap-2">
-                    <span data-i18n="grid_title">KHO TÀI NGUYÊN HIỆN CÓ</span>
+                    <span>KHO TÀI NGUYÊN HIỆN CÓ</span>
                 </span>
                 <span id="pack-counter" class="text-xs text-mcAqua font-mono">0 ITEMS</span>
             </div>
 
-            <!-- Loading Skeleton -->
             <div id="grid-loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                <div class="mc-panel p-4 h-64 animate-pulse"></div>
-                <div class="mc-panel p-4 h-64 animate-pulse"></div>
-                <div class="mc-panel p-4 h-64 animate-pulse"></div>
+                <div class="card-custom p-4 h-64 animate-pulse"></div>
+                <div class="card-custom p-4 h-64 animate-pulse"></div>
+                <div class="card-custom p-4 h-64 animate-pulse"></div>
             </div>
 
-            <!-- Empty State -->
-            <div id="grid-empty" class="hidden-accessible py-12 text-center mc-panel max-w-md mx-auto">
-                <p class="text-xs text-slate-300 font-bold font-mc" data-i18n="empty_msg">Không tìm thấy tài nguyên nào phù hợp!</p>
+            <div id="grid-empty" class="hidden-accessible py-12 text-center card-custom max-w-md mx-auto">
+                <p class="text-xs text-slate-300 font-bold font-mc">Không tìm thấy tài nguyên nào phù hợp!</p>
             </div>
 
-            <!-- Grid Items -->
             <div id="items-grid" class="gap-4 sm:gap-5 w-full"></div>
         </section>
     </main>
@@ -486,46 +543,179 @@
     <!-- FOOTER -->
     <footer class="mt-auto bg-[#12141A]/95 border-t-2 border-[#3C4258] py-6 w-full z-10">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-            <span class="font-mc text-xs text-white">Galaxy Craft &copy; 2026</span>
-            <p class="text-[11px] text-slate-400 font-sans" data-i18n="footer_sub">Kho tài nguyên Minecraft miễn phí cho cộng đồng.</p>
+            <span class="font-mc text-xs text-white" id="footer-text">Galaxy Craft &copy; 2026</span>
+            <p class="text-[11px] text-slate-400 font-sans">Kho tài nguyên Minecraft phi lợi nhuận cho cộng đồng.</p>
         </div>
     </footer>
 
-    <!-- DEV CONTROL CENTER STUDIO MODAL -->
+    <!-- DEV STUDIO MODAL (TÙY BIẾN ĐỘ TRONG SUỐT, BLUR, ẢNH NỀN VÀ VĂN BẢN TẤT CẢ MỤC) -->
     <div id="dev-modal" class="fixed inset-0 z-[220] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md hidden-accessible">
-        <div class="mc-panel w-full max-w-2xl p-4 sm:p-6 max-h-[92vh] overflow-y-auto">
+        <div class="card-custom w-full max-w-3xl p-4 sm:p-6 max-h-[92vh] overflow-y-auto">
             
             <div class="flex items-center justify-between border-b-2 border-[#3C4258] pb-3 mb-4">
                 <span class="text-sm font-bold text-white font-mc flex items-center gap-2">
-                    <span class="text-mcGold">★</span> DEV STUDIO & QUẢN TRỊ
+                    <span class="text-mcGold">★</span> DEV STUDIO MASTER CONTROL
                 </span>
                 <button onclick="App.Modal.close('dev-modal')" class="mc-btn p-1">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                 </button>
             </div>
 
-            <!-- TABS ĐIỀU KHIỂN CỦA DEV -->
+            <!-- DEV TABS -->
             <div class="flex flex-wrap gap-1.5 border-b-2 border-[#3C4258] pb-3 mb-4">
-                <button onclick="App.Dev.setTab('post')" id="dev-tab-btn-post" class="mc-btn mc-btn-gold px-3 py-1 text-xs">ĐĂNG BÀI</button>
-                <button onclick="App.Dev.setTab('music')" id="dev-tab-btn-music" class="mc-btn px-3 py-1 text-xs">QUẢN LÝ NHẠC BGM</button>
-                <button onclick="App.Dev.setTab('theme')" id="dev-tab-btn-theme" class="mc-btn px-3 py-1 text-xs">ĐỔI NỀN & KHUNG</button>
-                <button onclick="App.Dev.setTab('broadcast')" id="dev-tab-btn-broadcast" class="mc-btn px-3 py-1 text-xs">THÔNG BÁO</button>
+                <button onclick="App.Dev.setTab('style')" id="dev-tab-btn-style" class="mc-btn mc-btn-gold px-3 py-1 text-xs">ĐỘ MỜ & TRONG SUỐT</button>
+                <button onclick="App.Dev.setTab('text')" id="dev-tab-btn-text" class="mc-btn px-3 py-1 text-xs">SỬA VĂN BẢN CÁC MỤC</button>
+                <button onclick="App.Dev.setTab('bg')" id="dev-tab-btn-bg" class="mc-btn px-3 py-1 text-xs">ĐỔI HÌNH NỀN TỪNG KHUNG</button>
+                <button onclick="App.Dev.setTab('music')" id="dev-tab-btn-music" class="mc-btn px-3 py-1 text-xs">QUẢN LÝ NHẠC PLAYLIST</button>
+                <button onclick="App.Dev.setTab('post')" id="dev-tab-btn-post" class="mc-btn px-3 py-1 text-xs">ĐĂNG BÀI VIẾT</button>
             </div>
 
-            <!-- TAB 1: ĐĂNG TÀI NGUYÊN (HỖ TRỢ TAG JAVA / BEDROCK) -->
-            <div id="dev-tab-post" class="space-y-3 text-xs font-sans">
-                <form id="pack-form" class="space-y-3">
-                    <input type="hidden" id="form-item-id">
-                    
-                    <div>
-                        <label class="font-bold text-slate-300 block mb-1">ẢNH BÌA TÀI NGUYÊN (NHẤN ĐỂ CHỌN) *</label>
-                        <div class="mc-slot w-full h-32 flex items-center justify-center cursor-pointer rounded overflow-hidden relative" onclick="document.getElementById('image-upload').click()">
-                            <input type="file" id="image-upload" accept="image/*" class="hidden" onchange="App.UI.handleImageUpload(event)">
-                            <img id="image-preview" src="" class="hidden w-full h-full object-cover">
-                            <span id="image-placeholder" class="text-slate-400 font-mc text-[10px]">Tải ảnh bìa (Tự động nén HD)</span>
+            <!-- TAB 1: ĐỘ TRONG SUỐT & ĐỘ MỜ TỪNG KHUNG -->
+            <div id="dev-tab-style" class="space-y-3.5 text-xs font-sans">
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcGold font-mc block">1. KHUNG THÔNG BÁO (ANNOUNCEMENT)</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label>Độ trong suốt / Đậm (Opacity):</label>
+                            <input type="range" min="0.1" max="1" step="0.05" value="0.95" id="inp-banner-opacity" class="w-full" oninput="App.Dev.liveUpdateStyle('banner_opacity', this.value)">
+                        </div>
+                        <div>
+                            <label>Độ mờ hậu cảnh (Blur px):</label>
+                            <input type="range" min="0" max="30" step="1" value="4" id="inp-banner-blur" class="w-full" oninput="App.Dev.liveUpdateStyle('banner_blur', this.value)">
                         </div>
                     </div>
+                </div>
 
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcAqua font-mc block">2. KHUNG GIỚI THIỆU (HERO SECTION)</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label>Độ trong suốt (Opacity):</label>
+                            <input type="range" min="0.1" max="1" step="0.05" value="0.92" id="inp-hero-opacity" class="w-full" oninput="App.Dev.liveUpdateStyle('hero_opacity', this.value)">
+                        </div>
+                        <div>
+                            <label>Độ mờ hậu cảnh (Blur px):</label>
+                            <input type="range" min="0" max="30" step="1" value="8" id="inp-hero-blur" class="w-full" oninput="App.Dev.liveUpdateStyle('hero_blur', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcGreen font-mc block">3. KHUNG TÌM KIẾM & BỘ LỌC (SEARCH BAR)</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label>Độ trong suốt (Opacity):</label>
+                            <input type="range" min="0.1" max="1" step="0.05" value="0.92" id="inp-search-opacity" class="w-full" oninput="App.Dev.liveUpdateStyle('search_opacity', this.value)">
+                        </div>
+                        <div>
+                            <label>Độ mờ hậu cảnh (Blur px):</label>
+                            <input type="range" min="0" max="30" step="1" value="8" id="inp-search-blur" class="w-full" oninput="App.Dev.liveUpdateStyle('search_blur', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcYellow font-mc block">4. CÁC THẺ BÀI VIẾT (ADDON CARDS)</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label>Độ trong suốt (Opacity):</label>
+                            <input type="range" min="0.1" max="1" step="0.05" value="0.94" id="inp-card-opacity" class="w-full" oninput="App.Dev.liveUpdateStyle('card_opacity', this.value)">
+                        </div>
+                        <div>
+                            <label>Độ mờ hậu cảnh (Blur px):</label>
+                            <input type="range" min="0" max="30" step="1" value="6" id="inp-card-blur" class="w-full" oninput="App.Dev.liveUpdateStyle('card_blur', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="App.Dev.saveAllStyles()" class="mc-btn mc-btn-green w-full py-2 text-xs font-mc">LƯU CẤU HÌNH ĐỘ TRONG SUỐT VÀO FIREBASE</button>
+            </div>
+
+            <!-- TAB 2: SỬA VĂN BẢN CHO TẤT CẢ MỤC -->
+            <div id="dev-tab-text" class="hidden-accessible space-y-3 text-xs font-sans">
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcGold font-mc block">SỬA TIÊU ĐỀ & MÔ TẢ TRANG WEB</span>
+                    <div>
+                        <label class="font-bold block mb-1">Thông Báo Chạy Đầu Trang:</label>
+                        <input type="text" id="dev-text-announcement" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Tiêu Đề Lớn (Hero Main Title):</label>
+                        <input type="text" id="dev-text-hero-main" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Mô Tả Phụ (Hero Sub Title):</label>
+                        <input type="text" id="dev-text-hero-sub" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Tiêu Đề Khung Mở Rộng:</label>
+                        <input type="text" id="dev-text-hero-block" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Văn Bản Chân Trang (Footer):</label>
+                        <input type="text" id="dev-text-footer" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
+                    </div>
+                    <button onclick="App.Dev.saveAllTexts()" class="mc-btn mc-btn-green w-full py-2 text-xs font-mc mt-2">CẬP NHẬT TẤT CẢ VĂN BẢN TRÊN SERVER</button>
+                </div>
+            </div>
+
+            <!-- TAB 3: ĐỔI HÌNH NỀN TỪNG KHUNG RIÊNG BIỆT -->
+            <div id="dev-tab-bg" class="hidden-accessible space-y-3 text-xs font-sans">
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcGold font-mc block">1. ĐỔI ẢNH NỀN TOÀN TRANG (BACKGROUND CHÍNH)</span>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('main_bg', event)" class="w-full text-slate-300">
+                </div>
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcAqua font-mc block">2. ĐỔI ẢNH NỀN KHUNG THÔNG BÁO</span>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('banner_bg', event)" class="w-full text-slate-300">
+                </div>
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcGreen font-mc block">3. ĐỔI ẢNH NỀN KHUNG GIỚI THIỆU (HERO PANEL)</span>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('hero_bg', event)" class="w-full text-slate-300">
+                </div>
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcYellow font-mc block">4. ĐỔI ẢNH NỀN KHUNG TÌM KIẾM (SEARCH PANEL)</span>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('search_bg', event)" class="w-full text-slate-300">
+                </div>
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcRed font-mc block">5. ĐỔI ẢNH NỀN CÁC THẺ TÀI NGUYÊN (CARDS)</span>
+                    <input type="file" accept="image/*" onchange="App.Dev.uploadBgSpecific('card_bg', event)" class="w-full text-slate-300">
+                </div>
+            </div>
+
+            <!-- TAB 4: QUẢN LÝ NHẠC PLAYLIST TỰ ĐỘNG PHÁT -->
+            <div id="dev-tab-music" class="hidden-accessible space-y-3 text-xs font-sans">
+                <div class="mc-slot p-3 rounded space-y-2">
+                    <span class="font-bold text-mcGold font-mc block">THÊM BÀI HÁT TỰ ĐỘNG PHÁT KHI VÀO WEB</span>
+                    <p class="text-[11px] text-slate-300">Tải file âm thanh (MP3/WAV) hoặc nhập link trực tiếp. Bài hát sẽ tự phát cho tất cả mọi người.</p>
+                    <div class="flex gap-2">
+                        <input type="file" id="dev-music-file" accept="audio/*" class="w-full text-[11px] text-slate-300">
+                        <button onclick="App.Dev.uploadMusicFile()" class="mc-btn mc-btn-aqua px-3 py-1 text-xs shrink-0 font-mc">TẢI FILE</button>
+                    </div>
+                    <div class="pt-2 border-t border-[#3C4258] flex gap-2">
+                        <input type="url" id="dev-music-url" placeholder="https://domain.com/song.mp3" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
+                        <button onclick="App.Dev.addMusicUrl()" class="mc-btn mc-btn-green px-3 py-1 text-xs shrink-0 font-mc">THÊM LINK</button>
+                    </div>
+                </div>
+
+                <div class="mc-slot p-3 rounded space-y-1.5">
+                    <span class="font-bold text-mcGreen font-mc block">DANH SÁCH BÀI HÁT TỰ ĐỘNG CHUYỂN BÀI & LẶP LẠI</span>
+                    <div id="dev-playlist-container" class="space-y-1.5 max-h-44 overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <!-- TAB 5: ĐĂNG TÀI NGUYÊN -->
+            <div id="dev-tab-post" class="hidden-accessible space-y-3 text-xs font-sans">
+                <form id="pack-form" class="space-y-2.5">
+                    <input type="hidden" id="form-item-id">
+                    <div>
+                        <label class="font-bold text-slate-300 block mb-1">ẢNH BÌA TÀI NGUYÊN (NHẤN ĐỂ CHỌN) *</label>
+                        <div class="mc-slot w-full h-28 flex items-center justify-center cursor-pointer rounded overflow-hidden relative" onclick="document.getElementById('image-upload').click()">
+                            <input type="file" id="image-upload" accept="image/*" class="hidden" onchange="App.UI.handleImageUpload(event)">
+                            <img id="image-preview" src="" class="hidden w-full h-full object-cover">
+                            <span id="image-placeholder" class="text-slate-400 font-mc text-[10px]">Tải ảnh bìa (Nén HD)</span>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="font-bold text-slate-300 block mb-1">TÊN PACK / MOD *</label>
@@ -541,10 +731,9 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="font-bold text-slate-300 block mb-1">HỆ NỀN TẢNG (PLATFORM) *</label>
+                            <label class="font-bold text-slate-300 block mb-1">HỆ MÁY (PLATFORM) *</label>
                             <select id="form-platform" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white font-bold text-mcAqua">
                                 <option value="BOTH">Universal (Cả Java & Bedrock)</option>
                                 <option value="JAVA">Java Edition Only</option>
@@ -552,7 +741,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="font-bold text-slate-300 block mb-1">LOADER / ENGINE *</label>
+                            <label class="font-bold text-slate-300 block mb-1">LOADER *</label>
                             <select id="form-loader" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
                                 <option value="Forge">Forge (Java)</option>
                                 <option value="Fabric">Fabric (Java)</option>
@@ -561,7 +750,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="font-bold text-slate-300 block mb-1">PHIÊN BẢN MC *</label>
@@ -572,86 +760,21 @@
                             <input type="url" id="form-download" required placeholder="https://..." class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
                         </div>
                     </div>
-
                     <div>
-                        <label class="font-bold text-slate-300 block mb-1">MÔ TẢ NỘI DUNG *</label>
-                        <textarea id="form-description" rows="3" required placeholder="Mô tả chi tiết..." class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white"></textarea>
+                        <label class="font-bold text-slate-300 block mb-1">MÔ TẢ CHI TIẾT *</label>
+                        <textarea id="form-description" rows="2" required placeholder="Mô tả nội dung..." class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white"></textarea>
                     </div>
-
-                    <button type="submit" id="submit-pack-btn" class="mc-btn mc-btn-gold w-full py-2.5 text-xs font-mc">
+                    <button type="submit" id="submit-pack-btn" class="mc-btn mc-btn-gold w-full py-2 text-xs font-mc">
                         LƯU TÀI NGUYÊN VÀO SERVER
                     </button>
                 </form>
             </div>
-
-            <!-- TAB 2: QUẢN LÝ NHẠC BGM (DEV ONLY - ĐỒNG BỘ TOÀN DÂN) -->
-            <div id="dev-tab-music" class="hidden-accessible space-y-4 text-xs font-sans">
-                <div class="mc-slot p-3.5 rounded space-y-3">
-                    <span class="font-bold text-mcGold font-mc block">1. THÊM BÀI HÁT MỚI VÀO PLAYLIST CHUNG</span>
-                    <p class="text-[11px] text-slate-300">Tải file âm thanh từ máy (MP3/WAV) hoặc nhập đường link trực tiếp. Khi bạn đổi nhạc, **toàn bộ người dùng truy cập web đều sẽ nghe bài hát này**.</p>
-                    
-                    <div class="flex gap-2">
-                        <input type="file" id="dev-music-file" accept="audio/*" class="w-full text-[11px] text-slate-300">
-                        <button onclick="App.Dev.uploadMusicFile()" id="dev-upload-music-btn" class="mc-btn mc-btn-aqua px-3 py-1 text-xs shrink-0 font-mc">TẢI LÊN</button>
-                    </div>
-
-                    <div class="pt-2 border-t border-[#3C4258]">
-                        <label class="block mb-1 font-bold">Hoặc nhập Direct Link Audio:</label>
-                        <div class="flex gap-2">
-                            <input type="url" id="dev-music-url" placeholder="https://domain.com/music.mp3" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white">
-                            <button onclick="App.Dev.addMusicUrl()" class="mc-btn mc-btn-green px-3 py-1 text-xs shrink-0 font-mc">THÊM LINK</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mc-slot p-3.5 rounded space-y-2">
-                    <span class="font-bold text-mcGreen font-mc block">2. DANH SÁCH BÀI HÁT TỰ ĐỘNG PHÁT VÀ LẶP LẠI (PLAYLIST)</span>
-                    <div id="dev-playlist-container" class="space-y-1.5 max-h-48 overflow-y-auto">
-                        <!-- Rendered by JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: ĐỔI NỀN & KHUNG CHO TỪNG MỤC -->
-            <div id="dev-tab-theme" class="hidden-accessible space-y-4 text-xs font-sans">
-                <div class="mc-slot p-3.5 rounded space-y-2">
-                    <span class="font-bold text-mcGold font-mc block">1. HÌNH NỀN CHÍNH TOÀN WEB</span>
-                    <input type="file" accept="image/*" onchange="App.Dev.handleCustomMainBg(event)" class="w-full text-slate-300">
-                    <button onclick="App.Dev.resetBackground()" class="mc-btn px-2.5 py-1 text-[10px]">Khôi phục nền gốc Minecraft</button>
-                </div>
-
-                <div class="mc-slot p-3.5 rounded space-y-2">
-                    <span class="font-bold text-mcAqua font-mc block">2. ĐỘ MỜ / ĐẬM LỚP PHỦ WEB</span>
-                    <div>
-                        <label class="block mb-1">Độ đậm bóng tối (Overlay Opacity):</label>
-                        <input type="range" min="0.1" max="0.98" step="0.02" value="0.82" class="w-full" oninput="App.Dev.setGlobalOverlayOpacity(this.value)">
-                    </div>
-                    <div>
-                        <label class="block mb-1">Độ mờ hậu cảnh (Blur):</label>
-                        <input type="range" min="0" max="25" step="1" value="8" class="w-full" oninput="App.Dev.setGlobalBackdropBlur(this.value)">
-                    </div>
-                </div>
-
-                <div class="mc-slot p-3.5 rounded space-y-2">
-                    <span class="font-bold text-mcGreen font-mc block">3. THAY ẢNH CHO CÁC KHUNG ĐEN / SLOT</span>
-                    <input type="file" accept="image/*" onchange="App.Dev.handleCustomSlotImage(event)" class="w-full text-slate-300">
-                </div>
-            </div>
-
-            <!-- TAB 4: THÔNG BÁO TỔNG -->
-            <div id="dev-tab-broadcast" class="hidden-accessible space-y-3 text-xs font-sans">
-                <div class="mc-slot p-3.5 rounded space-y-2">
-                    <span class="font-bold text-mcGold font-mc block">CHỈNH SỬA THÔNG BÁO SERVER</span>
-                    <textarea id="dev-broadcast-input" rows="3" class="w-full p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-white" placeholder="Nội dung thông báo toàn web..."></textarea>
-                    <button onclick="App.Dev.saveBroadcast()" class="mc-btn mc-btn-green w-full py-2 text-xs font-mc">CẬP NHẬT THÔNG BÁO</button>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- MODAL DOWNLOAD (BỘ ĐẾM GIÂY) -->
+    <!-- MODAL DOWNLOAD -->
     <div id="download-modal" class="fixed inset-0 z-[220] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden-accessible">
-        <div class="mc-panel w-full max-w-sm p-5 text-center flex flex-col items-center">
+        <div class="card-custom w-full max-w-sm p-5 text-center flex flex-col items-center">
             <button onclick="App.Modal.close('download-modal')" class="absolute top-3.5 right-3.5 mc-btn p-1">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
@@ -659,19 +782,19 @@
             <div id="modal-item-content" class="w-full flex flex-col items-center"></div>
 
             <div class="mt-4 pt-3 border-t-2 border-[#3C4258] w-full">
-                <button id="start-download-btn" onclick="App.Download.startTimer()" class="mc-btn mc-btn-green w-full py-2.5 text-xs font-mc" data-i18n="start_download">
+                <button id="start-download-btn" onclick="App.Download.startTimer()" class="mc-btn mc-btn-green w-full py-2.5 text-xs font-mc">
                     BẮT ĐẦU TẢI
                 </button>
                 
                 <div id="timer-view" class="hidden-accessible w-full flex flex-col items-center gap-1.5">
-                    <span class="text-xs text-slate-400 font-mono" data-i18n="generating_link">Đang tạo đường link an toàn...</span>
+                    <span class="text-xs text-slate-400 font-mono">Đang tạo đường link an toàn...</span>
                     <div class="text-3xl font-mc text-mcGreen my-1" id="countdown-text">5s</div>
                     <div class="w-full bg-[#12141A] h-2 border border-[#3C4258]">
                         <div id="timer-progress" class="bg-mcGreen h-full w-0 transition-all duration-1000"></div>
                     </div>
                 </div>
                 
-                <a id="final-download-link" href="#" target="_blank" onclick="App.Download.completeDownload()" class="mc-btn mc-btn-green hidden-accessible w-full py-2.5 text-xs animate-bounce block font-mc" data-i18n="download_now">
+                <a id="final-download-link" href="#" target="_blank" onclick="App.Download.completeDownload()" class="mc-btn mc-btn-green hidden-accessible w-full py-2.5 text-xs animate-bounce block font-mc">
                     TẢI XUỐNG NGAY
                 </a>
             </div>
@@ -680,21 +803,19 @@
 
     <!-- MODAL XÁC NHẬN ĐĂNG XUẤT -->
     <div id="confirm-modal" class="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden-accessible">
-        <div class="mc-panel w-full max-w-sm p-5 text-center">
+        <div class="card-custom w-full max-w-sm p-5 text-center">
             <svg class="w-10 h-10 text-mcRed mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-            <h3 class="text-sm font-bold text-white mb-1 font-mc" data-i18n="confirm_logout_title">XÁC NHẬN ĐĂNG XUẤT?</h3>
-            <p class="text-xs text-slate-300 font-sans mb-4" data-i18n="confirm_logout_msg">Bạn có chắc chắn muốn đăng xuất khỏi Galaxy Craft?</p>
-            
+            <h3 class="text-sm font-bold text-white mb-1 font-mc">XÁC NHẬN ĐĂNG XUẤT?</h3>
+            <p class="text-xs text-slate-300 font-sans mb-4">Bạn có chắc chắn muốn đăng xuất khỏi Galaxy Craft?</p>
             <div class="grid grid-cols-2 gap-2">
-                <button onclick="App.Modal.close('confirm-modal')" class="mc-btn py-2 text-xs" data-i18n="cancel_btn">HỦY BỎ</button>
-                <button onclick="App.Auth.logout()" class="mc-btn mc-btn-red py-2 text-xs" data-i18n="logout_btn">ĐĂNG XUẤT</button>
+                <button onclick="App.Modal.close('confirm-modal')" class="mc-btn py-2 text-xs">HỦY BỎ</button>
+                <button onclick="App.Auth.logout()" class="mc-btn mc-btn-red py-2 text-xs">ĐĂNG XUẤT</button>
             </div>
         </div>
     </div>
 
     <!-- SCRIPT ENGINE -->
     <script>
-        // GOOGLE OAUTH
         function handleCredentialResponse(response) {
             const token = response.credential;
             const base64Url = token.split('.')[1];
@@ -706,7 +827,6 @@
             App.Auth.handleLoginSuccess(user);
         }
 
-        // FIREBASE INITIALIZATION
         const firebaseConfig = {
             databaseURL: "https://goggle-login-39224-default-rtdb.firebaseio.com",
             projectId: "goggle-login-39224",
@@ -716,14 +836,13 @@
 
         const DEV_EMAIL = "hminhgalaxy@gmail.com";
 
-        // GLOBAL APPLICATION STATE
         const state = {
             lang: 'vi',
             currentUser: null,
             isDev: false,
             items: [],
             activeCategory: 'All',
-            activePlatform: 'ALL', // 'ALL' | 'JAVA' | 'BEDROCK'
+            activePlatform: 'ALL',
             activeLoader: 'All',
             sortBy: 'newest',
             searchQuery: '',
@@ -736,125 +855,84 @@
             heroExpanded: false,
             expandedCards: {},
             playlist: [],
-            currentTrackIndex: 0
+            currentTrackIndex: 0,
+            tempStyles: {}
         };
 
         const App = {
             init: () => {
+                App.Loading.start(5); // Chạy loading 5 giây chuẩn Minecraft
                 App.Canvas.init();
                 App.Database.listenPacks();
                 App.Database.listenSettings();
                 App.UI.setupListeners();
                 App.Favorites.updateCounter();
-                App.i18n.init();
 
                 const savedUser = localStorage.getItem('galaxy_user');
                 if (savedUser) {
                     App.Auth.handleLoginSuccess(JSON.parse(savedUser));
                 }
+
+                // Global Click Handler: Giải phóng Autoplay nếu trình duyệt chặn
+                const unlockAutoplay = () => {
+                    if (!state.bgmPlaying && state.playlist.length > 0) {
+                        App.Audio.playCurrentTrack();
+                    }
+                    window.removeEventListener('click', unlockAutoplay);
+                    window.removeEventListener('touchstart', unlockAutoplay);
+                };
+                window.addEventListener('click', unlockAutoplay);
+                window.addEventListener('touchstart', unlockAutoplay);
             },
 
-            // ĐA NGÔN NGỮ
-            i18n: {
-                dictionary: {
-                    vi: {
-                        tagline: "MODS & ADDONS HUB",
-                        tab_all: "TẤT CẢ",
-                        tab_modpack: "MODPACK",
-                        tab_addon: "ADDON/MOD",
-                        tab_texture: "TEXTURE",
-                        tab_shader: "SHADERS",
-                        hero_subtitle: "Kho Addons, Modpacks, Texture Packs chuẩn phong cách Minecraft",
-                        hero_title: "GIỚI THIỆU HỆ THỐNG GALAXY CRAFT",
-                        expand: "Mở Rộng",
-                        collapse: "Thu Gọn",
-                        hero_desc_1: "🔹 <b>Galaxy Craft</b> là nơi cung cấp các phiên bản Modpack sinh tồn, Addon cơ chế và Texture HD tối ưu hiệu năng cao nhất.",
-                        hero_desc_2: "🔹 Hỗ trợ đầy đủ cho cả <b>Java Edition (Forge/Fabric)</b> và <b>Bedrock Edition (MCPE/Addons)</b>.",
-                        hero_desc_3: "🔹 Kiểm duyệt sạch sẽ, an toàn 100% không link độc hại, tải trực tiếp tốc độ cao.",
-                        loader_all: "TẤT CẢ LOADER",
-                        sort_newest: "🕒 MỚI NHẤT",
-                        sort_downloads: "🔥 TẢI NHIỀU",
-                        sort_likes: "❤️ NHIỀU TIM",
-                        grid_title: "KHO TÀI NGUYÊN HIỆN CÓ",
-                        empty_msg: "Không tìm thấy tài nguyên nào phù hợp!",
-                        download_btn: "TẢI XUỐNG",
-                        start_download: "BẮT ĐẦU TẢI",
-                        generating_link: "Đang tạo đường link an toàn...",
-                        download_now: "TẢI XUỐNG NGAY",
-                        account_management: "QUẢN LÝ TÀI KHOẢN",
-                        login_prompt: "Đăng nhập tài khoản Google để thả tim và mở quyền Dev.",
-                        saved_resources: "Tài Nguyên Đã Lưu",
-                        confirm_logout_title: "XÁC NHẬN ĐĂNG XUẤT?",
-                        confirm_logout_msg: "Bạn có chắc chắn muốn đăng xuất khỏi Galaxy Craft?",
-                        cancel_btn: "HỦY BỎ",
-                        logout_btn: "ĐĂNG XUẤT",
-                        footer_sub: "Kho tài nguyên Minecraft miễn phí cho cộng đồng."
-                    },
-                    en: {
-                        tagline: "MINECRAFT RESOURCE HUB",
-                        tab_all: "ALL",
-                        tab_modpack: "MODPACK",
-                        tab_addon: "ADDON/MOD",
-                        tab_texture: "TEXTURE",
-                        tab_shader: "SHADERS",
-                        hero_subtitle: "Quality Minecraft Modpacks, Addons & Shaders Hub",
-                        hero_title: "ABOUT GALAXY CRAFT SYSTEM",
-                        expand: "Expand",
-                        collapse: "Collapse",
-                        hero_desc_1: "🔹 <b>Galaxy Craft</b> provides premium survival modpacks, game mechanic addons and FPS optimized texture packs.",
-                        hero_desc_2: "🔹 Full compatibility with both <b>Java Edition</b> and <b>Bedrock Edition</b>.",
-                        hero_desc_3: "🔹 100% verified, virus-free downloads with high-speed direct links.",
-                        loader_all: "ALL LOADERS",
-                        sort_newest: "🕒 NEWEST",
-                        sort_downloads: "🔥 MOST DOWNLOADED",
-                        sort_likes: "❤️ MOST LIKED",
-                        grid_title: "AVAILABLE RESOURCES",
-                        empty_msg: "No matching resources found!",
-                        download_btn: "DOWNLOAD",
-                        start_download: "START DOWNLOAD",
-                        generating_link: "Generating secure link...",
-                        download_now: "DOWNLOAD NOW",
-                        account_management: "ACCOUNT MANAGEMENT",
-                        login_prompt: "Sign in with Google to bookmark and unlock Dev tools.",
-                        saved_resources: "Saved Resources",
-                        confirm_logout_title: "CONFIRM LOGOUT?",
-                        confirm_logout_msg: "Are you sure you want to log out from Galaxy Craft?",
-                        cancel_btn: "CANCEL",
-                        logout_btn: "LOGOUT",
-                        footer_sub: "Non-profit community resource hub for Minecraft."
-                    }
-                },
-                init: () => {
-                    const saved = localStorage.getItem('galaxy_lang') || 'vi';
-                    state.lang = saved;
-                    App.i18n.apply();
-                },
-                toggleLanguage: () => {
-                    state.lang = (state.lang === 'vi') ? 'en' : 'vi';
-                    localStorage.setItem('galaxy_lang', state.lang);
-                    App.i18n.apply();
-                    App.Render.items();
-                },
-                apply: () => {
-                    document.getElementById('lang-btn-text').innerText = state.lang.toUpperCase();
-                    const dict = App.i18n.dictionary[state.lang];
-                    document.querySelectorAll('[data-i18n]').forEach(el => {
-                        const key = el.getAttribute('data-i18n');
-                        if (dict[key]) {
-                            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                                el.placeholder = dict[key];
-                            } else {
-                                el.innerHTML = dict[key];
-                            }
+            // 5-SECOND LOADING ENGINE
+            Loading: {
+                start: (seconds = 5) => {
+                    const screen = document.getElementById('minecraft-loading-screen');
+                    const progress = document.getElementById('loading-progress');
+                    const secText = document.getElementById('loading-seconds');
+                    const statusText = document.getElementById('loading-status');
+                    
+                    let remaining = seconds;
+                    let progressPercent = 0;
+
+                    const interval = setInterval(() => {
+                        progressPercent += 2;
+                        if (progressPercent > 100) progressPercent = 100;
+                        progress.style.width = progressPercent + '%';
+
+                        if (progressPercent < 30) statusText.innerText = "Nạp cấu hình Realtime...";
+                        else if (progressPercent < 70) statusText.innerText = "Tải kho tài nguyên & Playlist...";
+                        else statusText.innerText = "Đồng bộ giao diện hoàn tất!";
+                    }, (seconds * 1000) / 50);
+
+                    const countInterval = setInterval(() => {
+                        remaining--;
+                        if (remaining >= 0) {
+                            secText.innerText = remaining + 's';
                         }
-                    });
+                        if (remaining <= 0) {
+                            clearInterval(countInterval);
+                            clearInterval(interval);
+                            progress.style.width = '100%';
+
+                            // Mở website & Tự động bật nhạc cho tất cả mọi người
+                            setTimeout(() => {
+                                screen.style.opacity = '0';
+                                setTimeout(() => {
+                                    screen.remove();
+                                    App.Audio.playCurrentTrack(); // Tự động phát nhạc
+                                }, 600);
+                            }, 300);
+                        }
+                    }, 1000);
                 }
             },
 
-            // HỆ THỐNG ÂM THANH & BGM PLAYLIST ĐỒNG BỘ CHO MỌI NGƯỜI DÙNG
+            // AUDIO ENGINE ĐÃ FIX HOÀN TOÀN LỖI PHÁT ÂM THANH
             Audio: {
-                bgmAudio: null,
-                targetVolume: 0.35,
+                bgmAudio: new Audio(),
+                targetVolume: 0.4,
                 fadeInterval: null,
 
                 play: (type) => {
@@ -886,88 +964,78 @@
                     } catch (e) {}
                 },
 
-                // Khởi động bài hát hiện tại từ Playlist
-                loadCurrentTrack: () => {
-                    if (state.playlist.length === 0) return;
-                    
+                playCurrentTrack: () => {
+                    if (state.playlist.length === 0) {
+                        state.playlist = [{ title: 'C418 - Key (Default)', url: 'https://ia800109.us.archive.org/30/items/minecraft-volume-alpha/01.%20Key.mp3' }];
+                    }
+
                     const track = state.playlist[state.currentTrackIndex];
                     if (!track) return;
 
-                    if (App.Audio.bgmAudio) {
-                        App.Audio.bgmAudio.pause();
-                    }
+                    const audio = App.Audio.bgmAudio;
+                    audio.src = track.url;
+                    audio.volume = 0;
 
-                    App.Audio.bgmAudio = new Audio(track.url);
-                    
-                    // Giám sát fade-out 3s cuối bài
-                    App.Audio.bgmAudio.ontimeupdate = () => {
-                        const a = App.Audio.bgmAudio;
-                        if (a && a.duration && a.currentTime > 0) {
-                            const timeLeft = a.duration - a.currentTime;
+                    audio.ontimeupdate = () => {
+                        if (audio.duration && audio.currentTime > 0) {
+                            const timeLeft = audio.duration - audio.currentTime;
                             if (timeLeft <= 3 && timeLeft > 0.1) {
-                                a.volume = Math.max(0.02, (timeLeft / 3) * App.Audio.targetVolume);
+                                audio.volume = Math.max(0.02, (timeLeft / 3) * App.Audio.targetVolume);
                             }
                         }
                     };
 
-                    // Chuyển sang bài tiếp theo khi hết bài và lặp lại
-                    App.Audio.bgmAudio.onended = () => {
+                    audio.onended = () => {
                         state.currentTrackIndex = (state.currentTrackIndex + 1) % state.playlist.length;
-                        App.Audio.loadCurrentTrack();
-                        if (state.bgmPlaying) {
-                            App.Audio.playWithFadeIn();
-                        }
+                        App.Audio.playCurrentTrack();
                     };
-                },
 
-                playWithFadeIn: () => {
-                    const audio = App.Audio.bgmAudio;
-                    if (!audio) return;
-
-                    audio.volume = 0;
                     audio.play().then(() => {
+                        state.bgmPlaying = true;
+                        document.getElementById('bgm-status-text').innerText = "BGM: BẬT";
+                        
+                        // Fade-In mượt mà
                         clearInterval(App.Audio.fadeInterval);
                         let vol = 0;
                         App.Audio.fadeInterval = setInterval(() => {
-                            vol += 0.03;
+                            vol += 0.04;
                             if (vol >= App.Audio.targetVolume) {
                                 audio.volume = App.Audio.targetVolume;
                                 clearInterval(App.Audio.fadeInterval);
                             } else {
                                 audio.volume = vol;
                             }
-                        }, 80);
-                    }).catch(() => {});
+                        }, 70);
+                    }).catch((err) => {
+                        console.log("Autoplay chờ tương tác người dùng...");
+                    });
                 },
 
                 toggleBGM: (event) => {
                     if (event) event.stopPropagation();
                     App.Audio.play('click');
 
-                    if (!App.Audio.bgmAudio) {
-                        if (state.playlist.length === 0) {
-                            state.playlist = [{ title: 'C418 - Key', url: 'https://ia800109.us.archive.org/30/items/minecraft-volume-alpha/01.%20Key.mp3' }];
-                        }
-                        App.Audio.loadCurrentTrack();
-                    }
-
+                    const audio = App.Audio.bgmAudio;
                     const text = document.getElementById('bgm-status-text');
 
                     if (state.bgmPlaying) {
-                        App.Audio.bgmAudio.pause();
+                        audio.pause();
                         state.bgmPlaying = false;
                         text.innerText = "BGM: TẮT";
                     } else {
-                        App.Audio.playWithFadeIn();
-                        state.bgmPlaying = true;
-                        text.innerText = "BGM: BẬT";
-                        const curr = state.playlist[state.currentTrackIndex];
-                        App.UI.showToast(`Đang phát: ${curr ? curr.title : 'Minecraft BGM'}`, "success");
+                        if (!audio.src || audio.src === window.location.href) {
+                            App.Audio.playCurrentTrack();
+                        } else {
+                            audio.play().then(() => {
+                                state.bgmPlaying = true;
+                                text.innerText = "BGM: BẬT";
+                            });
+                        }
                     }
                 }
             },
 
-            // CANVAS PARTICLES
+            // CANVAS BACKGROUND
             Canvas: {
                 init: () => {
                     const canvas = document.getElementById('bg-canvas');
@@ -1020,26 +1088,18 @@
                     document.getElementById('drawer-guest-view').classList.add('hidden-accessible');
                     document.getElementById('drawer-user-view').classList.remove('hidden-accessible');
                     document.getElementById('drawer-logout-container').classList.remove('hidden-accessible');
-
                     document.getElementById('drawer-avatar').src = user.picture;
                     document.getElementById('drawer-username').innerText = user.name;
 
                     if (state.isDev) {
                         document.getElementById('drawer-role').innerText = "GALAXY DEVELOPER";
                         document.getElementById('drawer-role').className = "text-[9px] text-mcGold bg-[#0B0C12] px-2 py-0.5 rounded border border-mcGold font-bold";
-                        
-                        // Hiển thị các nút điều khiển Dev
                         document.getElementById('dev-quick-dock').classList.remove('hidden-accessible');
-                        document.getElementById('dev-hero-edit-btn').classList.remove('hidden-accessible');
-                        document.getElementById('dev-search-edit-btn').classList.remove('hidden-accessible');
-                        
-                        App.UI.showToast("DEV: Chào mừng Developer!", "success");
+                        App.UI.showToast("DEV: Quyền quản trị đã kích hoạt!", "success");
                     } else {
                         document.getElementById('drawer-role').innerText = "MEMBER";
                         document.getElementById('dev-quick-dock').classList.add('hidden-accessible');
-                        document.getElementById('dev-hero-edit-btn').classList.add('hidden-accessible');
-                        document.getElementById('dev-search-edit-btn').classList.add('hidden-accessible');
-                        App.UI.showToast(`Xin chào, ${user.name}!`);
+                        App.UI.showToast(`Chào mừng, ${user.name}!`);
                     }
 
                     App.Render.items();
@@ -1059,8 +1119,6 @@
                     document.getElementById('drawer-user-view').classList.add('hidden-accessible');
                     document.getElementById('drawer-logout-container').classList.add('hidden-accessible');
                     document.getElementById('dev-quick-dock').classList.add('hidden-accessible');
-                    document.getElementById('dev-hero-edit-btn').classList.add('hidden-accessible');
-                    document.getElementById('dev-search-edit-btn').classList.add('hidden-accessible');
 
                     App.Modal.close('confirm-modal');
                     App.UI.showToast("Đã đăng xuất tài khoản.");
@@ -1068,7 +1126,7 @@
                 }
             },
 
-            // REALTIME DATABASE (ĐỒNG BỘ CẢ SITE THEME, NHẠC, VÀ TÀI NGUYÊN)
+            // REALTIME DATABASE VÀ ĐỒNG BỘ REALTIME TẤT CẢ GIAO DIỆN
             Database: {
                 listenPacks: () => {
                     db.ref('packs').on('value', (snapshot) => {
@@ -1082,35 +1140,58 @@
                     db.ref('site_settings').on('value', (snapshot) => {
                         const s = snapshot.val() || {};
                         
-                        // Cập nhật nền chính
-                        if (s.main_bg) {
-                            document.getElementById('dynamic-bg').style.backgroundImage = `url('${s.main_bg}')`;
+                        // 1. ÁP DỤNG ĐỘ MỜ & TRONG SUỐT CHO TỪNG KHUNG
+                        if (s.styles) {
+                            const st = s.styles;
+                            if (st.banner_opacity) document.documentElement.style.setProperty('--banner-opacity', st.banner_opacity);
+                            if (st.banner_blur) document.documentElement.style.setProperty('--banner-blur', st.banner_blur + 'px');
+
+                            if (st.hero_opacity) document.documentElement.style.setProperty('--hero-opacity', st.hero_opacity);
+                            if (st.hero_blur) document.documentElement.style.setProperty('--hero-blur', st.hero_blur + 'px');
+
+                            if (st.search_opacity) document.documentElement.style.setProperty('--search-opacity', st.search_opacity);
+                            if (st.search_blur) document.documentElement.style.setProperty('--search-blur', st.search_blur + 'px');
+
+                            if (st.card_opacity) document.documentElement.style.setProperty('--card-opacity', st.card_opacity);
+                            if (st.card_blur) document.documentElement.style.setProperty('--card-blur', st.card_blur + 'px');
                         }
-                        // Cập nhật nền Hero
-                        if (s.hero_bg) {
-                            document.documentElement.style.setProperty('--hero-bg-image', `url('${s.hero_bg}')`);
+
+                        // 2. ÁP DỤNG HÌNH NỀN TỪNG KHUNG
+                        if (s.main_bg) document.getElementById('dynamic-bg').style.backgroundImage = `url('${s.main_bg}')`;
+                        if (s.banner_bg) document.documentElement.style.setProperty('--banner-bg-image', `url('${s.banner_bg}')`);
+                        if (s.hero_bg) document.documentElement.style.setProperty('--hero-bg-image', `url('${s.hero_bg}')`);
+                        if (s.search_bg) document.documentElement.style.setProperty('--search-bg-image', `url('${s.search_bg}')`);
+                        if (s.card_bg) document.documentElement.style.setProperty('--card-bg-image', `url('${s.card_bg}')`);
+
+                        // 3. ÁP DỤNG VĂN BẢN ĐỒNG BỘ REALTIME
+                        if (s.texts) {
+                            const t = s.texts;
+                            if (t.announcement) {
+                                document.getElementById('announcement-text').innerText = t.announcement;
+                                document.getElementById('dev-text-announcement').value = t.announcement;
+                            }
+                            if (t.hero_main) {
+                                document.getElementById('hero-main-title').innerHTML = t.hero_main;
+                                document.getElementById('dev-text-hero-main').value = t.hero_main;
+                            }
+                            if (t.hero_sub) {
+                                document.getElementById('hero-sub-title').innerText = t.hero_sub;
+                                document.getElementById('dev-text-hero-sub').value = t.hero_sub;
+                            }
+                            if (t.hero_block) {
+                                document.getElementById('hero-block-title').innerText = t.hero_block;
+                                document.getElementById('dev-text-hero-block').value = t.hero_block;
+                            }
+                            if (t.footer) {
+                                document.getElementById('footer-text').innerText = t.footer;
+                                document.getElementById('dev-text-footer').value = t.footer;
+                            }
                         }
-                        // Cập nhật nền Search Panel
-                        if (s.search_bg) {
-                            document.getElementById('search-panel').style.backgroundImage = `url('${s.search_bg}')`;
-                            document.getElementById('search-panel').style.backgroundSize = 'cover';
-                        }
-                        // Cập nhật nền Slots
-                        if (s.slot_texture) {
-                            document.documentElement.style.setProperty('--slot-bg-image', `url('${s.slot_texture}')`);
-                        }
-                        // Cập nhật Thông báo
-                        if (s.broadcast) {
-                            document.getElementById('announcement-text').innerText = s.broadcast;
-                            document.getElementById('dev-broadcast-input').value = s.broadcast;
-                        }
-                        // Cập nhật Playlist BGM
+
+                        // 4. ĐỒNG BỘ PLAYLIST NHẠC
                         if (s.playlist && Array.isArray(s.playlist)) {
                             state.playlist = s.playlist;
                             App.Dev.renderPlaylistManager();
-                            if (!state.bgmPlaying && !App.Audio.bgmAudio) {
-                                App.Audio.loadCurrentTrack();
-                            }
                         }
                     });
                 },
@@ -1136,7 +1217,7 @@
                         App.UI.showToast("Đã lưu tài nguyên thành công!", "success");
                         App.Modal.close('dev-modal');
                     } catch (error) {
-                        App.UI.showToast("Lỗi lưu dữ liệu: Kiểm tra Firebase.", "error");
+                        App.UI.showToast("Lỗi lưu dữ liệu.", "error");
                     } finally {
                         btn.innerHTML = `LƯU TÀI NGUYÊN VÀO SERVER`;
                         btn.disabled = false;
@@ -1179,37 +1260,78 @@
                 }
             },
 
-            // DEV STUDIO & QUẢN TRỊ GIAO DIỆN / NHẠC REALTIME
+            // DEV STUDIO CONTROLS
             Dev: {
                 openControlCenter: () => {
                     App.Audio.play('click');
-                    App.Dev.setTab('post');
+                    App.Dev.setTab('style');
                     App.Modal.open('dev-modal');
                 },
                 setTab: (tab) => {
                     App.Audio.play('click');
-                    document.getElementById('dev-tab-post').classList.add('hidden-accessible');
-                    document.getElementById('dev-tab-music').classList.add('hidden-accessible');
-                    document.getElementById('dev-tab-theme').classList.add('hidden-accessible');
-                    document.getElementById('dev-tab-broadcast').classList.add('hidden-accessible');
-
-                    document.getElementById('dev-tab-btn-post').className = "mc-btn px-3 py-1 text-xs";
-                    document.getElementById('dev-tab-btn-music').className = "mc-btn px-3 py-1 text-xs";
-                    document.getElementById('dev-tab-btn-theme').className = "mc-btn px-3 py-1 text-xs";
-                    document.getElementById('dev-tab-btn-broadcast').className = "mc-btn px-3 py-1 text-xs";
-
+                    ['style', 'text', 'bg', 'music', 'post'].forEach(t => {
+                        document.getElementById(`dev-tab-${t}`).classList.add('hidden-accessible');
+                        document.getElementById(`dev-tab-btn-${t}`).className = "mc-btn px-3 py-1 text-xs";
+                    });
                     document.getElementById(`dev-tab-${tab}`).classList.remove('hidden-accessible');
                     document.getElementById(`dev-tab-btn-${tab}`).className = "mc-btn mc-btn-gold px-3 py-1 text-xs";
                 },
 
-                // Upload nhạc file -> Lưu URL hoặc Base64 lên Firebase cho toàn bộ server nghe
+                // Xem trước trực tiếp
+                liveUpdateStyle: (key, val) => {
+                    state.tempStyles[key] = val;
+                    if (key === 'banner_opacity') document.documentElement.style.setProperty('--banner-opacity', val);
+                    if (key === 'banner_blur') document.documentElement.style.setProperty('--banner-blur', val + 'px');
+                    if (key === 'hero_opacity') document.documentElement.style.setProperty('--hero-opacity', val);
+                    if (key === 'hero_blur') document.documentElement.style.setProperty('--hero-blur', val + 'px');
+                    if (key === 'search_opacity') document.documentElement.style.setProperty('--search-opacity', val);
+                    if (key === 'search_blur') document.documentElement.style.setProperty('--search-blur', val + 'px');
+                    if (key === 'card_opacity') document.documentElement.style.setProperty('--card-opacity', val);
+                    if (key === 'card_blur') document.documentElement.style.setProperty('--card-blur', val + 'px');
+                },
+
+                saveAllStyles: async () => {
+                    const styles = {
+                        banner_opacity: document.getElementById('inp-banner-opacity').value,
+                        banner_blur: document.getElementById('inp-banner-blur').value,
+                        hero_opacity: document.getElementById('inp-hero-opacity').value,
+                        hero_blur: document.getElementById('inp-hero-blur').value,
+                        search_opacity: document.getElementById('inp-search-opacity').value,
+                        search_blur: document.getElementById('inp-search-blur').value,
+                        card_opacity: document.getElementById('inp-card-opacity').value,
+                        card_blur: document.getElementById('inp-card-blur').value,
+                    };
+                    await db.ref('site_settings/styles').set(styles);
+                    App.UI.showToast("Đã lưu cấu hình độ trong suốt toàn trang!", "success");
+                },
+
+                saveAllTexts: async () => {
+                    const texts = {
+                        announcement: document.getElementById('dev-text-announcement').value,
+                        hero_main: document.getElementById('dev-text-hero-main').value,
+                        hero_sub: document.getElementById('dev-text-hero-sub').value,
+                        hero_block: document.getElementById('dev-text-hero-block').value,
+                        footer: document.getElementById('dev-text-footer').value,
+                    };
+                    await db.ref('site_settings/texts').set(texts);
+                    App.UI.showToast("Đã cập nhật toàn bộ văn bản máy chủ!", "success");
+                },
+
+                uploadBgSpecific: (key, event) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        await db.ref(`site_settings/${key}`).set(e.target.result);
+                        App.UI.showToast("Đã đổi ảnh nền thành công!", "success");
+                    };
+                    reader.readAsDataURL(file);
+                },
+
                 uploadMusicFile: () => {
                     const fileInput = document.getElementById('dev-music-file');
                     const file = fileInput.files[0];
-                    if (!file) {
-                        App.UI.showToast("Vui lòng chọn tệp âm thanh!", "error");
-                        return;
-                    }
+                    if (!file) return;
 
                     const reader = new FileReader();
                     reader.onload = async (e) => {
@@ -1217,38 +1339,41 @@
                             title: file.name.replace(/\.[^/.]+$/, ""),
                             url: e.target.result
                         };
-                        const updatedPlaylist = [...state.playlist, newTrack];
-                        await db.ref('site_settings/playlist').set(updatedPlaylist);
+                        const updated = [...state.playlist, newTrack];
+                        await db.ref('site_settings/playlist').set(updated);
                         fileInput.value = '';
-                        App.UI.showToast("Đã cập nhật bài hát mới cho toàn bộ người dùng!", "success");
+                        App.UI.showToast("Đã thêm bài hát vào danh sách phát tự động!", "success");
                     };
                     reader.readAsDataURL(file);
                 },
+
                 addMusicUrl: async () => {
                     const urlInput = document.getElementById('dev-music-url');
                     const url = urlInput.value.trim();
                     if (!url) return;
 
                     const newTrack = {
-                        title: "BGM Track #" + (state.playlist.length + 1),
+                        title: "Minecraft Track #" + (state.playlist.length + 1),
                         url: url
                     };
-                    const updatedPlaylist = [...state.playlist, newTrack];
-                    await db.ref('site_settings/playlist').set(updatedPlaylist);
+                    const updated = [...state.playlist, newTrack];
+                    await db.ref('site_settings/playlist').set(updated);
                     urlInput.value = '';
-                    App.UI.showToast("Đã thêm bài hát vào danh sách phát toàn trang!", "success");
+                    App.UI.showToast("Đã thêm bài hát vào danh sách phát!", "success");
                 },
+
                 removeTrack: async (index) => {
                     const updated = [...state.playlist];
                     updated.splice(index, 1);
                     await db.ref('site_settings/playlist').set(updated);
-                    App.UI.showToast("Đã xóa bài hát khỏi Playlist.");
+                    App.UI.showToast("Đã xóa bài hát.");
                 },
+
                 renderPlaylistManager: () => {
                     const container = document.getElementById('dev-playlist-container');
                     if (!container) return;
                     container.innerHTML = '';
-                    
+
                     if (state.playlist.length === 0) {
                         container.innerHTML = `<span class="text-slate-500 italic">Chưa có bài hát nào.</span>`;
                         return;
@@ -1258,90 +1383,15 @@
                         const item = document.createElement('div');
                         item.className = "flex items-center justify-between p-2 bg-[#0C0E14] border border-[#3C4258] rounded text-xs";
                         item.innerHTML = `
-                            <span class="truncate font-bold text-white max-w-[200px]">${i + 1}. ${tr.title}</span>
+                            <span class="truncate font-bold text-white max-w-[220px]">${i + 1}. ${tr.title}</span>
                             <button onclick="App.Dev.removeTrack(${i})" class="mc-btn mc-btn-red px-2 py-0.5 text-[10px]">XÓA</button>
                         `;
                         container.appendChild(item);
                     });
-                },
-
-                // Thay đổi các nền Realtime cho mọi người cùng thấy
-                handleCustomMainBg: (event) => {
-                    const file = event.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        await db.ref('site_settings/main_bg').set(e.target.result);
-                        App.UI.showToast("Đã cập nhật hình nền chính toàn trang!", "success");
-                    };
-                    reader.readAsDataURL(file);
-                },
-                handleCustomHeroImage: (event) => {
-                    const file = event.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        await db.ref('site_settings/hero_bg').set(e.target.result);
-                        App.UI.showToast("Đã cập nhật hình nền khung Giới thiệu!", "success");
-                    };
-                    reader.readAsDataURL(file);
-                },
-                handleCustomSearchImage: (event) => {
-                    const file = event.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        await db.ref('site_settings/search_bg').set(e.target.result);
-                        App.UI.showToast("Đã cập nhật nền khung Tìm kiếm!", "success");
-                    };
-                    reader.readAsDataURL(file);
-                },
-                handleCustomSlotImage: (event) => {
-                    const file = event.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        await db.ref('site_settings/slot_texture').set(e.target.result);
-                        App.UI.showToast("Đã áp dụng hình nền cho các khung viền/slot!", "success");
-                    };
-                    reader.readAsDataURL(file);
-                },
-                resetBackground: async () => {
-                    await db.ref('site_settings/main_bg').set('https://images.alphacoders.com/131/1319717.jpeg');
-                    App.UI.showToast("Đã khôi phục hình nền mặc định.");
-                },
-                setGlobalOverlayOpacity: (val) => {
-                    document.documentElement.style.setProperty('--global-overlay-opacity', val);
-                },
-                setGlobalBackdropBlur: (val) => {
-                    document.documentElement.style.setProperty('--global-backdrop-blur', val + 'px');
-                },
-                saveBroadcast: async () => {
-                    const val = document.getElementById('dev-broadcast-input').value;
-                    await db.ref('site_settings/broadcast').set(val);
-                    App.UI.showToast("Đã phát thông báo toàn trang!", "success");
-                },
-
-                // Dev đổi ảnh trực tiếp cho từng Card riêng biệt
-                changeCardImageDirectly: (id) => {
-                    const fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.accept = 'image/*';
-                    fileInput.onchange = async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        const reader = new FileReader();
-                        reader.onload = async (event) => {
-                            await db.ref(`packs/${id}/image`).set(event.target.result);
-                            App.UI.showToast("Đã đổi ảnh trực tiếp cho tài nguyên!", "success");
-                        };
-                        reader.readAsDataURL(file);
-                    };
-                    fileInput.click();
                 }
             },
 
-            // BOOKMARKS / FAVORITES
+            // BOOKMARKS
             Favorites: {
                 updateCounter: () => {
                     document.getElementById('drawer-fav-count').innerText = state.favorites.length;
@@ -1351,10 +1401,10 @@
                     const index = state.favorites.indexOf(id);
                     if (index > -1) {
                         state.favorites.splice(index, 1);
-                        App.UI.showToast(state.lang === 'vi' ? "Đã bỏ lưu tài nguyên." : "Removed from bookmarks.");
+                        App.UI.showToast("Đã bỏ lưu tài nguyên.");
                     } else {
                         state.favorites.push(id);
-                        App.UI.showToast(state.lang === 'vi' ? "Đã lưu vào bộ sưu tập!" : "Saved to bookmarks!", "success");
+                        App.UI.showToast("Đã lưu vào bộ sưu tập!", "success");
                     }
                     localStorage.setItem('galaxy_favs', JSON.stringify(state.favorites));
                     App.Favorites.updateCounter();
@@ -1362,31 +1412,22 @@
                 }
             },
 
-            // BỘ LỌC NỀN TẢNG (BEDROCK vs JAVA) & DANH MỤC
+            // BỘ LỌC
             Filter: {
                 setPlatform: (plat) => {
                     App.Audio.play('click');
                     state.activePlatform = plat;
-
-                    document.getElementById('plat-btn-all').className = "mc-btn flex-1 py-1.5 text-xs text-slate-300";
-                    document.getElementById('plat-btn-java').className = "mc-btn flex-1 py-1.5 text-xs text-slate-300";
-                    document.getElementById('plat-btn-bedrock').className = "mc-btn flex-1 py-1.5 text-xs text-slate-300";
-
-                    if (plat === 'ALL') {
-                        document.getElementById('plat-btn-all').className = "mc-btn mc-btn-gold flex-1 py-1.5 text-xs";
-                    } else if (plat === 'JAVA') {
-                        document.getElementById('plat-btn-java').className = "mc-btn mc-btn-gold flex-1 py-1.5 text-xs";
-                    } else if (plat === 'BEDROCK') {
-                        document.getElementById('plat-btn-bedrock').className = "mc-btn mc-btn-gold flex-1 py-1.5 text-xs";
-                    }
-
+                    ['all', 'java', 'bedrock'].forEach(p => {
+                        document.getElementById(`plat-btn-${p}`).className = "mc-btn flex-1 py-1.5 text-xs text-slate-300";
+                    });
+                    document.getElementById(`plat-btn-${plat.toLowerCase()}`).className = "mc-btn mc-btn-gold flex-1 py-1.5 text-xs";
                     App.Render.items();
                 },
                 setCategory: (cat) => {
                     App.Audio.play('click');
                     state.activeCategory = cat;
                     document.querySelectorAll('.nav-tab').forEach(btn => {
-                        if (btn.innerText.includes(cat.toUpperCase()) || (cat === 'All' && btn.innerText.includes('TẤT CẢ')) || (cat === 'All' && btn.innerText.includes('ALL'))) {
+                        if (btn.innerText.includes(cat.toUpperCase()) || (cat === 'All' && btn.innerText.includes('TẤT CẢ'))) {
                             btn.className = "nav-tab active mc-btn px-3 py-1 text-xs text-white";
                         } else {
                             btn.className = "nav-tab mc-btn px-3 py-1 text-xs text-slate-400";
@@ -1426,25 +1467,17 @@
                         const mSearch = (item.title + ' ' + (item.description || '')).toLowerCase().includes(state.searchQuery.toLowerCase());
                         const mFav = state.showFavoritesOnly ? state.favorites.includes(item.id) : true;
                         
-                        // LỌC BEDROCK vs JAVA EDITION
                         let mPlat = true;
                         const itemPlat = item.platform || (item.loader === 'Bedrock' ? 'BEDROCK' : 'JAVA');
-                        if (state.activePlatform === 'JAVA') {
-                            mPlat = (itemPlat === 'JAVA' || itemPlat === 'BOTH');
-                        } else if (state.activePlatform === 'BEDROCK') {
-                            mPlat = (itemPlat === 'BEDROCK' || itemPlat === 'BOTH');
-                        }
+                        if (state.activePlatform === 'JAVA') mPlat = (itemPlat === 'JAVA' || itemPlat === 'BOTH');
+                        else if (state.activePlatform === 'BEDROCK') mPlat = (itemPlat === 'BEDROCK' || itemPlat === 'BOTH');
 
                         return mCat && mLoader && mSearch && mFav && mPlat;
                     });
 
-                    if (state.sortBy === 'downloads') {
-                        filtered.sort((a, b) => (b.downloadsCount || 0) - (a.downloadsCount || 0));
-                    } else if (state.sortBy === 'likes') {
-                        filtered.sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
-                    } else {
-                        filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                    }
+                    if (state.sortBy === 'downloads') filtered.sort((a, b) => (b.downloadsCount || 0) - (a.downloadsCount || 0));
+                    else if (state.sortBy === 'likes') filtered.sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
+                    else filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
                     document.getElementById('pack-counter').innerText = `${filtered.length} ITEMS`;
 
@@ -1457,18 +1490,15 @@
                     empty.classList.add('hidden-accessible');
                     grid.classList.remove('hidden-accessible');
 
-                    const dict = App.i18n.dictionary[state.lang];
-
                     filtered.forEach(item => {
                         const isSaved = state.favorites.includes(item.id);
                         const isLiked = cleanUid && item.likedUsers && item.likedUsers[cleanUid];
                         const isExpanded = state.expandedCards[item.id] || false;
 
                         const card = document.createElement('div');
-                        card.className = "mc-panel p-3.5 sm:p-4 flex flex-col justify-between group transition-all relative";
+                        card.className = "card-custom p-3.5 sm:p-4 flex flex-col justify-between group transition-all relative";
                         card.innerHTML = `
                             <div>
-                                <!-- Khung hình ảnh -->
                                 <div class="mc-slot w-full h-40 sm:h-44 rounded overflow-hidden mb-3 relative flex items-center justify-center">
                                     <img src="${item.image}" loading="lazy" class="smart-img group-hover:scale-105">
                                     
@@ -1488,25 +1518,17 @@
                                             ${item.platform === 'BEDROCK' ? 'BEDROCK' : (item.platform === 'BOTH' ? 'ALL MC' : 'JAVA')}
                                         </span>
                                     </div>
-
-                                    <!-- Nút đổi ảnh nhanh cho Dev -->
-                                    ${state.isDev ? `
-                                    <button onclick="App.Dev.changeCardImageDirectly('${item.id}')" class="mc-btn mc-btn-gold absolute bottom-2 right-2 px-2 py-0.5 text-[9px] font-mc z-10" title="Đổi ảnh trực tiếp">
-                                        ĐỔI ẢNH
-                                    </button>
-                                    ` : ''}
                                 </div>
 
                                 <h3 class="text-sm sm:text-base font-bold text-white mb-1.5 line-clamp-1 group-hover:text-mcGreen transition-colors font-mc">${item.title}</h3>
                                 
-                                <!-- Mô tả mở rộng/thu gọn -->
                                 <div class="text-xs text-slate-300 mb-3 font-sans leading-relaxed">
                                     <div class="${isExpanded ? '' : 'line-clamp-2'} transition-all">
                                         ${item.description}
                                     </div>
                                     ${item.description.length > 60 ? `
                                         <button onclick="App.UI.toggleCardExpand('${item.id}')" class="text-[11px] font-bold text-mcAqua hover:underline mt-1 focus:outline-none">
-                                            ${isExpanded ? (state.lang === 'vi' ? '▲ Thu gọn' : '▲ Collapse') : (state.lang === 'vi' ? '▼ Mở rộng chi tiết' : '▼ Read more')}
+                                            ${isExpanded ? '▲ Thu gọn' : '▼ Mở rộng chi tiết'}
                                         </button>
                                     ` : ''}
                                 </div>
@@ -1526,7 +1548,7 @@
                                 </div>
 
                                 <button onclick="App.Download.openModal('${item.id}')" class="mc-btn mc-btn-green w-full py-2 text-xs flex items-center justify-center gap-1.5 font-mc">
-                                    ${dict.download_btn}
+                                    TẢI XUỐNG
                                 </button>
 
                                 ${state.isDev ? `
@@ -1546,7 +1568,7 @@
                 }
             },
 
-            // DOWNLOAD SYSTEM
+            // DOWNLOAD
             Download: {
                 openModal: (id) => {
                     App.Audio.play('click');
@@ -1607,15 +1629,14 @@
                     const content = document.getElementById('hero-expandable');
                     const text = document.getElementById('hero-expand-text');
                     const arrow = document.getElementById('hero-expand-arrow');
-                    const dict = App.i18n.dictionary[state.lang];
 
                     if (state.heroExpanded) {
                         content.classList.add('open');
-                        text.innerText = dict.collapse;
+                        text.innerText = "Thu Gọn";
                         arrow.innerText = "▲";
                     } else {
                         content.classList.remove('open');
-                        text.innerText = dict.expand;
+                        text.innerText = "Mở Rộng";
                         arrow.innerText = "▼";
                     }
                 },
@@ -1706,7 +1727,7 @@
                     const c = document.getElementById('toast-container');
                     const t = document.createElement('div');
                     let color = type === 'error' ? 'border-mcRed text-mcRed' : (type === 'success' ? 'border-mcGreen text-mcGreen' : 'border-mcAqua text-mcAqua');
-                    t.className = `mc-panel p-2.5 text-xs flex items-center gap-2 shadow-2xl transition-all transform -translate-y-6 mx-auto w-fit z-[300] ${color}`;
+                    t.className = `card-custom p-2.5 text-xs flex items-center gap-2 shadow-2xl transition-all transform -translate-y-6 mx-auto w-fit z-[300] ${color}`;
                     t.innerHTML = `<span>${msg}</span>`;
                     c.appendChild(t);
                     setTimeout(() => t.classList.remove('-translate-y-6'), 10);
@@ -1717,7 +1738,7 @@
                 }
             },
 
-            // MODAL SYSTEM
+            // MODAL
             Modal: {
                 open: (id) => {
                     App.Audio.play('click');
