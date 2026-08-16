@@ -1,0 +1,35 @@
+{
+  "GC-2026-CREATOR01": {
+    "recipientName": "Alex Henderson",
+    "recipientUsername": "AlexCraftVN",
+    "type": "CREATOR CERTIFICATE",
+    "title": "Top Modpack Creator 2026",
+    "description": "Đã có đóng góp xuất sắc trong việc phát triển gói Modpack & Texture Pack chất lượng cao cho cộng đồng Galaxy Craft.",
+    "issuedAt": "16/08/2026",
+    "issuedBy": "Tăng Hoàng Minh",
+    "founderTitle": "Founder & Platform Director",
+    "status": "VERIFIED"
+  },
+  "GC-2026-DEV02": {
+    "recipientName": "Trần Anh Đức",
+    "recipientUsername": "EnderDev",
+    "type": "DEVELOPER CERTIFICATE",
+    "title": "Core Addon Architect",
+    "description": "Đóng góp các Addon kỹ thuật cao và tối ưu hệ thống shader trên nền tảng Galaxy Craft.",
+    "issuedAt": "12/08/2026",
+    "issuedBy": "Tăng Hoàng Minh",
+    "founderTitle": "Founder & Platform Director",
+    "status": "VERIFIED"
+  },
+  "GC-2026-REVOKED99": {
+    "recipientName": "Người Dùng Thử Nghiệm",
+    "recipientUsername": "TestUser",
+    "type": "CONTRIBUTOR CERTIFICATE",
+    "title": "Community Contributor",
+    "description": "Chứng nhận thử nghiệm bị thu hồi.",
+    "issuedAt": "01/01/2026",
+    "issuedBy": "Tăng Hoàng Minh",
+    "founderTitle": "Founder & Platform Director",
+    "status": "REVOKED"
+  }
+}
