@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galaxy Craft - Hệ Thống Xác Minh Chứng Nhận Điện Tử</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Dancing+Script:wght@700&family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-signature { font-family: 'Dancing Script', cursive; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    @media print {
+      body { background: #070B14 !important; -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      #resultArea { display: block !important; }
+      #certCard { border: 1px solid #00f0ff !important; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body class="bg-[#050811] text-gray-200 min-h-screen flex flex-col items-center justify-start p-4 sm:p-8">
+
+  <!-- NAVBAR -->
+  <div class="w-full max-w-4xl flex justify-between items-center mb-6 text-xs no-print">
+    <a href="/" class="text-cyan-400 hover:text-cyan-300 transition flex items-center gap-1 font-mono">
+      ← Quay lại Trang Chủ Galaxy Craft
+    </a>
+    <span class="text-gray-500 font-mono">FOUNDER: TĂNG HOÀNG MINH</span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="text-center mb-8 space-y-2 no-print">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-mono tracking-widest uppercase">
+      <span>❖</span> GALAXY CRAFT PLATFORM <span>❖</span>
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-black text-white tracking-wider">
+      HỆ THỐNG XÁC MINH CHỨNG NHẬN
+    </h1>
+    <p class="text-xs sm:text-sm text-cyan-400/80 font-mono">
+      Official Community Recognition System • Founder: Tăng Hoàng Minh
+    </p>
+  </header>
+
+  <!-- FORM TRA CỨU -->
+  <div class="w-full max-w-lg bg-[#0D1527] border border-cyan-500/30 rounded-2xl p-6 shadow-2xl shadow-cyan-950/50 mb-8 no-print">
+    <form id="verifyForm" class="space-y-4">
+      <div>
+        <label for="certIdInput" class="block text-xs font-mono text-cyan-300 uppercase mb-2">
+          Nhập mã chứng nhận (Certificate ID)
+        </label>
+        <input 
+          type="text" 
+          id="certIdInput" 
+          placeholder="Ví dụ: GC-2026-CREATOR01" 
+          class="w-full bg-[#070B14] border border-cyan-500/40 rounded-xl px-4 py-3 text-white font-mono text-center tracking-widest placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 uppercase transition"
+          required
+        />
+      </div>
+      <button 
+        type="submit" 
+        class="w-full py-3.5 px-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-black font-extrabold text-xs uppercase tracking-widest rounded-xl shadow-lg shadow-cyan-500/20 transition active:scale-98"
+      >
+        Xác Minh Ngay
+      </button>
+    </form>
+  </div>
+
+  <!-- KHU VỰC HIỂN THỊ KẾT QUẢ -->
+  <div id="resultArea" class="w-full max-w-4xl hidden space-y-6">
+    
+    <!-- Status Banner -->
+    <div id="statusBanner" class="p-4 rounded-xl text-center border font-bold text-sm no-print"></div>
+
+    <!-- CERTIFICATE CANVAS (A4 Landscape: 1.414 / 1) -->
+    <div id="certCard" class="relative w-full aspect-[1.414/1] bg-[#070B14] text-white p-6 sm:p-10 rounded-2xl overflow-hidden shadow-2xl border border-cyan-500/30 select-none">
+      
+      <!-- Nền Thiên Hà Gradient & Ánh Sáng Vũ Trụ -->
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,240,255,0.09),_transparent_70%)] pointer-events-none"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(0,102,255,0.07),_transparent_60%)] pointer-events-none"></div>
+      
+      <!-- Khung viền góc Tech Precision -->
+      <div class="relative h-full w-full border border-cyan-500/30 p-4 sm:p-6 flex flex-col justify-between rounded-lg">
+        <div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-cyan-400"></div>
+        <div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-cyan-400"></div>
+        <div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-cyan-400"></div>
+        <div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-cyan-400"></div>
+
+        <!-- TOP: HEADER -->
+        <div class="text-center space-y-1 sm:space-y-2">
+          <div class="inline-flex items-center gap-2 text-cyan-400 text-[11px] font-mono tracking-widest uppercase">
+            <span>❖</span> GALAXY CRAFT PLATFORM <span>❖</span>
+          </div>
+          <h2 class="text-xl sm:text-3xl font-extrabold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-100 to-cyan-400 uppercase font-cinzel">
+            Certificate of Recognition
+          </h2>
+          <p class="text-[10px] sm:text-xs text-cyan-400/80 font-medium tracking-widest uppercase">
+            CHỨNG NHẬN GHI NHẬN THÀNH TÍCH ĐÓNG GÓP
+          </p>
+        </div>
+
+        <!-- MIDDLE: NỘI DUNG VÀ TÊN NGƯỜI NHẬN -->
+        <div class="text-center my-auto space-y-2 sm:space-y-3">
+          <p class="text-xs sm:text-sm text-gray-400 italic">This certificate is proudly presented to</p>
+          
+          <div class="space-y-0.5">
+            <h3 id="displayRecipientName" class="text-2xl sm:text-4xl font-black text-white drop-shadow-[0_0_15px_rgba(0,240,255,0.4)] tracking-wide">
+              -
+            </h3>
+            <p id="displayUsername" class="text-xs sm:text-sm font-mono text-cyan-400">-</p>
+          </div>
+
+          <div>
+            <span id="displayTypeBadge" class="inline-block bg-cyan-950/60 border border-cyan-500/40 px-3 py-1 rounded text-xs font-semibold tracking-wider text-cyan-300 uppercase">
+              -
+            </span>
+          </div>
+
+          <p id="displayDescription" class="max-w-xl mx-auto text-xs sm:text-sm text-gray-300 leading-relaxed px-4">
+            -
+          </p>
+        </div>
+
+        <!-- BOTTOM: FOOTER VỚI CHỮ KÝ FOUNDER TĂNG HOÀNG MINH -->
+        <div class="grid grid-cols-3 items-end pt-3 border-t border-cyan-950/80 text-xs">
+          
+          <!-- Cột trái: Mã chứng nhận & ngày cấp -->
+          <div class="space-y-0.5 text-left">
+            <p class="text-[10px] text-gray-500 uppercase font-mono">Certificate ID</p>
+            <p id="displayCertId" class="font-mono text-cyan-300 font-bold text-xs sm:text-sm">-</p>
+            <p id="displayIssuedDate" class="text-[10px] text-gray-400">Issued: -</p>
+            <p class="text-[9px] text-gray-500 font-mono">craftgalaxy.vercel.app</p>
+          </div>
+
+          <!-- Cột giữa: Đơn vị cấp & Tuyên ngôn nền tảng -->
+          <div class="text-center space-y-1">
+            <div class="text-cyan-400 text-sm">✦ ◈ ✦</div>
+            <p class="text-[9px] text-gray-300 uppercase font-bold tracking-wider">Issued by Galaxy Craft</p>
+            <p class="text-[7.5px] text-gray-500 leading-tight max-w-[210px] mx-auto">
+              This certificate recognizes the contribution/achievement described above within the Galaxy Craft platform.
+            </p>
+          </div>
+
+          <!-- Cột phải: Chữ ký Founder Tăng Hoàng Minh & QR Code -->
+          <div class="flex items-end justify-end gap-3">
+            <div class="text-right">
+              <!-- Chữ ký viết tay -->
+              <div class="font-signature text-2xl sm:text-3xl text-cyan-200 leading-none -mb-1 select-none">
+                Tang Hoang Minh
+              </div>
+              <div class="text-[11px] font-bold text-white tracking-wide border-t border-cyan-500/40 pt-0.5">
+                Tăng Hoàng Minh
+              </div>
+              <p class="text-[8.5px] text-cyan-400/90 uppercase tracking-wider font-mono">
+                Founder & Platform Lead
+              </p>
+            </div>
+
+            <!-- Mã QR Xác Thực -->
+            <div id="qrcodeWrapper" class="p-1 bg-white rounded border border-cyan-400 flex-shrink-0"></div>
+          </div>
+
+        </div>
+
+        <!-- Lớp phủ khi chứng nhận bị thu hồi -->
+        <div id="revokedOverlay" class="absolute inset-0 bg-red-950/90 backdrop-blur-sm hidden flex-col items-center justify-center rounded-lg p-6">
+          <div class="border-4 border-red-500 p-6 rounded-2xl rotate-[-8deg] bg-black/80 text-center">
+            <h3 class="text-4xl sm:text-6xl font-black text-red-500 uppercase tracking-widest">REVOKED</h3>
+            <p class="text-xs text-red-200 font-mono mt-1">CHỨNG NHẬN ĐÃ BỊ THU HỒI BỞI QUẢN TRỊ VIÊN</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CÁC NÚT THAO TÁC -->
+    <div class="flex justify-center gap-4 pt-2 no-print">
+      <button onclick="window.print()" class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold uppercase rounded-lg border border-gray-600 transition flex items-center gap-2">
+        <span>🖨️</span> In / Tải PDF
+      </button>
+      <button id="btnCopyLink" class="px-6 py-2.5 bg-cyan-950 hover:bg-cyan-900 text-cyan-300 text-xs font-bold uppercase rounded-lg border border-cyan-500/40 transition flex items-center gap-2">
+        <span>🔗</span> Sao chép link xác thực
+      </button>
+    </div>
+
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    let certificatesDB = {};
+
+    async function loadDatabase() {
+      try {
+        const response = await fetch('/data/certificates.json');
+        if (response.ok) {
+          certificatesDB = await response.json();
+        }
+      } catch (err) {
+        console.error("Không thể kết nối cơ sở dữ liệu:", err);
+      }
+    }
+
+    const verifyForm = document.getElementById('verifyForm');
+    const certIdInput = document.getElementById('certIdInput');
+    const resultArea = document.getElementById('resultArea');
+    const statusBanner = document.getElementById('statusBanner');
+    const certCard = document.getElementById('certCard');
+    const revokedOverlay = document.getElementById('revokedOverlay');
+    const qrcodeWrapper = document.getElementById('qrcodeWrapper');
+    const btnCopyLink = document.getElementById('btnCopyLink');
+
+    async function checkCertificate(id) {
+      if (Object.keys(certificatesDB).length === 0) {
+        await loadDatabase();
+      }
+
+      const queryId = id.trim().toUpperCase();
+      resultArea.classList.remove('hidden');
+      qrcodeWrapper.innerHTML = "";
+
+      const cert = certificatesDB[queryId];
+
+      if (cert) {
+        document.getElementById('displayRecipientName').innerText = cert.recipientName;
+        document.getElementById('displayUsername').innerText = "@" + cert.recipientUsername;
+        document.getElementById('displayTypeBadge').innerText = cert.type;
+        document.getElementById('displayDescription').innerText = cert.description;
+        document.getElementById('displayCertId').innerText = queryId;
+        document.getElementById('displayIssuedDate').innerText = "Issued: " + cert.issuedAt;
+
+        // Tạo mã QR dẫn thẳng đến link xác minh
+        const verifyUrl = `${window.location.origin}/verify?id=${queryId}`;
+        new QRCode(qrcodeWrapper, {
+          text: verifyUrl,
+          width: 58,
+          height: 58,
+          colorDark: "#000000",
+          colorLight: "#ffffff"
+        });
+
+        btnCopyLink.onclick = () => {
+          navigator.clipboard.writeText(verifyUrl);
+          alert("Đã sao chép liên kết chứng nhận!");
+        };
+
+        if (cert.status === "VERIFIED") {
+          statusBanner.className = "p-4 rounded-xl text-center border bg-emerald-950/60 border-emerald-500/50 text-emerald-300 font-bold";
+          statusBanner.innerHTML = "✓ CHỨNG NHẬN HỢP LỆ • XÁC THỰC BỞI FOUNDER TĂNG HOÀNG MINH (GALAXY CRAFT)";
+          certCard.classList.remove('hidden');
+          revokedOverlay.classList.add('hidden');
+        } else {
+          statusBanner.className = "p-4 rounded-xl text-center border bg-red-950/60 border-red-500/50 text-red-300 font-bold";
+          statusBanner.innerHTML = "⚠ CHỨNG NHẬN ĐÃ BỊ THU HỒI (REVOKED)";
+          certCard.classList.remove('hidden');
+          revokedOverlay.classList.remove('hidden');
+          revokedOverlay.classList.add('flex');
+        }
+      } else {
+        statusBanner.className = "p-4 rounded-xl text-center border bg-red-950/40 border-red-500/30 text-red-400 font-bold";
+        statusBanner.innerHTML = "✕ KHÔNG TÌM THẤY MÃ CHỨNG NHẬN • Vui lòng kiểm tra lại mã đã nhập.";
+        certCard.classList.add('hidden');
+      }
+    }
+
+    verifyForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      checkCertificate(certIdInput.value);
+    });
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadDatabase();
+      const urlParams = new URLSearchParams(window.location.search);
+      const idParam = urlParams.get('id');
+      if (idParam) {
+        certIdInput.value = idParam;
+        checkCertificate(idParam);
+      }
+    });
+  </script>
+</body>
+</html>
